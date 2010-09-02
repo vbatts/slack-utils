@@ -1,0 +1,10 @@
+#!/usr/bin/env ruby
+
+require 'slack-utils'
+
+begin
+	sll
+rescue Interrupt
+	exit 0
+end
+
