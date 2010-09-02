@@ -1,22 +1,102 @@
 .\" Written by Vincent Batts <vbatts@hashbangbash.com>
-.TH SLACK-UTILS 8 "July 2010" "slackware-13.1"
+.TH SLACK-UTILS 8 "July 2010" "Slackware-Linux"
 .SH NAME
 .B slack-utils - simple slackware sys-admin tools
 
 .SH SYNOPSIS
-.B  slp [string] ...
+.B  slp [package name(s)]
 .LP
-.B  slf [string] ...
+.B  slf [file(s)]
 .LP
-.B  slt [string] ...
+.B  slt [package name(s)]
 .LP
-.B  sll [string] ...
+.B  sll <package name(s)>
 .LP
-.B  slo [string] ...
+.B  slo
+.LP
+.B  slfindlinked <libname>
 .LP
 
 .SH DESCRIPTION
 .B slack-utils
-is mostly a simple chunk of ruby code (rest is bash shell) to produce 
+prints information related to slackware packages installed.
+Mostly a simple chunk of ruby code (rest is bash shell). Updates 
+are welcome :-)
 
-.SH OPTIONS
+.SS slp
+By default will list all slackware packages currently installed.
+Any [package names] passed after the command, are printed if matched. 
+These args can be ruby regex expressions. For example:
+.RS
+.nf
+.B \fI$>\fI slp rsync xorg.*nest
+rsync-3.0.7-x86_64-1
+xorg-server-xnest-1.7.7-x86_64-2
+.fi
+.PP
+
+.SS slf
+Requires an argument. 
+Any [file(s)] passed after the command, are printed if matched. 
+These args can be ruby regex expressions. For example:
+.RS
+.nf
+.B \fI$>\fI slf kdmrc lilo$
+kdebase-workspace-4.4.5-x86_64-1: usr/share/doc/HTML/en/kdm/kdmrc-ref.docbook
+kdebase-workspace-4.4.5-x86_64-1: etc/kde/kdm/kdmrc.new
+lilo-22.8-x86_64-15: sbin/lilo
+syslinux-3.84-x86_64-2: usr/bin/keytab-lilo
+.fi
+.PP
+
+.SS sll
+Requires an argument. 
+The files owned by [package name(s)], are printed if matched. 
+These args can be ruby regex expressions. For example:
+.RS
+.nf
+.B \fI$>\fI sll radeontool
+usr/
+usr/bin/
+usr/bin/radeontool
+usr/bin/avivotool
+install/
+install/slack-desc
+.fi
+.PP
+
+.SS slt
+By default will list all slackware packages currently installed, and their mtime/install time.
+Any [package names] passed after the command, are printed if matched. 
+These args can be ruby regex expressions. For example:
+.RS
+.nf
+.B \fI$>\fI slt radeontool-1.6.1-x86_64-1 rsync
+radeontool-1.6.1-x86_64-1: 2010-06-01 22:40:42 -0400
+rsync-3.0.7-x86_64-1: 2010-06-01 22:41:08 -0400
+.fi
+.PP
+
+.SS slo
+This utility searches for orphaned configuration files, that had been
+installed as .new files, but the owning package is no longer installed.
+.RS
+.nf
+.B \fI$>\fI slo
+XXX - NEEDS an example
+.fi
+.PP
+
+.SS slfindlinked
+Requires an argument. (and please be patient ;)
+Prints the package name and file that are linked to the <libname> that is passed as an argument.
+.RS
+.nf
+.B \fI$>\fI slfindlinked libgmp
+guile-1.8.7-x86_64-3: usr/lib64/libguile-srfi-srfi-60-v-2.so.2.0.2 linked to libgmp.so.10 
+soprano-2.4.64-x86_64-1: usr/lib64/soprano/libsoprano_redlandbackend.so linked to libgmp.so.10 
+php-5.2.14-x86_64-1: usr/lib64/php/extensions/gmp.so linked to libgmp.so.10
+[...]
+.fi
+.PP
+
