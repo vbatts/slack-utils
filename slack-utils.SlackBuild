@@ -23,10 +23,18 @@
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 PRGNAM=slack-utils
-VERSION=${VERSION:-0.3.1}
-ARCH=noarch
+VERSION=${VERSION:-0.3.2}
 BUILD=${BUILD:-1}
 TAG=${TAG:-_vb}
+
+if [ -z "$ARCH" ]; then
+  case "$( uname -m )" in
+    i?86) ARCH=i486 ;;
+    arm*) ARCH=arm ;;
+    # Unless $ARCH is already set, use uname -m for all other archs:
+       *) ARCH=$( uname -m ) ;;
+  esac
+fi
 
 CWD=$(pwd)
 TMP=${TMP:-/tmp/vb}
@@ -46,10 +54,10 @@ mkdir -p $PKG/usr/doc/$PRGNAM-$VERSION
 cat $CWD/$PRGNAM.SlackBuild > $PKG/usr/doc/$PRGNAM-$VERSION/$PRGNAM.SlackBuild
 cat $CWD/README > $PKG/usr/doc/$PRGNAM-$VERSION/README
 
-mkdir -p $PKG/usr/bin $PKG/usr/libexec $PKG/usr/man/man8
+rubydir=$(ruby -r rbconfig -e 'puts RbConfig::CONFIG["sitedir"] + "/" + RbConfig::CONFIG["ruby_version"]')
+mkdir -p $PKG/usr/bin $PKG/usr/man/man8 ${PKG}/${rubydir}
 
-cp $CWD/src/$PRGNAM.rb $PKG/usr/libexec
-chmod 0755 $PKG/usr/libexec/$PRGNAM.rb
+install -m 0755 $CWD/src/$PRGNAM.rb $PKG/${rubydir}/
 
 install -m 0755 $CWD/src/slfindlinked $PKG/usr/bin
 install -m 0755 $CWD/src/apps/slo.sh $PKG/usr/bin/slo
