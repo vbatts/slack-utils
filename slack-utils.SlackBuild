@@ -22,54 +22,41 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-PRGNAM=slack-utils
-VERSION=${VERSION:-0.3.2}
-BUILD=${BUILD:-1}
-TAG=${TAG:-_vb}
+set -e
 
-if [ -z "$ARCH" ]; then
-  case "$( uname -m )" in
-    i?86) ARCH=i486 ;;
-    arm*) ARCH=arm ;;
-    # Unless $ARCH is already set, use uname -m for all other archs:
-       *) ARCH=$( uname -m ) ;;
-  esac
-fi
+#Defaults set in local.conf, so that bundle.sh can use them too
+
+. local.conf
 
 CWD=$(pwd)
 TMP=${TMP:-/tmp/vb}
 PKG=$TMP/package-$PRGNAM
 OUTPUT=${OUTPUT:-/tmp}
 
-set -e
+if [ ! -r $CWD/$PRGNAM-$VERSION.tar.gz ] ; then
+	sh $CWD/bundle.sh
+fi
 
 rm -rf $PKG
 mkdir -p $TMP $PKG $OUTPUT
 cd $TMP
 rm -rf $PRGNAM-$VERSION
-mkdir -p $PRGNAM-$VERSION
+tar xvf $CWD/$PRGNAM-$VERSION.tar.gz
 cd $PRGNAM-$VERSION
+
+ruby setup.rb config \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--mandir=/usr/man
+ruby setup.rb install \
+	--prefix=$PKG
 
 mkdir -p $PKG/usr/doc/$PRGNAM-$VERSION
 cat $CWD/$PRGNAM.SlackBuild > $PKG/usr/doc/$PRGNAM-$VERSION/$PRGNAM.SlackBuild
 cat $CWD/README > $PKG/usr/doc/$PRGNAM-$VERSION/README
 
-rubydir=$(ruby -r rbconfig -e 'puts RbConfig::CONFIG["sitedir"] + "/" + RbConfig::CONFIG["ruby_version"]')
-mkdir -p $PKG/usr/bin $PKG/usr/man/man8 ${PKG}/${rubydir}
-
-install -m 0755 $CWD/src/$PRGNAM.rb $PKG/${rubydir}/
-
-install -m 0755 $CWD/src/slfindlinked $PKG/usr/bin
-install -m 0755 $CWD/src/apps/slo.sh $PKG/usr/bin/slo
-for file in sll slf slt slp ; do
-	install -m 0755 $CWD/src/apps/$file $PKG/usr/bin/$file
-done
-
-(  cd $PKG/usr/man/man8/
-	for file in slack-utils sll slf slt slp slo ; do
-		cat $CWD/src/man/$file.8 | gzip > $PKG/usr/man/man8/$file.8.gz
-	done
-)
+find $PKG/usr/man -type f -exec gzip -9 {} \;
+for i in $( find $PKG/usr/man -type l ) ; do ln -s $( readlink $i ).gz $i.gz ; rm $i ; done
  
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
