@@ -3,7 +3,7 @@
 require 'slack-utils'
 
 begin
-	Slackware::slf
+	slf
 rescue Interrupt
 	exit 0
 rescue Exception => e
