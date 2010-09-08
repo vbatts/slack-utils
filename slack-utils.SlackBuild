@@ -29,7 +29,7 @@ set -e
 . local.conf
 
 CWD=$(pwd)
-TMP=${TMP:-/tmp/vb}
+TMP=${TMP:-/tmp/${TAG}}
 PKG=$TMP/package-$PRGNAM
 OUTPUT=${OUTPUT:-/tmp}
 
@@ -62,5 +62,5 @@ mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 
 cd $PKG
-/sbin/makepkg -p -l y -c n ${OUTPUT}/${PRGNAM}-${VERSION}-${ARCH}-${BUILD}${TAG}.${PKGTYPE:-tgz}
+/sbin/makepkg -p -l y -c n ${OUTPUT}/${PRGNAM}-${VERSION}-${ARCH}-${BUILD}_${TAG}.${PKGTYPE:-tgz}
 

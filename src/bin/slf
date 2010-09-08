@@ -3,8 +3,11 @@
 require 'slack-utils'
 
 begin
-	slf
+	Slackware::slf
 rescue Interrupt
 	exit 0
+rescue Exception => e
+	puts "ERROR: #{e.message}"
+	exit 1
 end
 

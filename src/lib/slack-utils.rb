@@ -3,18 +3,37 @@
 # updated for args - Tue Mar 23 14:54:19 CDT 2010
 # Copyright 2009, 2010 Vincent Batts, http://hashbangbash.com/
 
-ENV['LC_ALL'] = nil if not ENV['LC_ALL'].nil?
-ENV['LC_LANG'] = nil if not ENV['LC_LANG'].nil?
-ENV['LC_COLLATE'] = nil if not ENV['LC_COLLATE'].nil?
-
 # Variables
-@pd = '/var/log/packages'
+@pd = '/var/log/packages' # TODO this should be put to a conf file at some point
 @pa = Dir.entries(@pd)
 @me = File.basename($0)
-@st = "\033[31;1m"
+@st = "\033[31;1m" # TODO These should be put to a flag at some point
 @en = "\033[0m"
 
+# Classes
+class Slackware
+	VERSION = "13.1"
+	attr_accessor :name, :time, :path, :file
+	def initialize
+		@name = @file = @path = @time = ""
+	end
+
+
+end
+
 # Functions
+def sl_path(package)
+	File.absolute_path(File.join(@pd, '/', package))
+end
+
+def is_sl_pd?(some_path)
+	if (some_path == @pd || some_path == "/var/log")
+		true
+	else
+		false
+	end
+end
+
 def slp
 	if ARGV.count == 0
 		@pa.each {|pkg|
@@ -30,22 +49,20 @@ end
 def slt
 	if ARGV.count == 0
 		@pa.each {|pkg|
-			p = File.absolute_path File.join(@pd, '/', pkg)
-			f = File.open(p)
-			ft = f.mtime
-			puts "#{pkg}:\s#{ft}"
+			file_time = File.mtime(sl_path(pkg))
+			puts "#{pkg}:\s#{file_time}"
 		}
 	else
 		ARGV.each {|arg|
 			@pa.grep(/#{arg}/).each {|pkg|
-				p = File.absolute_path File.join(@pd, '/', pkg)
-				f = File.open(p)
-				ft = f.mtime
-				puts "#{pkg}:\s#{ft}"
+				next if is_sl_pd?(sl_path(pkg))
+				file_time = File.mtime(sl_path(pkg))
+				puts "#{pkg}:\s#{file_time}"
 			}
 		}
 	end
 end
+
 
 def slf
 	if ARGV.count == 0
@@ -54,12 +71,11 @@ def slf
 		ARGV.each {|arg|
 			r = Regexp::new(/#{arg}/)
 			@pa.each {|pkg|
-				p = File.absolute_path File.join(@pd, '/', pkg)
-				if p == @pd || p == "/var/log"
-						next
-				end
+				p = sl_path(pkg)
+				next if is_sl_pd?(p)
 				f = File.open(p)
 				f.each {|line|
+					# FIXME needs an UTF-8 solution
 					o = line.gsub! r, "#{@st}\\&#{@en}"
 					puts pkg + ":\s" + o if ! o.nil?
 				}
@@ -76,10 +92,8 @@ def sll
 	else
 		ARGV.each {|arg|
 			@pa.grep(/#{arg}/).each {|pkg|
-				p = File.absolute_path File.join(@pd, '/', pkg)
-				if p == @pd || p == "/var/log"
-						next
-				end
+				p = sl_path(pkg)
+				next if is_sl_pd?(p)
 				system("tail +$(expr $(grep -n ^FILE #{p} | cut -d : -f 1 ) + 2) #{p} ")
 			}
 		}
