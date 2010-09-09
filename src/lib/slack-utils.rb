@@ -8,8 +8,8 @@
 @removed_packages_dir = '/var/log/removed_packages/' # TODO this should be put to a conf file at some point
 @packages_array = Dir.entries(@installed_packages_dir)
 @me = File.basename($0)
-@st = "\033[31;1m" # TODO These should be put to a flag at some point
-@en = "\033[0m"
+#@st = "\033[31;1m" # TODO These should be put to a flag at some point
+#@en = "\033[0m"
 
 # Classes
 class Slackware
@@ -62,21 +62,30 @@ def slt
 	end
 end
 
-
 def slf
+	require 'iconv' # XXX putting this here, since it is only used in this method
+
+
 	if ARGV.count == 0
 		puts "#{@me}: what file do you want me to search for?"
 	else
 		ARGV.each {|arg|
-			r = Regexp::new(/#{arg}/)
+			new_arg = arg.gsub(/^\//, "") # clean off the leading '/'
+			re_arg = Regexp::new(/#{new_arg}/)
+			ic = Iconv.new("UTF-8//IGNORE", "UTF-8")
 			@packages_array.each {|pkg|
 				p = sl_path(pkg)
 				next if is_sl_pd?(p)
 				f = File.open(p)
 				f.each {|line|
-					# FIXME needs an UTF-8 solution
-					o = line.gsub! r, "#{@st}\\&#{@en}"
-					puts pkg + ":\s" + o if ! o.nil?
+					## TODO needs a flag, to be colorized
+					#o = line.gsub! re_arg, "#{@st}\\&#{@en}"
+					#puts pkg + ":\s" + o if ! o.nil?
+
+					## craziness to workaround "invalid byte sequence in UTF-8"
+					## http://po-ru.com/diary/fixing-invalid-utf-8-in-ruby-revisited/
+					clean_line = ic.iconv(line + "  ")[0..-2]
+					puts pkg + ":\s" + line if re_arg.match(clean_line)
 				}
 			}
 		}
