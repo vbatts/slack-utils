@@ -6,7 +6,7 @@
 # Variables
 @installed_packages_dir = '/var/log/packages' # TODO this should be put to a conf file at some point
 @removed_packages_dir = '/var/log/removed_packages/' # TODO this should be put to a conf file at some point
-@packages_array = Dir.entries(@installed_packages_dir)
+@packages_array = Dir.entries(@installed_packages_dir).sort!
 @me = File.basename($0)
 #@st = "\033[31;1m" # TODO These should be put to a flag at some point
 #@en = "\033[0m"
@@ -109,18 +109,34 @@ def sll
 end
 
 # XXX stub for slack-utils orpaned .new files (to be written in ruby)
+# TODO
+# 	* check the members of the new_files array, to see if they are currently owned by a package
+# 	* check the unowned members, to see if they still exist
 def slo
 	new_pat = Regexp.new(/\.new$/)
+	@new_files = Array.new
+	count = 0
 	removed_packages_array = Dir.entries(@removed_packages_dir)
+
 	removed_packages_array.each {|pkg|
 		file_path = File.absolute_path(File.join(@removed_packages_dir, '/', pkg))
-		if (file_path == @removed_packages_dir || file_path == "/var/log" || file_path == "/var/log/removed_packages")
+		if (file_path == @removed_packages_dir ||
+		    file_path == "/var/log" ||
+		    file_path == "/var/log/removed_packages"
+		   )
 			next
 		end
 		file = File.open(file_path)
 		file.each {|line|
-			puts line if new_pat.match(line)
+			if new_pat.match(line)
+				@new_files[count] = line
+				count = count + 1
+			end
 		}
 	}
+
+	@new_files.sort!.uniq!
+	@new_files.each {|f| puts f }
+
 end
 
