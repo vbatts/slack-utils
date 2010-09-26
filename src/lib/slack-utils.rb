@@ -12,6 +12,7 @@
 #@en = "\033[0m"
 
 # Classes
+# this is just a stub right now
 class Slackware
 	VERSION = "13.1"
 	attr_accessor :name, :time, :path, :file
@@ -65,7 +66,6 @@ end
 def slf
 	require 'iconv' # XXX putting this here, since it is only used in this method
 
-
 	if ARGV.count == 0
 		puts "#{@me}: what file do you want me to search for?"
 	else
@@ -114,8 +114,7 @@ end
 # 	* check the unowned members, to see if they still exist
 def slo
 	new_pat = Regexp.new(/\.new$/)
-	@new_files = Array.new
-	count = 0
+	new_files = Array.new
 	removed_packages_array = Dir.entries(@removed_packages_dir)
 
 	removed_packages_array.each {|pkg|
@@ -127,16 +126,14 @@ def slo
 			next
 		end
 		file = File.open(file_path)
-		file.each {|line|
-			if new_pat.match(line)
-				@new_files[count] = line
-				count = count + 1
-			end
+		file.each_line {|line|
+			new_files << line.chomp if new_pat.match(line)
 		}
 	}
 
-	@new_files.sort!.uniq!
-	@new_files.each {|f| puts f }
+	new_files.sort!.uniq!
+	#@new_files.each {|f| puts f }
+	return new_files
 
 end
 
