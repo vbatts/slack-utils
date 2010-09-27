@@ -37,6 +37,12 @@ if [ ! -r $CWD/$PRGNAM-$VERSION.tar.gz ] ; then
 	sh $CWD/bundle.sh
 fi
 
+if [ -x `which ruby18` ] ; then
+	ruby=`which ruby18`
+else
+	ruby=`which ruby`
+fi
+
 rm -rf $PKG
 mkdir -p $TMP $PKG $OUTPUT
 cd $TMP
@@ -44,11 +50,11 @@ rm -rf $PRGNAM-$VERSION
 tar xvf $CWD/$PRGNAM-$VERSION.tar.gz
 cd $PRGNAM-$VERSION
 
-ruby setup.rb config \
+$ruby setup.rb config \
 	--prefix=/usr \
 	--sysconfdir=/etc \
 	--mandir=/usr/man
-ruby setup.rb install \
+$ruby setup.rb install \
 	--prefix=$PKG
 
 mkdir -p $PKG/usr/doc/$PRGNAM-$VERSION
