@@ -12,15 +12,6 @@
 #@en = "\033[0m"
 
 # Classes
-# this is just a stub right now
-class Slackware
-	VERSION = "13.1"
-	attr_accessor :name, :time, :path, :file
-	def initialize
-		@name = @file = @path = @time = ""
-	end
-end
-
 # Functions
 def sl_path(package)
 	File.absolute_path(File.join(@installed_packages_dir, '/', package))

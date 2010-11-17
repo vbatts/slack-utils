@@ -37,10 +37,10 @@ if [ ! -r $CWD/$PRGNAM-$VERSION.tar.gz ] ; then
 	sh $CWD/bundle.sh
 fi
 
-if [ -x `which ruby18` ] ; then
+if [ -x `which ruby` ] || true ; then
+	ruby=`which ruby` || true
+elif [ -x `which ruby18` ] || true ; then
 	ruby=`which ruby18`
-else
-	ruby=`which ruby`
 fi
 
 rm -rf $PKG
