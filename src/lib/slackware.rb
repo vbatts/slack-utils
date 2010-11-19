@@ -130,6 +130,31 @@ module Slackware
 		end
 	end
 
+	def installed_before(time)
+		self::installed_before(time)
+	end
+
+	def self::installed_before(time)
+		# Throw the flag if they have not given a time to check
+		#if (time.class != Time)
+		#	raise StandError.new("#{time} is not a Time class, it is #{time.class}")
+		#end
+
+		arr = []
+		di = Dir.new(DIR_INSTALLED_PACKAGES)
+		dr = Dir.new(DIR_REMOVED_PACKAGES)
+		di.each {|p| arr << Package.parse(p) if (File.mtime(DIR_INSTALLED_PACKAGES + "/" + p) <= time) }
+		dr.each {|p|
+			if (DIR_INSTALLED_PACKAGES + "/" + p =~ RE_REMOVED_NAMES)
+				if (Time.strptime($2 + ' ' + $3, fmt='%F %H:%M:%S') <= time)
+					arr << Package.parse(p)
+				end
+			end
+		}
+
+		return arr
+	end
+
 	def self::is_upgraded?(pkg)
 		if (find_removed(pkg).map {|p| p.name if p.upgrade_time }.include?(pkg) )
 			return true
