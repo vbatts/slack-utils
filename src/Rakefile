@@ -1,0 +1,42 @@
+# To build the gem, from this directory run
+# rake gem
+
+require 'rake/gempackagetask'
+
+spec = Gem::Specification.new do |s|
+  s.name = %q{slack-utils}
+  s.version = "0.4.2"
+  s.authors = ["Vincent Batts"]
+  s.date = %q{2011-11-19}
+  s.email = %q{vbatts@hashbangbash.com}
+  s.homepage = %q{https://github.com/vbatts/slack-utils/}
+  s.platform = Gem::Platform::RUBY
+  s.summary = %q{Accessing information for the Slackware Linux distribution}
+  s.files = [
+    "README.rdoc",
+    "bin/slf",
+    "bin/slt",
+    "bin/slp",
+    "bin/slo",
+    "bin/sll",
+    "bin/slfindlinked",
+    "examples/list_packages.rb",
+    "lib/slack-utils.rb",
+    "lib/slackware.rb"
+  ]
+  s.executables = ["slf","slo","sll","slp","slt","slfindlinked"]
+  s.require_paths = ["lib"]
+  s.autorequire = "slack-utils"
+  s.has_rdoc = true
+  s.extra_rdoc_files = ["README.rdoc"]
+  s.rdoc_options = ["--main=README.rdoc", "--line-numbers", "--inline-source", "--title=LimpyParse #{s.version} Documentation"]
+  #s.add_dependency("nokogiri")
+end
+
+Rake::GemPackageTask.new(spec) do |pkg|
+  pkg.need_tar = true
+
+  print "\n*****\n"
+  puts "#{spec.inspect} ... don't forget to publish an updated bundle"
+  print "*****\n\n"
+end

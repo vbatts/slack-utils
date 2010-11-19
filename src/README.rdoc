@@ -1,0 +1,46 @@
+= slackware utilities
+
+== Description
+
+A ruby library to access information on the Slackware Linux distribution
+
+== Installation
+
+To install the gem 
+ sudo gem install pkg/slack-utils-0.4.2.gem
+
+== Quick Start
+
+Install the gem as above.
+
+Start using the library
+
+ $ irb
+ >> require 'rubygems'
+ >> require 'slackware'
+ >> pkg = Slackware::Packware.new()
+ >> pkg.name = "hello-kitty"
+ >> pkg.version = "1.0"
+
+ or 
+ >> require 'rubygems'
+ >> require 'slackware'
+ >> tags = Slackware.tags_used
+ => ["SBo","alien","rlw"]
+
+== Usage
+=== Show data
+
+<b>Note: </b>
+
+==== Examples
+see the exmamples/ files
+
+== Help
+There are many more methods than are documented on this page.  Please explore
+the RDOC to find more functionality.
+
+For more complex examples, please see the examples directory 
+ (GEM_ROOT/gems/slack-utils-<version>/examples/).
+
+You can also contact me for more help or suggestions.
