@@ -112,8 +112,18 @@ module Slackware
 		return installed_packages.map {|p| p.tag }.uniq.compact
 	end
 
+	def self::find_installed(name)
+		d = Dir.new(DIR_INSTALLED_PACKAGES)
+		return d.map {|p| Package.parse(p) if p.include?(name) }.compact
+	end
+
+	def self::find_removed(name)
+		d = Dir.new(DIR_REMOVED_PACKAGES)
+		return d.map {|p| Package.parse(p) if p.include?(name) }.compact
+	end
+
 	def self::upgrades(pkg)
-		if (m = removed_packages.map {|p| p if (p.name == pkg) }.compact )
+		if (m = find_removed(pkg).map {|p| p if (p.name == pkg) }.compact )
 			return m
 		else
 			return nil
@@ -121,7 +131,7 @@ module Slackware
 	end
 
 	def self::is_upgraded?(pkg)
-		if (removed_packages.map {|p| p.name if p.upgrade_time }.include?(pkg) )
+		if (find_removed(pkg).map {|p| p.name if p.upgrade_time }.include?(pkg) )
 			return true
 		else
 			return false
