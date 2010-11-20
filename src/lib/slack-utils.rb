@@ -3,10 +3,17 @@
 # updated for args - Tue Mar 23 14:54:19 CDT 2010
 # Copyright 2009, 2010 Vincent Batts, http://hashbangbash.com/
 
+require 'slackware'
+
 # Variables
 @installed_packages_dir = '/var/log/packages' # TODO this should be put to a conf file at some point
 @removed_packages_dir = '/var/log/removed_packages/' # TODO this should be put to a conf file at some point
-@packages_array = Dir.entries(@installed_packages_dir).sort!
+@packages_array = begin
+			  Dir.entries(@installed_packages_dir).sort.map {|p|
+				  pkg = []
+				  p.split("-")
+			  }
+end
 @me = File.basename($0)
 #@st = "\033[31;1m" # TODO These should be put to a flag at some point
 #@en = "\033[0m"
@@ -25,26 +32,34 @@ def is_sl_pd?(some_path)
 	end
 end
 
-def slp
-	if ARGV.count == 0
-		@packages_array.each {|pkg|
-			puts pkg
-		}
+def call_func(meth, *args)
+	methods = %w{ slo slp slt sll slf }
+	if (methods.include?(meth))
+		eval("#{meth} #{args}")
 	else
-		ARGV.each {|arg|
+		raise StandError.new("#{meth} method not found")
+	end
+end
+
+def slp(*args)
+	pkgs = Slackware.installed_packages
+	if args.count == 0
+		pkgs.each {|pkg| printf("%s %s %s %s\n", pkg.name, pkg.version, pkg.arch, pkg.build ) }
+	else
+		args.each {|arg|
 			puts @packages_array.grep(/#{arg}/)
 		}
 	end
 end
 
-def slt
-	if ARGV.count == 0
+def slt(*args)
+	if args[0].count == 0
 		@packages_array.each {|pkg|
 			file_time = File.mtime(sl_path(pkg))
 			puts "#{pkg}:\s#{file_time}"
 		}
 	else
-		ARGV.each {|arg|
+		args[0].each {|arg|
 			@packages_array.grep(/#{arg}/).each {|pkg|
 				next if is_sl_pd?(sl_path(pkg))
 				file_time = File.mtime(sl_path(pkg))
@@ -54,13 +69,13 @@ def slt
 	end
 end
 
-def slf
+def slf(*args)
 	require 'iconv' # XXX putting this here, since it is only used in this method
 
-	if ARGV.count == 0
+	if args[0].count == 0
 		puts "#{@me}: what file do you want me to search for?"
 	else
-		ARGV.each {|arg|
+		args[0].each {|arg|
 			new_arg = arg.gsub(/^\//, "") # clean off the leading '/'
 			re_arg = Regexp::new(/#{new_arg}/)
 			ic = Iconv.new("UTF-8//IGNORE", "UTF-8")
@@ -85,11 +100,11 @@ end
 
 # package file listing
 # TODO re-write in pure ruby :\
-def sll
-	if ARGV.count == 0
+def sll(*args)
+	if args[0].count == 0
 		puts "#{@me}: what package do you want to list?"
 	else
-		ARGV.each {|arg|
+		args[0].each {|arg|
 			@packages_array.grep(/#{arg}/).each {|pkg|
 				p = sl_path(pkg)
 				next if is_sl_pd?(p)
@@ -103,6 +118,7 @@ end
 # TODO
 # 	* check the members of the new_files array, to see if they are currently owned by a package
 # 	* check the unowned members, to see if they still exist
+# 	* build a Hash for each *.new file, that 
 def slo
 	new_pat = Regexp.new(/\.new$/)
 	new_files = Array.new

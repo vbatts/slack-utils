@@ -3,7 +3,7 @@
 require 'slack-utils'
 
 begin
-	slf
+	call_func(File.basename(__FILE__), ARGV)
 rescue Interrupt
 	exit 0
 rescue Exception => e
