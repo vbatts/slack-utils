@@ -13,7 +13,7 @@ require 'slackware'
 				  pkg = []
 				  p.split("-")
 			  }
-end
+		  end
 @me = File.basename($0)
 #@st = "\033[31;1m" # TODO These should be put to a flag at some point
 #@en = "\033[0m"
@@ -42,12 +42,13 @@ def call_func(meth, *args)
 end
 
 def slp(*args)
-	pkgs = Slackware.installed_packages
+	pkgs = Slackware::System.installed_packages
+	puts args.inspect
 	if args.count == 0
-		pkgs.each {|pkg| printf("%s %s %s %s\n", pkg.name, pkg.version, pkg.arch, pkg.build ) }
+		pkgs.each {|pkg| printf("%s\n", pkg.fullname ) }
 	else
 		args.each {|arg|
-			puts @packages_array.grep(/#{arg}/)
+			puts pkgs.map {|p| p.fullname }.grep(/#{arg}/)
 		}
 	end
 end

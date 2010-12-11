@@ -17,6 +17,10 @@ module Slackware
 	RE_REMOVED_NAMES = /^(.*)-upgraded-(\d{4}-\d{2}-\d{2}),(\d{2}:\d{2}:\d{2})$/
 	RE_BUILD_TAG = /^([[:digit:]]+)([[:alpha:]]+)$/
 
+	def self::version
+		VERSION
+	end
+
 	class Package
 		attr_accessor :fullname, :time, :path, :file, :name, :version, :arch, :build, :tag, :upgrade_time
 		def initialize(name = nil)
@@ -57,12 +61,12 @@ module Slackware
 		
 		def get_time
 			if (self.time.nil? && self.path)
-				if (File.exist?(self.path + "/" + self.name))
-					self.time = File.mtime(self.path + "/" + self.name)
+				if (File.exist?(self.path + "/" + self.fullname))
+					self.time = File.mtime(self.path + "/" + self.fullname)
 				end
 			elsif (self.time.nil? && not(self.path))
-				if (File.exist?(DIR_INSTALLED_PACKAGES + "/" + self.name))
-					self.time = File.mtime(DIR_INSTALLED_PACKAGESself + "/" + self.name)
+				if (File.exist?(DIR_INSTALLED_PACKAGES + "/" + self.fullname))
+					self.time = File.mtime(DIR_INSTALLED_PACKAGES + "/" + self.fullname)
 				end
 			end
 			return self.time
@@ -92,79 +96,78 @@ module Slackware
 
 	end
 
-	def self::installed_packages
-		return Dir.glob(DIR_INSTALLED_PACKAGES + "/*").sort.map {|p| Package.parse(p) }
-	end
+	class System
 
-	def self::removed_packages
-		return Dir.glob(DIR_REMOVED_PACKAGES + "/*").sort.map {|p| Package.parse(p) }
-	end
-
-	def self::installed_scripts
-		return Dir.glob(DIR_INSTALLED_SCRIPTS + "/*").sort.map {|s| Script.parse(s) }
-	end
-
-	def self::removed_scripts
-		return Dir.glob(DIR_REMOVED_SCRIPTS + "/*").sort.map {|s| Script.parse(s) }
-	end
-
-	def self::tags_used
-		return installed_packages.map {|p| p.tag }.uniq.compact
-	end
-
-	def self::find_installed(name)
-		d = Dir.new(DIR_INSTALLED_PACKAGES)
-		return d.map {|p| Package.parse(p) if p.include?(name) }.compact
-	end
-
-	def self::find_removed(name)
-		d = Dir.new(DIR_REMOVED_PACKAGES)
-		return d.map {|p| Package.parse(p) if p.include?(name) }.compact
-	end
-
-	def self::upgrades(pkg)
-		if (m = find_removed(pkg).map {|p| p if (p.name == pkg) }.compact )
-			return m
-		else
-			return nil
+		def self::installed_packages
+			return Dir.glob(DIR_INSTALLED_PACKAGES + "/*").sort.map {|p| Package.parse(p) }
 		end
-	end
 
-	def installed_before(time)
-		self::installed_before(time)
-	end
+		def self::removed_packages
+			return Dir.glob(DIR_REMOVED_PACKAGES + "/*").sort.map {|p| Package.parse(p) }
+		end
 
-	def self::installed_before(time)
-		# Throw the flag if they have not given a time to check
-		#if (time.class != Time)
-		#	raise StandError.new("#{time} is not a Time class, it is #{time.class}")
-		#end
+		def self::installed_scripts
+			return Dir.glob(DIR_INSTALLED_SCRIPTS + "/*").sort.map {|s| Script.parse(s) }
+		end
 
-		arr = []
-		di = Dir.new(DIR_INSTALLED_PACKAGES)
-		dr = Dir.new(DIR_REMOVED_PACKAGES)
-		di.each {|p| arr << Package.parse(p) if (File.mtime(DIR_INSTALLED_PACKAGES + "/" + p) <= time) }
-		dr.each {|p|
-			if (DIR_INSTALLED_PACKAGES + "/" + p =~ RE_REMOVED_NAMES)
-				if (Time.strptime($2 + ' ' + $3, fmt='%F %H:%M:%S') <= time)
-					arr << Package.parse(p)
-				end
+		def self::removed_scripts
+			return Dir.glob(DIR_REMOVED_SCRIPTS + "/*").sort.map {|s| Script.parse(s) }
+		end
+
+		def self::tags_used
+			return installed_packages.map {|p| p.tag }.uniq.compact
+		end
+
+		def self::find_installed(name)
+			d = Dir.new(DIR_INSTALLED_PACKAGES)
+			return d.map {|p| Package.parse(p) if p.include?(name) }.compact
+		end
+
+		def self::find_removed(name)
+			d = Dir.new(DIR_REMOVED_PACKAGES)
+			return d.map {|p| Package.parse(p) if p.include?(name) }.compact
+		end
+
+		def self::upgrades(pkg)
+			if (m = find_removed(pkg).map {|p| p if (p.name == pkg) }.compact )
+				return m
+			else
+				return nil
 			end
-		}
-
-		return arr
-	end
-
-	def self::is_upgraded?(pkg)
-		if (find_removed(pkg).map {|p| p.name if p.upgrade_time }.include?(pkg) )
-			return true
-		else
-			return false
 		end
-	end
 
-	def self::version
-		VERSION
+		def self::installed_before(time)
+			# Throw the flag if they have not given a time to check
+			#if (time.class != Time)
+			#	raise StandError.new("#{time} is not a Time class, it is #{time.class}")
+			#end
+
+			arr = []
+			di = Dir.new(DIR_INSTALLED_PACKAGES)
+			dr = Dir.new(DIR_REMOVED_PACKAGES)
+			di.each {|p| arr << Package.parse(p) if (File.mtime(DIR_INSTALLED_PACKAGES + "/" + p) <= time) }
+			dr.each {|p|
+				if (DIR_INSTALLED_PACKAGES + "/" + p =~ RE_REMOVED_NAMES)
+					if (Time.strptime($2 + ' ' + $3, fmt='%F %H:%M:%S') <= time)
+						arr << Package.parse(p)
+					end
+				end
+			}
+
+			return arr
+		end
+
+		def self::is_upgraded?(pkg)
+			if (find_removed(pkg).map {|p| p.name if p.upgrade_time }.include?(pkg) )
+				return true
+			else
+				return false
+			end
+		end
+
+		def self::version
+			VERSION
+		end
 	end
 
 end
