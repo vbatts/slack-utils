@@ -1,9 +1,35 @@
 #!/usr/bin/env ruby
 
+require 'rubygems'
+require 'trollop'
 require 'slack-utils'
 
+opts = Trollop::options do
+	banner <<-EOS
+
+List installed Slackware packages.
+
+Usage:
+	slp [options] [search flags] [list of names]
+	
+	if no flags are used, then all entries are listed
+	if no search flags, only names, then those only those matching entries are listed
+
+EOS
+	opt :color, "Colorize output", :type => :boolean
+	opt :pkg, "Package PKGNAME (loose match)", :type => :string
+	opt :Version, "Package VERSION (loose match)", :type => :string
+	opt :arch, "Package ARCH (exact match)", :type => :string
+	opt :build, "Package BUILD (exact match)", :type => :string
+	opt :tag, "Package TAG (loose match)", :type => :string
+end
+
+if (opts.keys.grep(/[pkg|Version|arch|build|tag]_given$/).count == 0)
+	opts[:all] = true
+end
+
 begin
-	call_func(File.basename(__FILE__), ARGV)
+	print_packages(build_packages(opts, ARGV))
 rescue Interrupt
 	exit 0
 end

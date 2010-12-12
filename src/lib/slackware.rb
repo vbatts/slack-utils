@@ -22,7 +22,7 @@ module Slackware
 	end
 
 	class Package
-		attr_accessor :fullname, :time, :path, :file, :name, :version, :arch, :build, :tag, :upgrade_time
+		attr_accessor :time, :path, :file, :name, :version, :arch, :build, :tag, :tag_sep, :upgrade_time
 		def initialize(name = nil)
 			self.name = name
 		end
@@ -36,12 +36,13 @@ module Slackware
 				name = $1
 				self.upgrade_time = Time.strptime($2 + ' ' + $3, fmt='%F %H:%M:%S')
 			end
-			self.fullname = name
+			#self.fullname = name
 			arr = name.split('-').reverse
 			build = arr.shift
 			if (build.include?("_"))
-				self.build = build.split("_")[0]
-				self.tag = build.split("_")[1..-1].join("_")
+				self.tag_sep = "_"
+				self.build = build.split(self.tag_sep)[0]
+				self.tag = build.split(self.tag_sep)[1..-1].join(self.tag_sep)
 			elsif (build =~ RE_BUILD_TAG)
 				self.build = $1
 				self.tag = $2
@@ -51,6 +52,12 @@ module Slackware
 			self.arch = arr.shift
 			self.version = arr.shift
 			self.name = arr.reverse.join('-')
+		end
+
+		def fullname
+			fullname = [self.name, self.version, self.arch, [self.build, self.tag].join(self.tag_sep)]
+
+			return fullname.join("-")
 		end
 
 		def self::parse(name)

@@ -15,8 +15,8 @@ require 'slackware'
 			  }
 		  end
 @me = File.basename($0)
-#@st = "\033[31;1m" # TODO These should be put to a flag at some point
-#@en = "\033[0m"
+@st = "\033[31;1m" # TODO These should be put to a flag at some point
+@en = "\033[0m"
 
 # Classes
 # Functions
@@ -32,41 +32,88 @@ def is_sl_pd?(some_path)
 	end
 end
 
-def call_func(meth, *args)
-	methods = %w{ slo slp slt sll slf }
-	if (methods.include?(meth))
-		eval("#{meth} #{args}")
-	else
-		raise StandError.new("#{meth} method not found")
-	end
-end
-
-def slp(*args)
+def build_packages(opts, args)
 	pkgs = Slackware::System.installed_packages
-	puts args.inspect
-	if args.count == 0
-		pkgs.each {|pkg| printf("%s\n", pkg.fullname ) }
-	else
-		args.each {|arg|
-			puts pkgs.map {|p| p.fullname }.grep(/#{arg}/)
-		}
+	
+	if (opts[:time])
+		pkgs = pkgs.each {|p| p.get_time }
 	end
+	if (opts[:all])
+		if (args.count > 0)
+			pkgs = []
+			args.each {|args|
+				pkgs << pkgs.map {|p| p if p.fullname }.grep(/#{arg}/)
+			}
+		end
+	end
+	if (opts[:pkg_given])
+		pkgs = pkgs.map {|p|
+			re = /#{opts[:pkg]}/i
+			if p.name =~ re
+				if (opts[:color])
+					p.name = p.name.gsub(re, "#{@st}\\&#{@en}")
+				end
+				p
+			end
+		}.compact
+	end
+	if (opts[:Version_given])
+		pkgs = pkgs.map {|p|
+			re = Regexp.new(Regexp.escape(opts[:Version]))
+			if p.version =~ re
+				if (opts[:color])
+					p.version = p.version.gsub(re, "#{@st}\\&#{@en}")
+				end
+				p
+			end
+		}.compact
+	end
+	if (opts[:arch_given])
+		pkgs = pkgs.map {|p|
+			re = /#{opts[:arch]}/
+			if p.arch =~ re
+				if (opts[:color])
+					p.arch = p.arch.gsub(re, "#{@st}\\&#{@en}")
+				end
+				p
+			end
+		}.compact
+	end
+	if (opts[:build_given])
+		pkgs = pkgs.map {|p|
+			re = /#{opts[:build]}/
+			if p.build =~ re
+				if (opts[:color])
+					p.build = p.build.gsub(re, "#{@st}\\&#{@en}")
+				end
+				p
+			end
+		}.compact
+	end
+	if (opts[:tag_given])
+		pkgs = pkgs.map {|p|
+			re = /#{opts[:tag]}/i
+			if p.tag =~ re
+				if (opts[:color])
+					p.tag = p.tag.gsub(re, "#{@st}\\&#{@en}")
+				end
+				p
+			end
+		}.compact
+	end
+
+	return pkgs
 end
 
-def slt(*args)
-	if args[0].count == 0
-		@packages_array.each {|pkg|
-			file_time = File.mtime(sl_path(pkg))
-			puts "#{pkg}:\s#{file_time}"
-		}
+def print_packages(pkgs)
+	pkgs.each {|pkg| printf("%s\n", pkg.fullname ) }
+end
+
+def print_packages_times(pkgs, epoch = false)
+	if (epoch == true)
+		pkgs.each {|pkg| printf("%s : %s\n", pkg.fullname, pkg.time.to_i) }
 	else
-		args[0].each {|arg|
-			@packages_array.grep(/#{arg}/).each {|pkg|
-				next if is_sl_pd?(sl_path(pkg))
-				file_time = File.mtime(sl_path(pkg))
-				puts "#{pkg}:\s#{file_time}"
-			}
-		}
+		pkgs.each {|pkg| printf("%s : %s\n", pkg.fullname, pkg.time.to_s) }
 	end
 end
 
