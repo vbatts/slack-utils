@@ -1,9 +1,37 @@
 #!/usr/bin/env ruby
 
+require 'rubygems'
+require 'trollop'
 require 'slack-utils'
 
+opts = Trollop::options do
+	banner <<-EOS
+
+List (and search) installed Slackware package's times.
+
+Usage:
+	sll [options] [search flags] [list of names]
+	
+	if no search flags, only names, then those only those matching entries are listed
+
+EOS
+	opt :pkg, "Package PKGNAME (loose match)", :type => :string
+	opt :Version, "Package VERSION (loose match)", :type => :string
+	opt :arch, "Package ARCH (exact match)", :type => :string
+	opt :build, "Package BUILD (exact match)", :type => :string
+	opt :tag, "Package TAG (loose match)", :type => :string
+	opt :force, "force me to show all files", :type => :boolean
+end
+
+# handing through that we are listing owned files
+opts[:list_files] = true
+
+if (opts.keys.grep(/[pkg|Version|arch|build|tag]_given$/).count == 0 && not(opts[:force]))
+	Trollop::die("force me if you really want to see all files ...")
+end
+
 begin
-	sll
+	print_package_files(build_packages(opts, ARGV))
 rescue Interrupt
 	exit 0
 end

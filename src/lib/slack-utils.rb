@@ -147,18 +147,15 @@ def slf(*args)
 end
 
 # package file listing
-# TODO re-write in pure ruby :\
-def sll(*args)
-	if args[0].count == 0
-		puts "#{@me}: what package do you want to list?"
-	else
-		args[0].each {|arg|
-			@packages_array.grep(/#{arg}/).each {|pkg|
-				p = sl_path(pkg)
-				next if is_sl_pd?(p)
-				system("tail +$(expr $(grep -n ^FILE #{p} | cut -d : -f 1 ) + 2) #{p} ")
+def print_package_files(pkgs)
+	if (pkgs.count > 1)
+		pkgs.each {|pkg|
+			pkg.owned_files.each {|line|
+				puts pkg.name + ": " + line
 			}
 		}
+	else
+		pkgs.each {|pkg| puts pkg.owned_files }
 	end
 end
 

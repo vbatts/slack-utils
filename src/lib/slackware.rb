@@ -27,6 +27,7 @@ module Slackware
 			self.name = name
 		end
 
+		# pkg.parse instance method for parsing the package information
 		def parse(name)
 			if name.include?("/")
 				self.path = File.dirname(name)
@@ -54,18 +55,71 @@ module Slackware
 			self.name = arr.reverse.join('-')
 		end
 
-		def fullname
-			fullname = [self.name, self.version, self.arch, [self.build, self.tag].join(self.tag_sep)]
-
-			return fullname.join("-")
-		end
-
+		# Package.parse class method
 		def self::parse(name)
 			p = self.new()
 			p.parse(name)
 			return p
 		end
 		
+		# Reassemble the package name as it would be in file form
+		def fullname
+			if (self.upgrade_time)
+				return [self.name, self.version, self.arch, [self.build, self.tag].join(self.tag_sep)].join("-")
+			else
+				return [self.name, self.version, self.arch, [self.build, self.tag].join(self.tag_sep)].join("-")
+			end
+		end
+
+		# Accessor for the PACKAGE DESCRIPTION from the package file
+		def package_description
+			f = File.open(self.path + '/' + self.fullname)
+			while true
+				if (f.readline =~ /^PACKAGE DESCRIPTION:\s+(.*)$/)
+					desc = f.take_while {|l| not(l =~ /FILE LIST:/) }.map {|l| l.sub(/^#{self.name}:\s*/, '').chomp }
+					return desc
+				end
+			end
+		end
+
+		# Accessor for the PACKAGE LOCATION from the package file
+		def package_location
+			f = File.open(self.path + '/' + self.fullname)
+			while true
+				if (f.readline =~ /^PACKAGE LOCATION:\s+(.*)$/)
+					return $1
+				end
+			end
+		end
+
+		# Accessor for the UNCOMPRESSED PACKAGE SIZE from the package file
+		def uncompressed_size
+			f = File.open(self.path + '/' + self.fullname)
+			while true
+				if (f.readline =~ /^UNCOMPRESSED PACKAGE SIZE:\s+(.*)$/)
+					return $1
+				end
+			end
+		end
+
+		# Accessor for the COMPRESSED PACKAGE SIZE from the package file
+		def compressed_size
+			f = File.open(self.path + '/' + self.fullname)
+			while true
+				if (f.readline =~ /^COMPRESSED PACKAGE SIZE:\s+(.*)$/)
+					return $1
+				end
+			end
+		end
+
+		# Accessor for the FILE LIST from the package file
+		def owned_files
+			f = File.open(self.path + '/' + self.fullname)
+			files = f.drop_while {|l| not( l =~ /^FILE LIST:/) }[2..-1].map {|l| l.chomp }
+			f.close
+			return files
+		end
+
 		def get_time
 			if (self.time.nil? && self.path)
 				if (File.exist?(self.path + "/" + self.fullname))
@@ -79,6 +133,7 @@ module Slackware
 			return self.time
 		end
 
+		# Fill in the path information
 		def get_path
 			if (self.path.nil? && File.exist?(DIR_INSTALLED_PACKAGES + "/" + self.name))
 				self.path = DIR_INSTALLED_PACKAGE
@@ -125,6 +180,18 @@ module Slackware
 			return installed_packages.map {|p| p.tag }.uniq.compact
 		end
 
+		def self::with_tag(tag)
+			return installed_packages.map {|pkg| pkg if pkg.tag == tag }.compact
+		end
+
+		def self::arch_used
+			return installed_packages.map {|p| p.arch }.uniq.compact
+		end
+
+		def self::with_arch(arch)
+			return installed_packages.map {|pkg| pkg if pkg.arch == arch }.compact
+		end
+
 		def self::find_installed(name)
 			d = Dir.new(DIR_INSTALLED_PACKAGES)
 			return d.map {|p| Package.parse(p) if p.include?(name) }.compact
@@ -143,16 +210,52 @@ module Slackware
 			end
 		end
 
-		def self::installed_before(time)
-			# Throw the flag if they have not given a time to check
-			#if (time.class != Time)
-			#	raise StandError.new("#{time} is not a Time class, it is #{time.class}")
-			#end
-
+		# Return an Array of packages, that were installed after provided +time+
+		def self::installed_after(time)
 			arr = []
 			di = Dir.new(DIR_INSTALLED_PACKAGES)
+			di.each {|p|
+				if (File.mtime(DIR_INSTALLED_PACKAGES + "/" + p) >= time)
+					pkg = Package.parse(p)
+					pkg.get_time
+					arr << pkg
+				end
+			}
+			return arr
+		end
+
+		# Return an Array of packages, that were installed before provided +time+
+		def self::installed_before(time)
+			arr = []
+			di = Dir.new(DIR_INSTALLED_PACKAGES)
+			di.each {|p|
+				if (File.mtime(DIR_INSTALLED_PACKAGES + "/" + p) <= time)
+					pkg = Package.parse(p)
+					pkg.get_time
+					arr << pkg
+				end
+			}
+			return arr
+		end
+
+		# Return an Array of packages, that were removed after provided +time+
+		def self::removed_after(time)
+			arr = []
 			dr = Dir.new(DIR_REMOVED_PACKAGES)
-			di.each {|p| arr << Package.parse(p) if (File.mtime(DIR_INSTALLED_PACKAGES + "/" + p) <= time) }
+			dr.each {|p|
+				if (DIR_INSTALLED_PACKAGES + "/" + p =~ RE_REMOVED_NAMES)
+					if (Time.strptime($2 + ' ' + $3, fmt='%F %H:%M:%S') >= time)
+						arr << Package.parse(p)
+					end
+				end
+			}
+			return arr
+		end
+
+		# Return an Array of packages, that were removed before provided +time+
+		def self::removed_before(time)
+			arr = []
+			dr = Dir.new(DIR_REMOVED_PACKAGES)
 			dr.each {|p|
 				if (DIR_INSTALLED_PACKAGES + "/" + p =~ RE_REMOVED_NAMES)
 					if (Time.strptime($2 + ' ' + $3, fmt='%F %H:%M:%S') <= time)
@@ -160,10 +263,10 @@ module Slackware
 					end
 				end
 			}
-
 			return arr
 		end
 
+		# Check whether a given Slackware::Package has been upgraded before
 		def self::is_upgraded?(pkg)
 			if (find_removed(pkg).map {|p| p.name if p.upgrade_time }.include?(pkg) )
 				return true
