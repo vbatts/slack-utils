@@ -16,7 +16,7 @@ Usage:
 	if no search flags, only names, then those only those matching entries are listed
 
 EOS
-	opt :color, "Colorize output", :type => :boolean
+	opt :color, "Colorize output", :default => false, :type => :boolean
 	opt :epoch, "show time in seconds since 1970-01-01 00:00:00 UTC", :type => :boolean
 	opt :pkg, "Package PKGNAME (loose match)", :type => :string
 	opt :Version, "Package VERSION (loose match)", :type => :string

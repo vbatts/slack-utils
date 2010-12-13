@@ -120,6 +120,7 @@ module Slackware
 			return files
 		end
 
+		# populates and returns self.time
 		def get_time
 			if (self.time.nil? && self.path)
 				if (File.exist?(self.path + "/" + self.fullname))
@@ -275,6 +276,23 @@ module Slackware
 			end
 		end
 
+		# Search installation of Slackware::Package's for what owns the questioned file
+		def self::owns_file(file)
+			pkgs = installed_packages
+			found_files = []
+			file = file.sub(/^\//, "") # clean off the leading '/'
+			re = Regexp::new(/#{file}/)
+			pkgs.each {|pkg|
+				if (found = pkg.owned_files.map {|f| f if f =~ re}.compact)
+					found.each {|f|
+						found_files << [pkg, f]
+					}
+				end
+			}
+			return found_files
+		end
+
+		# Return the version of Slackware Linux currently installed
 		def self::version
 			VERSION
 		end

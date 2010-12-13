@@ -14,8 +14,7 @@ require 'slackware'
 				  p.split("-")
 			  }
 		  end
-@me = File.basename($0)
-@st = "\033[31;1m" # TODO These should be put to a flag at some point
+@st = "\033[31;1m"
 @en = "\033[0m"
 
 # Classes
@@ -32,7 +31,7 @@ def is_sl_pd?(some_path)
 	end
 end
 
-def build_packages(opts, args)
+def build_packages(opts = {}, args = [])
 	pkgs = Slackware::System.installed_packages
 	
 	if (opts[:time])
@@ -117,37 +116,8 @@ def print_packages_times(pkgs, epoch = false)
 	end
 end
 
-def slf(*args)
-	require 'iconv' # XXX putting this here, since it is only used in this method
-
-	if args[0].count == 0
-		puts "#{@me}: what file do you want me to search for?"
-	else
-		args[0].each {|arg|
-			new_arg = arg.gsub(/^\//, "") # clean off the leading '/'
-			re_arg = Regexp::new(/#{new_arg}/)
-			ic = Iconv.new("UTF-8//IGNORE", "UTF-8")
-			@packages_array.each {|pkg|
-				p = sl_path(pkg)
-				next if is_sl_pd?(p)
-				f = File.open(p)
-				f.each {|line|
-					## TODO needs a flag, to be colorized
-					#o = line.gsub! re_arg, "#{@st}\\&#{@en}"
-					#puts pkg + ":\s" + o if ! o.nil?
-
-					## craziness to workaround "invalid byte sequence in UTF-8"
-					## http://po-ru.com/diary/fixing-invalid-utf-8-in-ruby-revisited/
-					clean_line = ic.iconv(line + "  ")[0..-2]
-					puts pkg + ":\s" + line if re_arg.match(clean_line)
-				}
-			}
-		}
-	end
-end
-
 # package file listing
-def print_package_files(pkgs)
+def print_package_file_list(pkgs)
 	if (pkgs.count > 1)
 		pkgs.each {|pkg|
 			pkg.owned_files.each {|line|
@@ -157,6 +127,18 @@ def print_package_files(pkgs)
 	else
 		pkgs.each {|pkg| puts pkg.owned_files }
 	end
+end
+
+# search Array of Slackware::Package's for files
+# and print the items found
+def print_package_searched_files(pkgs, files)
+	found_files = []
+	files.each {|file|
+		found_files = found_files.concat(Slackware::System.owns_file(file))
+	}
+	found_files.each {|file|
+		puts file[0].fullname + ": " + file[1]
+	}
 end
 
 # XXX stub for slack-utils orpaned .new files (to be written in ruby)

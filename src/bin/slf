@@ -1,9 +1,37 @@
 #!/usr/bin/env ruby
 
+require 'rubygems'
+require 'trollop'
 require 'slack-utils'
 
+opts = Trollop::options do
+	banner <<-EOS
+
+search for a file within installed Slackware package's FILE LIST.
+
+Usage:
+	slf [options] [pkg search flags] <one of more files>
+	
+	one or more files must be list
+	if no search flags, only names, then those only those matching entries are listed
+EOS
+	opt :pkg, "Package PKGNAME (loose match)", :type => :string
+	opt :Version, "Package VERSION (loose match)", :type => :string
+	opt :arch, "Package ARCH (exact match)", :type => :string
+	opt :build, "Package BUILD (exact match)", :type => :string
+	opt :tag, "Package TAG (loose match)", :type => :string
+end
+
+if (opts.keys.grep(/[pkg|Version|arch|build|tag]_given$/).count == 0)
+	opts[:all] = true
+end
+
+if (ARGV.count == 0)
+	Trollop::die("one or more files must be provided")
+end
+
 begin
-	call_func(File.basename(__FILE__), ARGV)
+	print_package_searched_files(build_packages(opts, []), ARGV)
 rescue Interrupt
 	exit 0
 rescue Exception => e

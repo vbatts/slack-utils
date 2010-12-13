@@ -7,7 +7,7 @@ require 'slack-utils'
 opts = Trollop::options do
 	banner <<-EOS
 
-List (and search) installed Slackware package's times.
+List owned files for a given Slackware package.
 
 Usage:
 	sll [options] [search flags] [list of names]
@@ -31,7 +31,7 @@ if (opts.keys.grep(/[pkg|Version|arch|build|tag]_given$/).count == 0 && not(opts
 end
 
 begin
-	print_package_files(build_packages(opts, ARGV))
+	print_package_file_list(build_packages(opts, ARGV))
 rescue Interrupt
 	exit 0
 end
