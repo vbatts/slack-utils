@@ -141,33 +141,56 @@ def print_package_searched_files(pkgs, files)
 	}
 end
 
-# XXX stub for slack-utils orpaned .new files (to be written in ruby)
-# TODO
-# 	* check the members of the new_files array, to see if they are currently owned by a package
-# 	* check the unowned members, to see if they still exist
-# 	* build a Hash for each *.new file, that 
-def slo
-	new_pat = Regexp.new(/\.new$/)
-	new_files = Array.new
-	removed_packages_array = Dir.entries(@removed_packages_dir)
-
-	removed_packages_array.each {|pkg|
-		file_path = File.absolute_path(File.join(@removed_packages_dir, '/', pkg))
-		if (file_path == @removed_packages_dir ||
-		    file_path == "/var/log" ||
-		    file_path == "/var/log/removed_packages"
-		   )
-			next
-		end
-		file = File.open(file_path)
-		file.each_line {|line|
-			new_files << line.chomp if new_pat.match(line)
+# find orpaned files from /etc/
+# 	* build a list of files from removed_packages
+# 	* check the list to see if they are currently owned by a package
+# 	* check the unowned members, to see if they still exist on the filesystem
+# 	* return existing files
+def find_orphaned_config_files
+	# build a list of config files currently installed
+	installed_config_files = Slackware::System.installed_packages.map {|pkg|
+		pkg.owned_files.map {|file|
+			file if (file =~ /^etc\// && not(file =~ /\/$/))
 		}
+	}.flatten.compact
+
+	# this Array is where we'll stash removed packages that have config file to check
+	pkgs = Array.new
+	Slackware::System.removed_packages.each {|r_pkg|
+		# find config files for this removed package
+		config = r_pkg.owned_files.grep(/^etc\/.*[\w|\d]$/)
+		# continue if there are none
+		if (config.count > 0)
+			# remove config files that are owned by a currently installed package
+			config = config.map {|file|
+				if (not(installed_config_files.include?(file)) && not(installed_config_files.include?(file + ".new")))
+					file
+				end
+			}.compact
+			# check again, and continue if there are no config files left
+			if (config.count > 0)
+				# otherwise add this package, and its files, to the stack
+				pkgs << {:pkg => r_pkg, :files => config}
+			end
+		end
 	}
 
-	new_files.sort!.uniq!
-	#@new_files.each {|f| puts f }
-	return new_files
+	# setup list of files to check whether they still exist on the filesystem
+	files = []
+	pkgs.map {|pkg| files << pkg[:files] }
+	files.flatten!.uniq!
+
+	orphaned_config_files = []
+	files.each {|file|
+		if (File.exist?("/" + file))
+			orphaned_config_files << file
+		end
+	}
+
+	return orphaned_config_files
 
 end
 
+def print_orphaned_files(files)
+	puts files
+end

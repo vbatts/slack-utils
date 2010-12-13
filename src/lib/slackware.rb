@@ -37,7 +37,6 @@ module Slackware
 				name = $1
 				self.upgrade_time = Time.strptime($2 + ' ' + $3, fmt='%F %H:%M:%S')
 			end
-			#self.fullname = name
 			arr = name.split('-').reverse
 			build = arr.shift
 			if (build.include?("_"))
@@ -65,7 +64,8 @@ module Slackware
 		# Reassemble the package name as it would be in file form
 		def fullname
 			if (self.upgrade_time)
-				return [self.name, self.version, self.arch, [self.build, self.tag].join(self.tag_sep)].join("-")
+				time = self.upgrade_time.strftime("%F,%H:%M:%S")
+				return [self.name, self.version, self.arch, [self.build, self.tag].join(self.tag_sep), "upgraded", time].join("-")
 			else
 				return [self.name, self.version, self.arch, [self.build, self.tag].join(self.tag_sep)].join("-")
 			end
