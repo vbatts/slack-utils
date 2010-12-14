@@ -112,12 +112,30 @@ module Slackware
 			end
 		end
 
-		# Accessor for the FILE LIST from the package file
 		def owned_files
-			f = File.open(self.path + '/' + self.fullname)
-			files = f.drop_while {|l| not( l =~ /^FILE LIST:/) }[2..-1].map {|l| l.chomp }
-			f.close
-			return files
+			return @owned_files
+		end
+
+		# Accessor for the FILE LIST from the package file
+		def get_owned_files
+			if not(@owned_files.nil?)
+				return @owned_files
+			else
+				f = File.open(self.path + '/' + self.fullname)
+				files = f.drop_while {|l| not( l =~ /^FILE LIST:/) }[2..-1].map {|l| l.chomp }
+				f.close
+				return files
+			end
+		end
+
+		# Set the file list in the package object
+		def set_owned_files
+			if @owned_files.nil?
+				@owned_files = self.get_owned_files
+				return true
+			else
+				return false
+			end
 		end
 
 		# populates and returns self.time

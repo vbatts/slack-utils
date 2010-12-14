@@ -120,12 +120,12 @@ end
 def print_package_file_list(pkgs)
 	if (pkgs.count > 1)
 		pkgs.each {|pkg|
-			pkg.owned_files.each {|line|
+			pkg.get_owned_files.each {|line|
 				puts pkg.name + ": " + line
 			}
 		}
 	else
-		pkgs.each {|pkg| puts pkg.owned_files }
+		pkgs.each {|pkg| puts pkg.get_owned_files }
 	end
 end
 
@@ -149,7 +149,7 @@ end
 def find_orphaned_config_files
 	# build a list of config files currently installed
 	installed_config_files = Slackware::System.installed_packages.map {|pkg|
-		pkg.owned_files.map {|file|
+		pkg.get_owned_files.map {|file|
 			file if (file =~ /^etc\// && not(file =~ /\/$/))
 		}
 	}.flatten.compact
@@ -158,7 +158,7 @@ def find_orphaned_config_files
 	pkgs = Array.new
 	Slackware::System.removed_packages.each {|r_pkg|
 		# find config files for this removed package
-		config = r_pkg.owned_files.grep(/^etc\/.*[\w|\d]$/)
+		config = r_pkg.get_owned_files.grep(/^etc\/.*[\w|\d]$/)
 		# continue if there are none
 		if (config.count > 0)
 			# remove config files that are owned by a currently installed package
@@ -194,3 +194,60 @@ end
 def print_orphaned_files(files)
 	puts files
 end
+
+# XXX This is a work in progress
+# It _works_, but is pretty darn slow ...
+# It would be more efficient to break this out to a separate Class,
+# and use a sqlite database for caching linked dependencies.
+# Categorized by pkg, file, links. based on mtime of the package file, 
+# or maybe even mtime of the shared objects themselves.
+# That way, those entries alone could be updated if they are newer,
+# otherwise it's just a query.
+def find_linked(file_to_find)
+	require 'filemagic'
+	require 'find'
+
+	dirs = %w{ /lib /lib64 /usr/lib /usr/lib64 /bin /sbin /usr/bin /usr/sbin }
+	fm = FileMagic.open()
+	re_so = Regexp.new(/ELF.*shared object/)
+	re_exec = Regexp.new(/ELF.*executable/)
+
+	if File.exist?(file_to_find)
+		file_to_find = File.expand_path(file_to_find)
+	end
+	if not(fm.file(File.dirname(file_to_find) + "/" + File.readlink(file_to_find)) =~ re_so)
+		printf("%s is not a shared object\n",file_to_find)
+		return nil
+	end
+
+	includes_linked = []
+	printf("Searching through ... ")
+	dirs.each {|dir|
+		printf("%s ", dir)
+		Find.find(dir) {|file|
+			if File.directory?(file)
+				next
+			end
+			file_magic = fm.file(file)
+			if (file_magic =~ re_so || file_magic =~ re_exec)
+				l = `/usr/bin/ldd #{file} 2>/dev/null `
+				if l.include?(file_to_find)
+					printf(".")
+					l = l.sub(/\t/, '').split(/\n/)
+					includes_linked << {:file => file, :links => l}
+				end
+			end
+		}
+	}
+	printf("\n")
+	return includes_linked
+end
+
+def print_find_linked(file_to_find)
+	files = find_linked(file_to_find)
+	printf("files linked to '%s' include:\n", file_to_find)
+	files.each {|file|
+		printf("  %s\n", file)
+	}
+end
+

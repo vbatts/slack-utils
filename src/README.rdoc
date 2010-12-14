@@ -7,7 +7,7 @@ A ruby library to access information on the Slackware Linux distribution
 == Installation
 
 To install the gem 
- sudo gem install pkg/slack-utils-0.4.2.gem
+ sudo gem install pkg/slack-utils-0.5.0.gem
 
 == Quick Start
 
