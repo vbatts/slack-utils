@@ -243,6 +243,21 @@ def find_linked(file_to_find)
 	return includes_linked
 end
 
+# This is intended to take the return of the find_linked() method
+def packages_of_linked_files(linked_files_arr)
+	pkgs = Slackware::System.installed_packages
+	owned_pkgs = []
+	pkgs.map {|pkg|
+		files.each {|file|
+			if pkg.owned_files.include?(file)
+				owned_pkgs << {:pkg => pkg, :file => file}
+			end
+		}
+	}
+	return owned_pkgs
+end
+
+# Pretty print the output of find_linked()
 def print_find_linked(file_to_find)
 	files = find_linked(file_to_find)
 	printf("files linked to '%s' include:\n", file_to_find)

@@ -22,7 +22,7 @@ module Slackware
 	end
 
 	class Package
-		attr_accessor :time, :path, :file, :name, :version, :arch, :build, :tag, :tag_sep, :upgrade_time
+		attr_accessor :time, :path, :file, :name, :version, :arch, :build, :tag, :tag_sep, :upgrade_time, :owned_files
 		def initialize(name = nil)
 			self.name = name
 		end
@@ -112,11 +112,8 @@ module Slackware
 			end
 		end
 
-		def owned_files
-			return @owned_files
-		end
-
 		# Accessor for the FILE LIST from the package file
+		# unless the :owned_files symbol is populated
 		def get_owned_files
 			if not(@owned_files.nil?)
 				return @owned_files
@@ -128,7 +125,7 @@ module Slackware
 			end
 		end
 
-		# Set the file list in the package object
+		# Set the file list in the package object in memory
 		def set_owned_files
 			if @owned_files.nil?
 				@owned_files = self.get_owned_files

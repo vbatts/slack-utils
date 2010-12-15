@@ -1,8 +1,39 @@
 = slackware utilities
 
-== Description
+== Summary
 
 A ruby library to access information on the Slackware Linux distribution
+
+== Description
+
+slack-utils
+
+slp - shows installed slackware packages
+  with no args, it will show all.
+  or for each arg it will search the package names.
+
+slf - search installed slackware packages for a file
+  this expects an arg(s), and will output, in grep fashion
+  packages matching your search args.
+
+slt - mtime/install time of slackware packages
+  with no args, it will show all.
+  or for each arg it will search the package names.
+
+sll - list the contents of packages matching the
+
+slo - find files in /etc/, that have been orphaned and left behind
+  by unistalled/upgraded packages
+
+slfindlinked - finds what is linked to your argument, and it's package
+  expects 1 argument passed. 
+
+
+TODO: 
+* 2010-08-20 09:16 <bailey> which is that I need to run a query to show
+	me what packages I'm running are different than the slack-current
+	versions, since I make local ones and forget about it
+* enable `slf` to a relative path, and it determine the absolute path
 
 == Installation
 
@@ -25,7 +56,7 @@ Start using the library
  or 
  >> require 'rubygems'
  >> require 'slackware'
- >> tags = Slackware.tags_used
+ >> tags = Slackware::System.tags_used
  => ["SBo","alien","rlw"]
 
 == Usage

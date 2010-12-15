@@ -3,31 +3,25 @@ slack-utils
 slp - shows installed slackware packages
   with no args, it will show all.
   or for each arg it will search the package names.
-  the args support regex
 
 slf - search installed slackware packages for a file
   this expects an arg(s), and will output, in grep fashion
   packages matching your search args.
-  the args support regex
 
 slt - mtime/install time of slackware packages
   with no args, it will show all.
   or for each arg it will search the package names.
-  the args support regex
 
 sll - list the contents of packages matching the
-  strings passed as args
 
-slo - find conf files, that were installed as .new
-  suffixed, that have been orphaned and left behind.
+slo - find files in /etc/, that have been orphaned and left behind
+  by unistalled/upgraded packages
 
 slfindlinked - finds what is linked to your argument, and it's package
   expects 1 argument passed. 
 
 
 TODO: 
-* revise slack-utils, to use the Slackware module
-* add methods to pretty_print, so that the collectors can be separated
 * 2010-08-20 09:16 <bailey> which is that I need to run a query to show
 	me what packages I'm running are different than the slack-current
 	versions, since I make local ones and forget about it
