@@ -39,10 +39,15 @@ def build_packages(opts = {}, args = [])
 	end
 	if (opts[:all])
 		if (args.count > 0)
-			pkgs = []
+			selected_pkgs = []
 			args.each {|arg|
-				pkgs << pkgs.map {|p| p if p.fullname }.grep(/#{arg}/)
+				pkgs.each {|pkg|
+					if pkg.fullname =~ /#{arg}/
+						selected_pkgs << pkg
+					end
+				}
 			}
+			pkgs = selected_pkgs.uniq
 		end
 	end
 	if (opts[:pkg_given])
@@ -105,7 +110,9 @@ def build_packages(opts = {}, args = [])
 end
 
 def print_packages(pkgs)
-	pkgs.each {|pkg| printf("%s\n", pkg.fullname ) }
+	if (pkgs.count > 0 && pkgs.first.class == Slackware::Package)
+		pkgs.each {|pkg| printf("%s\n", pkg.fullname ) }
+	end
 end
 
 def print_packages_times(pkgs, epoch = false)
