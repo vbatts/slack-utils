@@ -48,6 +48,7 @@ def build_packages(opts = {}, args = [])
 				}
 			}
 			pkgs = selected_pkgs.uniq
+			selected_pkgs = nil
 		end
 	end
 	if (opts[:pkg_given])
