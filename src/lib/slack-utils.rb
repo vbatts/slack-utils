@@ -40,7 +40,7 @@ def build_packages(opts = {}, args = [])
 	if (opts[:all])
 		if (args.count > 0)
 			pkgs = []
-			args.each {|args|
+			args.each {|arg|
 				pkgs << pkgs.map {|p| p if p.fullname }.grep(/#{arg}/)
 			}
 		end
