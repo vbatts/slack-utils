@@ -8,8 +8,15 @@ module Slackware
 
 	# Stub
 	class Repo
+		RE_PACKAGE_NAME		= Regexp.new(/^PACKAGE NAME:\s+(.*)\.t[gbx]z\s*/)
+		RE_PACKAGE_LOCATION	= Regexp.new(/^PACKAGE LOCATION:\s+(.*)$/)
+		RE_COMPRESSED_SIZE	= Regexp.new(/^PACKAGE SIZE \(compressed\):\s+(.*)$/)
+		RE_UNCOMPRESSED_SIZE	= Regexp.new(/^PACKAGE SIZE \(uncompressed\):\s+(.*)$/)
+
 		attr_accessor :proto, :mirror, :path, :version, :arch, :changelog, :packages
+
 		def initialize(repo = nil)
+			@packages = nil
 			if (repo.nil?)
 				self.proto	= "ftp://"
 				self.mirror	= "ftp.osuosl.org"
@@ -61,7 +68,7 @@ module Slackware
 		end
 
 		def get_changelog
-			if (self.changelog.nil?)
+			if (@changelog.nil?)
 				## Eventually this should parse it in to a hash of sorts.
 				#self.changlog.each {|line|
 				#	if (d = Date.parse(line))
@@ -70,25 +77,50 @@ module Slackware
 				#}
 				return fetch("ChangeLog.txt").split(/\n/)
 			else
-				return self.changelog
+				return @changelog
 			end
 		end
 
 		def set_changelog
-			self.changelog = get_changelog
+			@changelog = get_changelog
 			return nil
 		end
 
 		def get_packages
-			if (self.packages.nil?)
-				return fetch("PACKAGES.TXT").split(/\n/)
+			if (@packages.nil?)
+				pkgs = []
+				fetch("PACKAGES.TXT").split(/\n\n/).each {|p_block|
+					p_block = p_block.split(/\n/).reject {|cell| cell if cell == "" }
+					if (p_block.shift =~ RE_PACKAGE_NAME)
+						pkg = Slackware::Package.parse($1)
+
+						p_block.shift =~ RE_PACKAGE_LOCATION
+						pkg.package_location = $1
+
+						p_block.shift =~ RE_COMPRESSED_SIZE
+						pkg.compressed_size = $1
+
+						p_block.shift =~ RE_UNCOMPRESSED_SIZE
+						pkg.uncompressed_size = $1
+
+						# This is the empty PACKAGE DESCRIPTON: tag
+						p_block.shift
+
+						pkg.package_description = p_block.map {|cell|
+							cell.sub(/^#{pkg.name}:\s*/, '')
+						}
+
+						pkgs << pkg
+					end
+				}
+				return pkgs
 			else
-				return self.packages
+				return @packages
 			end
 		end
 
 		def set_packages
-			self.packages = get_packages
+			@packages = get_packages
 			return nil
 		end
 

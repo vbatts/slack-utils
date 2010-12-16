@@ -73,6 +73,10 @@ module Slackware
 
 		# Accessor for the PACKAGE DESCRIPTION from the package file
 		def package_description
+			if not(@package_description.nil?)
+				return @package_description
+			end
+
 			f = File.open(self.path + '/' + self.fullname)
 			while true
 				if (f.readline =~ /^PACKAGE DESCRIPTION:\s+(.*)$/)
@@ -82,8 +86,17 @@ module Slackware
 			end
 		end
 
+		# Setter for the PACKAGE DESCRIPTION, in the event you are parsing a repo file
+		def package_description=(desc)
+			@package_description = desc
+		end
+
 		# Accessor for the PACKAGE LOCATION from the package file
 		def package_location
+			if not(@package_location.nil?)
+				return @package_location
+			end
+
 			f = File.open(self.path + '/' + self.fullname)
 			while true
 				if (f.readline =~ /^PACKAGE LOCATION:\s+(.*)$/)
@@ -92,8 +105,17 @@ module Slackware
 			end
 		end
 
+		# Setter for the PACKAGE LOCATION, in the event you are parsing a repo file
+		def package_location=(path)
+			@package_location = path
+		end
+
 		# Accessor for the UNCOMPRESSED PACKAGE SIZE from the package file
 		def uncompressed_size
+			if not(@uncompressed_size.nil?)
+				return @uncompressed_size
+			end
+
 			f = File.open(self.path + '/' + self.fullname)
 			while true
 				if (f.readline =~ /^UNCOMPRESSED PACKAGE SIZE:\s+(.*)$/)
@@ -102,14 +124,28 @@ module Slackware
 			end
 		end
 
+		# Setter for the UNCOMPRESSED PACKAGE SIZE, in the event you are parsing a repo file
+		def uncompressed_size=(size)
+			@uncompressed_size = size
+		end
+
 		# Accessor for the COMPRESSED PACKAGE SIZE from the package file
 		def compressed_size
+			if not(@compressed_size.nil?)
+				return @compressed_size
+			end
+
 			f = File.open(self.path + '/' + self.fullname)
 			while true
 				if (f.readline =~ /^COMPRESSED PACKAGE SIZE:\s+(.*)$/)
 					return $1
 				end
 			end
+		end
+
+		# Setter for the COMPRESSED PACKAGE SIZE, in the event you are parsing a repo file
+		def compressed_size=(size)
+			@compressed_size = size
 		end
 
 		# Accessor for the FILE LIST from the package file
