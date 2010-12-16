@@ -22,7 +22,7 @@ EOS
 	opt :tag, "Package TAG (loose match)", :type => :string
 end
 
-if (opts.keys.grep(/[pkg|Version|arch|build|tag]_given$/).count == 0)
+if (ARGV.count > 0)
 	opts[:all] = true
 end
 

@@ -22,9 +22,22 @@ module Slackware
 	end
 
 	class Package
-		attr_accessor :time, :path, :file, :name, :version, :arch, :build, :tag, :tag_sep, :upgrade_time, :owned_files
+		attr_accessor :time,
+			:path,
+			:file,
+			:name,
+			:version,
+			:arch,
+			:build,
+			:tag,
+			:tag_sep,
+			:upgrade_time,
+			:owned_files
+
 		def initialize(name = nil)
 			self.name = name
+			@package_description = @package_location = @compressed_size = @uncompressed_size = nil
+			return self
 		end
 
 		# pkg.parse instance method for parsing the package information
@@ -151,8 +164,8 @@ module Slackware
 		# Accessor for the FILE LIST from the package file
 		# unless the :owned_files symbol is populated
 		def get_owned_files
-			if not(@owned_files.nil?)
-				return @owned_files
+			if not(self.owned_files.nil?)
+				return self.owned_files
 			else
 				f = File.open(self.path + '/' + self.fullname)
 				files = f.drop_while {|l| not( l =~ /^FILE LIST:/) }[2..-1].map {|l| l.chomp }
@@ -163,8 +176,8 @@ module Slackware
 
 		# Set the file list in the package object in memory
 		def set_owned_files
-			if @owned_files.nil?
-				@owned_files = self.get_owned_files
+			if self.owned_files.nil?
+				self.owned_files = self.get_owned_files
 				return true
 			else
 				return false
@@ -329,12 +342,12 @@ module Slackware
 
 		# Search installation of Slackware::Package's for what owns the questioned file
 		def self::owns_file(file)
-			pkgs = installed_packages
-			found_files = []
 			file = file.sub(/^\//, "") # clean off the leading '/'
 			re = Regexp::new(/#{file}/)
+			pkgs = installed_packages
+			found_files = []
 			pkgs.each {|pkg|
-				if (found = pkg.owned_files.map {|f| f if f =~ re}.compact)
+				if (found = pkg.get_owned_files.map {|f| f if f =~ re}.compact)
 					found.each {|f|
 						found_files << [pkg, f]
 					}

@@ -6,31 +6,13 @@
 require 'slackware'
 
 # Variables
-@installed_packages_dir = '/var/log/packages' # TODO this should be put to a conf file at some point
-@removed_packages_dir = '/var/log/removed_packages/' # TODO this should be put to a conf file at some point
-@packages_array = begin
-			  Dir.entries(@installed_packages_dir).sort.map {|p|
-				  pkg = []
-				  p.split("-")
-			  }
-		  end
 @st = "\033[31;1m"
 @en = "\033[0m"
 
 # Classes
+
+
 # Functions
-def sl_path(package)
-	File.absolute_path(File.join(@installed_packages_dir, '/', package))
-end
-
-def is_sl_pd?(some_path)
-	if (some_path == @installed_packages_dir || some_path == "/var/log")
-		true
-	else
-		false
-	end
-end
-
 def build_packages(opts = {}, args = [])
 	pkgs = Slackware::System.installed_packages
 	
@@ -112,7 +94,9 @@ end
 
 def print_packages(pkgs)
 	if (pkgs.count > 0 && pkgs.first.class == Slackware::Package)
-		pkgs.each {|pkg| printf("%s\n", pkg.fullname ) }
+		pkgs.each {|pkg|
+			printf("%s\n", pkg.fullname )
+		}
 	end
 end
 
