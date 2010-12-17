@@ -2,7 +2,7 @@
 
 require 'rubygems'
 require 'trollop'
-require 'slack-utils'
+require 'slackware/utils'
 
 opts = Trollop::options do
 	banner <<-EOS

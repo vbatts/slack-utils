@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 
 require 'rubygems'
-require 'slack-utils'
+require 'slackware/utils'
 
 print_find_linked(ARGV[0])
 
