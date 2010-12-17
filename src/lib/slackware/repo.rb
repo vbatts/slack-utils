@@ -1,5 +1,6 @@
 
-require 'slackware'
+require 'slackware/package'
+require 'slackware/system'
 require 'net/http'
 require 'net/ftp'
 require 'rbconfig'
