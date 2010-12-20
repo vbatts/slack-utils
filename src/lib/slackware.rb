@@ -1,4 +1,5 @@
 
+<<<<<<< HEAD
 require 'time'
 
 module Slackware
@@ -363,4 +364,9 @@ module Slackware
 	end
 
 end
+=======
+require 'slackware/package'
+require 'slackware/system'
+require 'slackware/repo'
+>>>>>>> 0139c07bc53c63413926c1d83debe88e2806debb
 
