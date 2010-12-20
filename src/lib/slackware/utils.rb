@@ -196,18 +196,16 @@ end
 # That way, those entries alone could be updated if they are newer,
 # otherwise it's just a query.
 def find_linked(file_to_find)
-	require 'filemagic'
 	require 'find'
 
 	dirs = %w{ /lib /lib64 /usr/lib /usr/lib64 /bin /sbin /usr/bin /usr/sbin }
-	fm = FileMagic.open()
 	re_so = Regexp.new(/ELF.*shared object/)
 	re_exec = Regexp.new(/ELF.*executable/)
 
 	if File.exist?(file_to_find)
 		file_to_find = File.expand_path(file_to_find)
 	end
-	if not(fm.file(File.dirname(file_to_find) + "/" + File.readlink(file_to_find)) =~ re_so)
+	if not(filemagic(File.dirname(file_to_find) + "/" + File.readlink(file_to_find)) =~ re_so)
 		printf("%s is not a shared object\n",file_to_find)
 		return nil
 	end
@@ -220,7 +218,7 @@ def find_linked(file_to_find)
 			if File.directory?(file)
 				next
 			end
-			file_magic = fm.file(file)
+			file_magic = filemagic(file)
 			if (file_magic =~ re_so || file_magic =~ re_exec)
 				l = `/usr/bin/ldd #{file} 2>/dev/null `
 				if l.include?(file_to_find)
@@ -256,5 +254,11 @@ def print_find_linked(file_to_find)
 	files.each {|file|
 		printf("  %s\n", file)
 	}
+end
+
+private
+
+def filemagic(file)
+	return `/usr/bin/file "#{file}"`.chomp
 end
 
