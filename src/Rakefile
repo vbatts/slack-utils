@@ -21,8 +21,13 @@ spec = Gem::Specification.new do |s|
     "bin/sll",
     "bin/slfindlinked",
     "examples/list_packages.rb",
-    "lib/slack-utils.rb",
-    "lib/slackware.rb"
+    "examples/before_then.rb",
+    "examples/repo.rb",
+    "lib/slackware.rb",
+    "lib/slackware/utils.rb",
+    "lib/slackware/package.rb",
+    "lib/slackware/repo.rb",
+    "lib/slackware/system.rb"
   ]
   s.executables = ["slf","slo","sll","slp","slt","slfindlinked"]
   s.require_paths = ["lib"]
