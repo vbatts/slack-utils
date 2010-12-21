@@ -3,7 +3,7 @@ require 'time'
 
 module Slackware
 	class Package
-		attr_accessor :time, :path, :file, :name, :version, :arch, :build, :tag, :tag_sep, :upgrade_iime, :owned_files
+		attr_accessor :time, :path, :file, :name, :version, :arch, :build, :tag, :tag_sep, :upgrade_time, :owned_files
 		def initialize(name = nil)
 			self.name = name
 		end

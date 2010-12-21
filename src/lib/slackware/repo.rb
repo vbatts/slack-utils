@@ -68,15 +68,25 @@ module Slackware
 			end
 		end
 
+		# Pkg count that _should_ be removed
+		# pkgs = Slackware::System.installed_packages
+		# sr = Slackware::Repo.new
+		# sr.version = "current"
+		# c = get_changelog
+		#(pkgs.map {|p| p.fullname } & c[:removed].map {|p| p.fullname }).count
 		def get_changelog
 			if (@changelog.nil?)
-				## Eventually this should parse it in to a hash of sorts.
-				#self.changlog.each {|line|
-				#	if (d = Date.parse(line))
-				#	else
-				#		
-				#}
-				return fetch("ChangeLog.txt").split(/\n/)
+				changelog = {}
+				changelog_date = fetch("ChangeLog.txt").split(/\n/)
+				actions = %w{removed added upgraded rebuilt}
+				actions.each {|action|
+					changelog[:"#{action}"] = changelog_date.map {|line|
+						if line =~ /^\w+\/(.*)\.t[gx]z:\s+#{action}\.?$/i
+							Slackware::Package.parse($1)
+						end
+					}.compact
+				}
+				return changelog
 			else
 				return @changelog
 			end
