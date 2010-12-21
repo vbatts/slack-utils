@@ -1,4 +1,8 @@
+#!/usr/bin/ruby
 
+$: <<  File.absolute_path(File.dirname(__FILE__) + "/../lib")
+
+require 'rubygems'
 require 'slackware'
 
 pkgs = Slackware::System.installed_packages.map {|p| p.name }

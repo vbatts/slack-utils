@@ -2,6 +2,7 @@
 
 $: <<  File.absolute_path(File.dirname(__FILE__) + "/../lib")
 
+require 'rubygems'
 require 'slackware'
 
 puts "tags used are: " + Slackware.tags_used.to_s

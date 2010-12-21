@@ -1,7 +1,9 @@
 #!/usr/bin/ruby -w
 
+$: <<  File.absolute_path(File.dirname(__FILE__) + "/../lib")
+
 require 'rubygems'
-require 'slackware-repo'
+require 'slackware/repo'
 
 sr = Slackware::Repo.new
 sr.version = "current"
