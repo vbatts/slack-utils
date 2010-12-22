@@ -24,24 +24,24 @@
 
 set -e
 
-#Defaults set in local.conf, so that bundle.sh can use them too
+PRGNAM=slack-utils
+VERSION=${VERSION:-0.5.1}
+BUILD=${BUILD:-1}
+TAG=${TAG:-_vb}
 
-. local.conf
+if [ -z "$ARCH" ]; then
+  case "$( uname -m )" in
+    i?86) ARCH=i486 ;;
+    arm*) ARCH=arm ;;
+    # Unless $ARCH is already set, use uname -m for all other archs:
+       *) ARCH=$( uname -m ) ;;
+  esac
+fi
 
 CWD=$(pwd)
 TMP=${TMP:-/tmp/${TAG}}
 PKG=$TMP/package-$PRGNAM
 OUTPUT=${OUTPUT:-/tmp}
-
-if [ ! -r $CWD/$PRGNAM-$VERSION.tar.gz ] ; then
-	sh $CWD/bundle.sh
-fi
-
-if [ -x `which ruby` ] || true ; then
-	ruby=`which ruby` || true
-elif [ -x `which ruby18` ] || true ; then
-	ruby=`which ruby18`
-fi
 
 rm -rf $PKG
 mkdir -p $TMP $PKG $OUTPUT
@@ -50,11 +50,11 @@ rm -rf $PRGNAM-$VERSION
 tar xvf $CWD/$PRGNAM-$VERSION.tar.gz
 cd $PRGNAM-$VERSION
 
-$ruby setup.rb config \
+ruby setup.rb config \
 	--prefix=/usr \
 	--sysconfdir=/etc \
 	--mandir=/usr/man
-$ruby setup.rb install \
+ruby setup.rb install \
 	--prefix=$PKG
 
 mkdir -p $PKG/usr/doc/$PRGNAM-$VERSION
@@ -68,5 +68,5 @@ mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 
 cd $PKG
-/sbin/makepkg -p -l y -c n ${OUTPUT}/${PRGNAM}-${VERSION}-${ARCH}-${BUILD}_${TAG}.${PKGTYPE:-tgz}
+/sbin/makepkg -p -l y -c n ${OUTPUT}/${PRGNAM}-${VERSION}-${ARCH}-${BUILD}${TAG}.${PKGTYPE:-tgz}
 
