@@ -6,6 +6,6 @@ require 'rubygems'
 require 'slackware'
 
 t = Time.now - 10000877
-s = Slackware.installed_before(t)
+s = Slackware::System.installed_before(t)
 
 puts "#{s.count} packages installed before #{t}"
