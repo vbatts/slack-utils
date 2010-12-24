@@ -1,37 +1,65 @@
 #!/usr/bin/env ruby
 
+require 'optparse'
 require 'rubygems'
-require 'trollop'
 require 'slackware/utils'
 
-opts = Trollop::options do
-	banner <<-EOS
+options = {}
+begin
+	OptionParser.new do |opts|
+		opts.banner = <<-EOS
 
-List owned files for a given Slackware package.
+List owned for files for a given Slackware package.
 
 Usage:
-	sll [options] [search flags] [list of names]
+	#{File.basename(__FILE__)} [search flags] [list of names]
 	
 	if no search flags, only names, then those only those matching entries are listed
 
 EOS
-	opt :pkg, "Package PKGNAME (loose match)", :type => :string
-	opt :Version, "Package VERSION (loose match)", :type => :string
-	opt :arch, "Package ARCH (exact match)", :type => :string
-	opt :build, "Package BUILD (exact match)", :type => :string
-	opt :tag, "Package TAG (loose match)", :type => :string
-	opt :force, "force me to show all files", :type => :boolean
+		opts.on("-p", "--pkg [NAME]", "Package PKGNAME (loose match)") do |o|
+			options[:pkg] = o
+		end
+		opts.on("-V", "--Version [VERSION]", "Package VERSION (loose match)") do |o|
+			options[:version] = o
+		end
+		opts.on("-a", "--arch [ARCH]", "Package ARCH (exact match)") do |o|
+			options[:arch] = o
+		end
+		opts.on("-b", "--build [BUILD]", "Package BUILD (exact match)") do |o|
+			options[:build] = o
+		end
+		opts.on("-t", "--tag [TAG]", "Package TAG (loose match)") do |o|
+			options[:tag] = o
+		end
+		opts.on("-f", "--force", "force me to show all files") do |o|
+			options[:force] = o
+		end
+		opts.on("-v", "--version", "Display version of this software") do |o|
+			printf("slack-utils (%s) version: %s, Slackware version: %s\n",
+			       File.basename(__FILE__),
+			       Slackware::UTILS_VERSION,
+			       Slackware::System.version
+			      )
+			exit()
+		end
+	end.parse!
+rescue OptionParser::InvalidOption => e
+	$stderr.write("ERROR: #{e.message}, see --help\n")
+	exit 1
+end
+
+if ((options.keys & %w{pkg Version arch build tag}.map {|a| :"#{a}" }).count == 0 && not(options[:force]))
+	$stderr.write("force me if you really want to see all files ...\nsee --help for more info\n")
+	exit 1
 end
 
 # handing through that we are listing owned files
-opts[:list_files] = true
+options[:list_files] = true
 
-if (opts.keys.grep(/[pkg|Version|arch|build|tag]_given$/).count == 0 && not(opts[:force]))
-	Trollop::die("force me if you really want to see all files ...")
-end
 
 begin
-	print_package_file_list(build_packages(opts, ARGV))
+	print_package_file_list(build_packages(options, ARGV))
 rescue Interrupt
 	exit 0
 end

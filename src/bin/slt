@@ -1,40 +1,71 @@
 #!/usr/bin/env ruby
 
+require 'optparse'
 require 'rubygems'
-require 'trollop'
 require 'slackware/utils'
 
-opts = Trollop::options do
-	banner <<-EOS
+options = {}
+begin
+	OptionParser.new do |opts|
+		opts.banner = <<-EOS
 
 List (and search) installed Slackware package's times.
 
 Usage:
-	slt [options] [search flags] [list of names]
+	#{File.basename(__FILE__)} [pkg search flags] [list of names]
 	
 	if no flags are used, then all entries are listed
 	if no search flags, only names, then those only those matching entries are listed
 
 EOS
-	opt :color, "Colorize output", :default => false, :type => :boolean
-	opt :epoch, "show time in seconds since 1970-01-01 00:00:00 UTC", :type => :boolean
-	opt :pkg, "Package PKGNAME (loose match)", :type => :string
-	opt :Version, "Package VERSION (loose match)", :type => :string
-	opt :arch, "Package ARCH (exact match)", :type => :string
-	opt :build, "Package BUILD (exact match)", :type => :string
-	opt :tag, "Package TAG (loose match)", :type => :string
+		opts.on("-c", "--color", "Colorize output") do |o|
+			options[:color] = o
+		end
+		opts.on("-e", "--epock", "") do |o|
+			options[:epoch] = o
+		end
+		opts.on("-p", "--pkg [NAME]", "Package PKGNAME (loose match)") do |o|
+			options[:pkg] = o
+		end
+		opts.on("-V", "--Version [VERSION]", "Package VERSION (loose match)") do |o|
+			options[:version] = o
+		end
+		opts.on("-a", "--arch [ARCH]", "Package ARCH (exact match)") do |o|
+			options[:arch] = o
+		end
+		opts.on("-b", "--build [BUILD]", "Package BUILD (exact match)") do |o|
+			options[:build] = o
+		end
+		opts.on("-t", "--tag [TAG]", "Package TAG (loose match)") do |o|
+			options[:tag] = o
+		end
+		opts.on("-v", "--version", "Display version of this software") do |o|
+			printf("slack-utils (%s) version: %s, Slackware version: %s\n",
+			       File.basename(__FILE__),
+			       Slackware::UTILS_VERSION,
+			       Slackware::System.version
+			      )
+			exit()
+		end
+	end.parse!
+rescue OptionParser::InvalidOption => e
+	$stderr.write("ERROR: #{e.message}, see --help\n")
+	exit 1
 end
 
 # handing through that we are gathering times too
-opts[:time] = true
+options[:time] = true
 
-if (opts.keys.grep(/[pkg|Version|arch|build|tag]_given$/).count == 0)
-	opts[:all] = true
+if (ARGV.count > 0)
+	options[:all] = true
 end
 
 begin
-	print_packages_times(build_packages(opts, ARGV), opts[:epoch])
+	print_packages_times(build_packages(options, ARGV), options[:epoch])
 rescue Interrupt
 	exit 0
+rescue Exception => e
+	puts "ERROR: #{e.message}"
+	exit 1
 end
 

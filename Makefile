@@ -31,7 +31,7 @@ build: .slackpkg .gem
 	mv pkg/$(PKGNAM)-$$VERSION.gem ../pkg && \
 	touch $@
 
-reinstall:
+reinstall: .slackpkg
 	. local.conf && \
 	sudo upgradepkg --reinstall --install-new $(CWD)/pkg/$(PKGNAM)-$$VERSION-$$ARCH-$$BUILD$$TAG.tgz
 

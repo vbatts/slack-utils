@@ -38,7 +38,7 @@ TODO:
 == Installation
 
 To install the gem 
- sudo gem install pkg/slack-utils-0.5.1.gem
+ sudo gem install pkg/slack-utils-0.5.2.gem
 
 == Quick Start
 

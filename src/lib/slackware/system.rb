@@ -1,16 +1,8 @@
 
+require 'slackware/version'
 require 'slackware/package'
 
 module Slackware
-
-	VERSION = begin
-			  data = File.read("/etc/slackware-version")
-			  data =~ /Slackware\s(.*)/
-			  $1
-		  rescue
-			  nil
-		  end
-
 	DIR_INSTALLED_PACKAGES = "/var/log/packages"
 	DIR_REMOVED_PACKAGES = "/var/log/removed_packages"
 	DIR_INSTALLED_SCRIPTS = "/var/log/scripts"
@@ -19,7 +11,7 @@ module Slackware
 	RE_BUILD_TAG = /^([[:digit:]]+)([[:alpha:]]+)$/
 
 	def self::version
-		VERSION
+		Slackware::VERSION
 	end
 
 	class System
@@ -157,7 +149,7 @@ module Slackware
 
 		# Return the version of Slackware Linux currently installed
 		def self::version
-			VERSION
+			Slackware::VERSION
 		end
 	end
 

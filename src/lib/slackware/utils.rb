@@ -33,7 +33,7 @@ def build_packages(opts = {}, args = [])
 			selected_pkgs = nil
 		end
 	end
-	if (opts[:pkg_given])
+	if (opts[:pkg])
 		pkgs = pkgs.map {|p|
 			re = /#{opts[:pkg]}/i
 			if p.name =~ re
@@ -44,7 +44,7 @@ def build_packages(opts = {}, args = [])
 			end
 		}.compact
 	end
-	if (opts[:Version_given])
+	if (opts[:Version])
 		pkgs = pkgs.map {|p|
 			re = Regexp.new(Regexp.escape(opts[:Version]))
 			if p.version =~ re
@@ -55,7 +55,7 @@ def build_packages(opts = {}, args = [])
 			end
 		}.compact
 	end
-	if (opts[:arch_given])
+	if (opts[:arch])
 		pkgs = pkgs.map {|p|
 			re = /#{opts[:arch]}/
 			if p.arch =~ re
@@ -66,7 +66,7 @@ def build_packages(opts = {}, args = [])
 			end
 		}.compact
 	end
-	if (opts[:build_given])
+	if (opts[:build])
 		pkgs = pkgs.map {|p|
 			re = /#{opts[:build]}/
 			if p.build =~ re
@@ -77,7 +77,7 @@ def build_packages(opts = {}, args = [])
 			end
 		}.compact
 	end
-	if (opts[:tag_given])
+	if (opts[:tag])
 		pkgs = pkgs.map {|p|
 			re = /#{opts[:tag]}/i
 			if p.tag =~ re
