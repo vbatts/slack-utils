@@ -43,7 +43,15 @@ EOS
 			      )
 			exit()
 		end
-	end.parse!
+
+		opts.parse!
+
+		if (ARGV.count == 0)
+			$stderr.write("ERROR: one of more file must be specified\n")
+			puts opts
+			exit 2
+		end
+	end
 rescue OptionParser::InvalidOption => e
 	$stderr.write("ERROR: #{e.message}, see --help\n")
 	exit 1
@@ -51,10 +59,6 @@ end
 
 if (ARGV.count > 0)
 	options[:all] = true
-end
-
-if (ARGV.count == 0)
-	Trollop::die("one or more files must be provided")
 end
 
 begin

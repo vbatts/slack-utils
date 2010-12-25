@@ -43,14 +43,17 @@ EOS
 			      )
 			exit()
 		end
-	end.parse!
+
+		opts.parse!
+
+		if (options[:pkg].nil? && options[:Version].nil? && options[:arch].nil? && options[:build].nil? && options[:tag].nil? && not(options[:force]))
+			$stderr.write("ERROR: force me if you really want to see all files ...\n")
+			puts opts
+			exit 2
+		end
+	end
 rescue OptionParser::InvalidOption => e
 	$stderr.write("ERROR: #{e.message}, see --help\n")
-	exit 1
-end
-
-if ((options.keys & %w{pkg Version arch build tag}.map {|a| :"#{a}" }).count == 0 && not(options[:force]))
-	$stderr.write("force me if you really want to see all files ...\nsee --help for more info\n")
 	exit 1
 end
 

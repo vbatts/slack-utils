@@ -54,8 +54,8 @@ module Slackware
 
 		# Accessor for the PACKAGE DESCRIPTION from the package file
 		def package_description
-			if not(@package_description.nil?)
-				return @package_description
+			if not(self.package_description.nil?)
+				return self.package_description
 			end
 
 			f = File.open(self.path + '/' + self.fullname)
@@ -69,13 +69,13 @@ module Slackware
 
 		# Setter for the PACKAGE DESCRIPTION, in the event you are parsing a repo file
 		def package_description=(desc)
-			@package_description = desc
+			self.package_description = desc
 		end
 
 		# Accessor for the PACKAGE LOCATION from the package file
 		def package_location
-			if not(@package_location.nil?)
-				return @package_location
+			if not(self.package_location.nil?)
+				return self.package_location
 			end
 
 			f = File.open(self.path + '/' + self.fullname)
@@ -88,13 +88,13 @@ module Slackware
 
 		# Setter for the PACKAGE LOCATION, in the event you are parsing a repo file
 		def package_location=(path)
-			@package_location = path
+			self.package_location = path
 		end
 
 		# Accessor for the UNCOMPRESSED PACKAGE SIZE from the package file
 		def uncompressed_size
-			if not(@uncompressed_size.nil?)
-				return @uncompressed_size
+			if not(self.uncompressed_size.nil?)
+				return self.uncompressed_size
 			end
 
 			f = File.open(self.path + '/' + self.fullname)
@@ -107,13 +107,13 @@ module Slackware
 
 		# Setter for the UNCOMPRESSED PACKAGE SIZE, in the event you are parsing a repo file
 		def uncompressed_size=(size)
-			@uncompressed_size = size
+			self.uncompressed_size = size
 		end
 
 		# Accessor for the COMPRESSED PACKAGE SIZE from the package file
 		def compressed_size
-			if not(@compressed_size.nil?)
-				return @compressed_size
+			if not(self.compressed_size.nil?)
+				return self.compressed_size
 			end
 
 			f = File.open(self.path + '/' + self.fullname)
@@ -126,14 +126,14 @@ module Slackware
 
 		# Setter for the COMPRESSED PACKAGE SIZE, in the event you are parsing a repo file
 		def compressed_size=(size)
-			@compressed_size = size
+			self.compressed_size = size
 		end
 
 		# Accessor for the FILE LIST from the package file
 		# unless the :owned_files symbol is populated
 		def get_owned_files
-			if not(@owned_files.nil?)
-				return @owned_files
+			if not(self.owned_files.nil?)
+				return self.owned_files
 			else
 				f = File.open(self.path + '/' + self.fullname)
 				files = f.drop_while {|l| not( l =~ /^FILE LIST:/) }[2..-1].map {|l| l.chomp }
@@ -144,8 +144,8 @@ module Slackware
 
 		# Set the file list in the package object in memory
 		def set_owned_files
-			if @owned_files.nil?
-				@owned_files = self.get_owned_files
+			if self.owned_files.nil?
+				self.owned_files = self.get_owned_files
 				return true
 			else
 				return false
