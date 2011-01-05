@@ -142,7 +142,11 @@ def find_orphaned_config_files
 	# build a list of config files currently installed
 	installed_config_files = Slackware::System.installed_packages.map {|pkg|
 		pkg.get_owned_files.map {|file|
-			file if (file =~ /^etc\// && not(file =~ /\/$/))
+			if not(file =~ /\/$/)
+				if (file =~ /^etc\//)
+					file
+				end
+			end
 		}
 	}.flatten.compact
 
@@ -155,8 +159,10 @@ def find_orphaned_config_files
 		if (config.count > 0)
 			# remove config files that are owned by a currently installed package
 			config = config.map {|file|
-				if (not(installed_config_files.include?(file)) && not(installed_config_files.include?(file + ".new")))
-					file
+				if not(installed_config_files.include?(file))
+					if not(installed_config_files.include?(file + ".new"))
+						file
+					end
 				end
 			}.compact
 			# check again, and continue if there are no config files left
