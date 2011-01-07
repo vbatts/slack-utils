@@ -81,8 +81,18 @@ module Slackware
 				actions = %w{removed added upgraded rebuilt}
 				actions.each {|action|
 					changelog[:"#{action}"] = changelog_date.map {|line|
-						if line =~ /^\w+\/(.*)\.t[gx]z:\s+#{action}\.?$/i
-							Slackware::Package.parse($1)
+						if line =~ /^(\w+)\/(.*)\.t[gx]z:\s+#{action}\.?$/i
+							s = Slackware::Package.parse($2)
+							s.path = $1
+							s.package_location = self.proto +
+								self.mirror +
+								self.path +
+								"slackware" +
+								self.arch +
+								"-" +
+								self.version +
+								"/" 
+							s
 						end
 					}.compact
 				}

@@ -5,7 +5,7 @@ PKGNAM := slack-utils
 TMP := /tmp
 CWD = $(PWD)
 
-build: .slackpkg .gem
+build: .slackpkg
 
 .bundle: local.conf $(shell find src/ -type f)
 	. local.conf && \
@@ -23,13 +23,12 @@ build: .slackpkg .gem
 	sh $(PKGNAM).SlackBuild && \
 	touch $@
 
-.gem: 
+gem: 
 	. local.conf && \
 	mkdir -p $(CWD)/pkg && \
 	cd src/ && \
 	rake gem && \
-	mv pkg/$(PKGNAM)-$$VERSION.gem ../pkg && \
-	touch $@
+	mv pkg/$(PKGNAM)-$$VERSION.gem ../pkg
 
 reinstall: .slackpkg
 	. local.conf && \
@@ -37,4 +36,4 @@ reinstall: .slackpkg
 
 clean:
 	. local.conf && \
-	rm -f $(PKGNAM)-$$VERSION.tar.gz
+	rm -f $(PKGNAM)-$$VERSION.tar.gz .bundle .slackpkg
