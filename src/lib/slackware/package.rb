@@ -158,7 +158,7 @@ module Slackware
 				if (File.exist?(self.path + "/" + self.fullname))
 					self.time = File.mtime(self.path + "/" + self.fullname)
 				end
-			elsif (self.time.nil? && not(self.path))
+			elsif (not(self.path) && (self.time.nil?))
 				if (File.exist?(DIR_INSTALLED_PACKAGES + "/" + self.fullname))
 					self.time = File.mtime(DIR_INSTALLED_PACKAGES + "/" + self.fullname)
 				end
