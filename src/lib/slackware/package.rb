@@ -18,8 +18,8 @@ module Slackware
 				name = $1
 				self.upgrade_time = Time.strptime($2 + ' ' + $3, fmt='%F %H:%M:%S')
 			end
-			arr = name.split('-').reverse
-			build = arr.shift
+			arr = name.split('-')
+			build = arr.pop
 			if (build.include?("_"))
 				self.tag_sep = "_"
 				self.build = build.split(self.tag_sep)[0]
@@ -29,10 +29,11 @@ module Slackware
 				self.tag = $2
 			else
 				self.build = build
+				self.tag = ""
 			end
-			self.arch = arr.shift
-			self.version = arr.shift
-			self.name = arr.reverse.join('-')
+			self.arch = arr.pop
+			self.version = arr.pop
+			self.name = arr.join('-')
 		end
 
 		# Package.parse class method

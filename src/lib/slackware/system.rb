@@ -33,7 +33,15 @@ module Slackware
 		end
 
 		def self::tags_used
-			return installed_packages.map {|p| p.tag }.uniq.compact
+			pkgs = installed_packages
+			set = []
+			pkgs.map {|p| p.tag }.uniq.each {|tag|
+				m_set = {}
+				m_set[:tag] = tag
+				m_set[:count] = pkgs.map {|p| p if p.tag == tag }.compact.count
+				set << m_set
+			}
+			return set
 		end
 
 		def self::with_tag(tag)

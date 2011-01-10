@@ -38,15 +38,17 @@ module Slackware
 							  end
 							  a
 						  end
+			else
+				## do some hot parsing of repo
 			end
 		end
 
 		def fetch(file = nil)
-			if file.nil?
-				url = URI.parse(self.proto + self.mirror + self.path)
-			else
-				url = URI.parse(self.proto + self.mirror + self.path + file)
-			end
+			#if file.nil?
+				#url = URI.parse(self.proto + self.mirror + self.path)
+			#else
+				#url = URI.parse(self.proto + self.mirror + self.path + file)
+			#end
 			if self.proto =~ /ftp/
 				ftp = Net::FTP.open(self.mirror)
 				ftp.login
@@ -63,6 +65,12 @@ module Slackware
 				req = Net::HTTP::Get.new(url.path)
 				res = Net::HTTP.start(url.host, url.port) {|http| http.request(req) }
 				return res
+			elsif self.proto =~ /file/
+				if (file.nil?)
+					return Dir.glob(self.path + "slackware" + self.arch + "-" + self.version + "/*")
+				else
+					return File.read(self.path + "slackware" + self.arch + "-" + self.version + "/" + file)
+				end
 			else
 				return nil
 			end
@@ -84,9 +92,13 @@ module Slackware
 						if line =~ /^(\w+)\/(.*)\.t[gx]z:\s+#{action}\.?$/i
 							s = Slackware::Package.parse($2)
 							s.path = $1
+							if (self.mirror.nil?)
+								base_path= self.path
+							else
+								base_path= self.mirror + self.path
+							end
 							s.package_location = self.proto +
-								self.mirror +
-								self.path +
+								base_path +
 								"slackware" +
 								self.arch +
 								"-" +
