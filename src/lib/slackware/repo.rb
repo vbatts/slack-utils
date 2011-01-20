@@ -1,5 +1,6 @@
 
 require 'slackware/package'
+require 'slackware/changelog'
 require 'slackware/system'
 require 'net/http'
 require 'net/ftp'
