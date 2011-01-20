@@ -1,6 +1,8 @@
 # vim: set ts=2 sw=2 noexpandtab :
 
 require 'slackware/package'
+require 'date'
+require 'time'
 
 module Slackware
   # The class for parsing a Slackware standard ChangeLog.txt
@@ -50,13 +52,20 @@ module Slackware
     class Entry
       # FIXME this class needs more proper value setting
       def initialize(line = nil)
-        @package = @action = @notes = nil
+        @package = @section = @action = @notes = nil
         @security = false
       end
       def package; @package; end
+      def section; @section; end
       def action; @action; end
       def notes; @notes; end
       def security; @security; end
+
+      def package=(package_name); @package = package_name ; end
+      def section=(section_name); @section = section_name ; end
+      def action=(action_name); @action = action_name ; end
+      def notes=(notes_txt); @notes = notes_txt ; end
+      def security=(bool); if (bool == true) ; @secuity = bool ; else ; @security = false ; end
     end
 
     def initialize(file = nil)
@@ -85,6 +94,8 @@ module Slackware
       elsif file.is_a?(String)
         if File.exist?(File.expand_path(file))
           f_handle = File.open(File.expand_path(file))
+				else
+					return -1
         end
       else
         return -1
@@ -92,8 +103,20 @@ module Slackware
 
       changelog = ChangeLog.new(f_handle)
       f_handle.each do |line|
-        # XXX do some hot stuff here
-
+				if (line =~ RE_DATE)
+					u = Update.new(Time.parse($1))
+					u_line = ""
+					until (u_line =~ RE_CHANGELOG_BREAK && f_handle.eof?)
+						u_line = f_handle.readline
+						if (u_line =~ RE_PACKAGE_ENTRY)
+							u_entry = Entry.new()
+							u_entry.package = $1
+							u_entry.section = $2
+							u_entry.action = $3 unless $3.empty?
+						end
+					end
+        	# XXX do some hot stuff here
+				end
       end
 
       return changelog
