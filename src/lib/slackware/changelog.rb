@@ -1,3 +1,4 @@
+# vim: set ts=2 sw=2 noexpandtab :
 
 require 'slackware/package'
 
@@ -78,26 +79,28 @@ module Slackware
     # * next package or entry separator
     # * separator creates next change entry
     def self::parse(file)
+			f_handle = ""
       if file.is_a?(File)
+				f_handle = file
       elsif file.is_a?(String)
-        if File.exist?(file)
-          file = File.open(file)
+        if File.exist?(File.expand_path(file))
+          f_handle = File.open(File.expand_path(file))
         end
       else
         return -1
       end
 
-      changelog = ChangeLog.new()
-      file.each do |line|
+      changelog = ChangeLog.new(f_handle)
+      f_handle.each do |line|
         # XXX do some hot stuff here
 
       end
 
-			return changelog
+      return changelog
     end
 
     def inspect
-      "#<%s:0x%x @file=%s, %d @entries>" % [self.class.name, self.object_id.abs, self.file || '""', self.entries.count || 0]
+      "#<%s:0x%x @file=%s, %d @entries>" % [self.class.name, self.object_id.abs, self.file.path || '""', self.entries.count || 0]
     end
   end
 end
