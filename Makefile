@@ -23,6 +23,10 @@ build: .slackpkg
 	sh $(PKGNAM).SlackBuild && \
 	touch $@
 
+
+irb:
+	irb -I$(CWD)/src/lib/ -r slackware
+
 gem: 
 	. local.conf && \
 	mkdir -p $(CWD)/pkg && \
