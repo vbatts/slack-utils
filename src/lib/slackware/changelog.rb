@@ -23,16 +23,22 @@ module Slackware
 
     # The regular entry, accounting for usb-and-pxe-installers directory,
     # and notes after the action
-    re_package_entry0 = Regexp.new(/^((\w+|-)+\/.*):\s+(\w+).*\.?$/)
+    re_package_entry0 = Regexp.new(/^(([\w+-]+).*\/.*):\s+(\w+).*\.?$/)
     # Some didn't have an action after the name
-    re_package_entry1 = Regexp.new(/^(\w+\/.*):/)
+    re_package_entry1 = Regexp.new(/^(([\w+-]+).*\/.*):/)
     # and some didn't have the ':' or an action
-    re_package_entry2 = Regexp.new(/^(\w+\/.*\.t(g|b|x)z)/)
+    re_package_entry2 = Regexp.new(/^(([\w+-]+).*\/.*\.t[gbx]z)/)
     # combine them
     RE_PACKAGE_ENTRY = Regexp.union(re_package_entry0, re_package_entry1, re_package_entry2)
 
     # (* Security fix *)
     RE_SECURITY_FIX = Regexp.new(/\(\*\s+security\s+fix\s+\*\)/i)
+
+		# for hacks sake, make these usbable elsewhere
+		def self::re_date ; RE_DATE ; end
+		def self::re_changelog_break ; RE_CHANGELOG_BREAK ; end
+		def self::re_package_entry ; RE_PACKAGE_ENTRY ; end
+		def self::re_security_fix ; RE_SECURITY_FIX ; end
 
     # A changeset, which should consist of entries of changes and/or notes
     # regarding the updates
@@ -46,6 +52,17 @@ module Slackware
       def date; @date; end
       def notes; @notes; end
       def entries; @entries; end
+
+      def date=(timestamp)
+				if (timestamp.is_a?(Time))
+					@date = timestamp
+				elsif (timestamp.is_a?(Date))
+					@date = timestamp.to_time
+				else
+					@date = Time.parse(timestamp)
+				end
+			end
+      def notes=(text); @notes = text; end
     end
 
     # The class for each item in a change set
@@ -111,7 +128,6 @@ module Slackware
       f_handle.each do |line|
 				if (line =~ RE_DATE)
 					u = Update.new(Time.parse($1))
-					# FIXME this loop is not break'ing like it should
 					while true
 						if (f_handle.eof?)
 							break
@@ -124,9 +140,25 @@ module Slackware
 						# still needs an until check for update notes, and entry notes
 						if (u_line =~ RE_PACKAGE_ENTRY)
 							u_entry = Entry.new()
-							u_entry.package = $1
-							u_entry.section = $2
-							u_entry.action = $3 unless $3.nil?
+					    if $1.nil?
+					      if $4.nil?
+					        u_entry.name = $6 unless $6.nil?
+					      else
+					        u_entry.name = $4
+					      end
+					    else
+					      u_entry.name = $1
+					    end
+					    if $2.nil?
+					      if $5.nil?
+					        u_entry.section = $7 unless $7.nil?
+					      else
+					        u_entry.section = $5
+					      end
+					    else
+					      u_entry.section = $2
+					    end
+					    u_entry.action = $3 unless $3.nil?
 							u.entries << u_entry
 						end
 					end
@@ -138,7 +170,7 @@ module Slackware
     end
 
     def inspect
-      "#<%s:0x%x @file=%s, %d @updates, %d @entries>" % [self.class.name, self.object_id.abs, self.file.path || '""', self.updates.count || 0, self.entries.count || 0]
+      "#<%s:0x%x @file=%s, %d @updates, %d @entries>" % [self.class.name, self.object_id.abs, self.file || '""', self.updates.count || 0, self.entries.count || 0]
     end
   end
 end
