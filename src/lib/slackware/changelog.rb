@@ -19,7 +19,7 @@ module Slackware
     RE_DATE = Regexp.new(/^(#{re_daynames}\s+#{re_monthnames}\s+\d+\s+\d{2}:\d{2}:\d{2}\s\w+\s+\d+)$/)
  
     # This break has been the same as long as I can find
-    RE_CHANGELOG_BREAK = Regexp.new(/^+--------------------------+$/)
+    RE_CHANGELOG_BREAK = Regexp.new(/^\+--------------------------\+$/)
 
     # The regular entry, accounting for usb-and-pxe-installers directory,
     # and notes after the action
@@ -65,7 +65,13 @@ module Slackware
       def section=(section_name); @section = section_name ; end
       def action=(action_name); @action = action_name ; end
       def notes=(notes_txt); @notes = notes_txt ; end
-      def security=(bool); if (bool == true) ; @secuity = bool ; else ; @security = false ; end
+      def security=(bool)
+				if (bool == true)
+					@secuity = bool
+				else
+					@security = false
+				end
+			end
     end
 
     def initialize(file = nil)
@@ -105,17 +111,26 @@ module Slackware
       f_handle.each do |line|
 				if (line =~ RE_DATE)
 					u = Update.new(Time.parse($1))
-					u_line = ""
-					until (u_line =~ RE_CHANGELOG_BREAK && f_handle.eof?)
+					# FIXME this loop is not break'ing like it should
+					while true
+						if (f_handle.eof?)
+							break
+						end
 						u_line = f_handle.readline
+						if (u_line =~ RE_CHANGELOG_BREAK)
+							break
+						end
+        		# XXX do some hot stuff here
+						# still needs an until check for update notes, and entry notes
 						if (u_line =~ RE_PACKAGE_ENTRY)
 							u_entry = Entry.new()
 							u_entry.package = $1
 							u_entry.section = $2
-							u_entry.action = $3 unless $3.empty?
+							u_entry.action = $3 unless $3.nil?
+							u.entries << u_entry
 						end
 					end
-        	# XXX do some hot stuff here
+					changelog.updates << u
 				end
       end
 
@@ -123,7 +138,7 @@ module Slackware
     end
 
     def inspect
-      "#<%s:0x%x @file=%s, %d @entries>" % [self.class.name, self.object_id.abs, self.file.path || '""', self.entries.count || 0]
+      "#<%s:0x%x @file=%s, %d @updates, %d @entries>" % [self.class.name, self.object_id.abs, self.file.path || '""', self.updates.count || 0, self.entries.count || 0]
     end
   end
 end
