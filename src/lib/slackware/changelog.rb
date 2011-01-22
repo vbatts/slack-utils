@@ -132,23 +132,31 @@ module Slackware
 						if (f_handle.eof?)
 							break
 						end
+
+						# take the next line
 						u_line = f_handle.readline
 						if (u_line =~ RE_CHANGELOG_BREAK)
 							break
 						end
+
         		# XXX do some hot stuff here
 						# still needs an until check for update notes, and entry notes
 						if (u_line =~ RE_PACKAGE_ENTRY)
 							u_entry = Entry.new()
+							# This silly iteration catches the different cases of 
+							# which package line, matches which Regexp. WIN
 					    if $1.nil?
 					      if $4.nil?
-					        u_entry.name = $6 unless $6.nil?
+					        u_entry.package = $6 unless $6.nil?
 					      else
-					        u_entry.name = $4
+					        u_entry.package = $4
 					      end
 					    else
-					      u_entry.name = $1
+					      u_entry.package = $1
 					    end
+							if u_entry.package.include?("/")
+								u_entry.package = u_entry.package.split("/")[-1]
+							end
 					    if $2.nil?
 					      if $5.nil?
 					        u_entry.section = $7 unless $7.nil?
@@ -159,13 +167,18 @@ module Slackware
 					      u_entry.section = $2
 					    end
 					    u_entry.action = $3 unless $3.nil?
+
+							# Add this entry to the stack
 							u.entries << u_entry
 						end
 					end
+
+					# Add this update to the stack
 					changelog.updates << u
 				end
       end
 
+			# Give them their change set
       return changelog
     end
 
