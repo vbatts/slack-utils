@@ -1,4 +1,3 @@
-# vim: set ts=2 sw=2 noexpandtab :
 
 require 'slackware/package'
 require 'date'
@@ -34,17 +33,17 @@ module Slackware
     # (* Security fix *)
     RE_SECURITY_FIX = Regexp.new(/\(\*\s+security\s+fix\s+\*\)/i)
 
-		# for hacks sake, make these usbable elsewhere
-		def self::re_date ; RE_DATE ; end
-		def self::re_changelog_break ; RE_CHANGELOG_BREAK ; end
-		def self::re_package_entry ; RE_PACKAGE_ENTRY ; end
-		def self::re_security_fix ; RE_SECURITY_FIX ; end
+    # for hacks sake, make these usbable elsewhere
+    def self::re_date ; RE_DATE ; end
+    def self::re_changelog_break ; RE_CHANGELOG_BREAK ; end
+    def self::re_package_entry ; RE_PACKAGE_ENTRY ; end
+    def self::re_security_fix ; RE_SECURITY_FIX ; end
 
     # A changeset, which should consist of entries of changes and/or notes
     # regarding the updates
     class Update
       # FIXME this class needs more proper value setting
-      def initialize(date = nil, notes = nil, entries = Array.new)
+      def initialize(date = nil, notes = "", entries = Array.new)
         @date = date
         @notes = notes
         @entries = entries
@@ -54,14 +53,14 @@ module Slackware
       def entries; @entries; end
 
       def date=(timestamp)
-				if (timestamp.is_a?(Time))
-					@date = timestamp
-				elsif (timestamp.is_a?(Date))
-					@date = timestamp.to_time
-				else
-					@date = Time.parse(timestamp)
-				end
-			end
+        if (timestamp.is_a?(Time))
+          @date = timestamp
+        elsif (timestamp.is_a?(Date))
+          @date = timestamp.to_time
+        else
+          @date = Time.parse(timestamp)
+        end
+      end
       def notes=(text); @notes = text; end
     end
 
@@ -69,7 +68,8 @@ module Slackware
     class Entry
       # FIXME this class needs more proper value setting
       def initialize(line = nil)
-        @package = @section = @action = @notes = nil
+        @package = @section = @action = nil
+        @notes = ""
         @security = false
       end
       def package; @package; end
@@ -83,12 +83,12 @@ module Slackware
       def action=(action_name); @action = action_name ; end
       def notes=(notes_txt); @notes = notes_txt ; end
       def security=(bool)
-				if (bool == true)
-					@secuity = bool
-				else
-					@security = false
-				end
-			end
+        if (bool == true)
+          @security = bool
+        else
+          @security = false
+        end
+      end
     end
 
     def initialize(file = nil)
@@ -101,6 +101,9 @@ module Slackware
     def entries
       @updates.map {|update| update.entries.map {|entry| {:date => update.date, :entry => entry } } }.flatten
     end
+    def security
+      @updates.map {|u| u.entries.map {|e| {:date => u.date, :entry => e } if e.security } }.flatten.compact
+    end
 
     # XXX parse order needs to be
     # * if its' a date match, store the date
@@ -111,74 +114,88 @@ module Slackware
     # * next package or entry separator
     # * separator creates next change entry
     def self::parse(file)
-			f_handle = ""
+      f_handle = ""
       if file.is_a?(File)
-				f_handle = file
+        f_handle = file
       elsif file.is_a?(String)
         if File.exist?(File.expand_path(file))
           f_handle = File.open(File.expand_path(file))
-				else
-					return -1
+        else
+          return -1
         end
       else
         return -1
       end
 
+      # Start our changelog
       changelog = ChangeLog.new(f_handle)
       f_handle.each do |line|
-				if (line =~ RE_DATE)
-					u = Update.new(Time.parse($1))
-					while true
-						if (f_handle.eof?)
-							break
-						end
+        if (line =~ RE_DATE)
+          u = Update.new(Time.parse($1))
+          while true
+            if (f_handle.eof?)
+              break
+            end
 
-						# take the next line
-						u_line = f_handle.readline
-						if (u_line =~ RE_CHANGELOG_BREAK)
-							break
-						end
+            # take the next line
+            u_line = f_handle.readline
+            if (u_line =~ RE_CHANGELOG_BREAK)
+              break
+            end
 
-        		# XXX do some hot stuff here
-						# still needs an until check for update notes, and entry notes
-						if (u_line =~ RE_PACKAGE_ENTRY)
-							u_entry = Entry.new()
-							# This silly iteration catches the different cases of 
-							# which package line, matches which Regexp. WIN
-					    if $1.nil?
-					      if $4.nil?
-					        u_entry.package = $6 unless $6.nil?
-					      else
-					        u_entry.package = $4
-					      end
-					    else
-					      u_entry.package = $1
-					    end
-							if u_entry.package.include?("/")
-								u_entry.package = u_entry.package.split("/")[-1]
-							end
-					    if $2.nil?
-					      if $5.nil?
-					        u_entry.section = $7 unless $7.nil?
-					      else
-					        u_entry.section = $5
-					      end
-					    else
-					      u_entry.section = $2
-					    end
-					    u_entry.action = $3 unless $3.nil?
+            # XXX do some hot stuff here
+            # still needs an until check for update notes, and entry notes
+            if (u_line =~ RE_PACKAGE_ENTRY)
+              u_entry = Entry.new()
+              # This silly iteration catches the different cases of 
+              # which package line, matches which Regexp. WIN
+              if $1.nil?
+                if $4.nil?
+                  u_entry.package = $6 unless $6.nil?
+                else
+                  u_entry.package = $4
+                end
+              else
+                u_entry.package = $1
+              end
+              if u_entry.package.include?("/")
+                u_entry.package = u_entry.package.split("/")[-1]
+              end
+              if $2.nil?
+                if $5.nil?
+                  u_entry.section = $7 unless $7.nil?
+                else
+                  u_entry.section = $5
+                end
+              else
+                u_entry.section = $2
+              end
+              # set the action for the item, if it's present
+              u_entry.action = $3 unless $3.nil?
 
-							# Add this entry to the stack
-							u.entries << u_entry
-						end
-					end
+              # Add this entry to the stack
+              u.entries << u_entry
+            else
+              # if u.entries is empty, then this text is notes 
+              # for the upate, else it is notes, for the entry
+              if (u.entries.empty?)
+                u.notes = u.notes + u_line
+              else
+                # if this line of the entry security fix, toggle the bool
+                if (u_line =~ RE_SECURITY_FIX)
+                  u.entries[-1].security = true
+                end
+                u.entries[-1].notes = u.entries[-1].notes + u_line
+              end
+            end
+          end
 
-					# Add this update to the stack
-					changelog.updates << u
-				end
+          # Add this update to the stack
+          changelog.updates << u
+        end
       end
 
-			# Give them their change set
+      # Give them their change set
       return changelog
     end
 

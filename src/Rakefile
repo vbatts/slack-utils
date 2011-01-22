@@ -16,25 +16,26 @@ spec = Gem::Specification.new do |s|
 package information on the Slackware Linux OS. 
 See the examples/ for more information.
   }
-  s.files = [
-    "README.rdoc",
-    "bin/slf",
-    "bin/slt",
-    "bin/slp",
-    "bin/slo",
-    "bin/sll",
-    "bin/slfindlinked",
-    "examples/list_packages.rb",
-    "examples/repo_difference.rb",
-    "examples/before_then.rb",
-    "examples/repo.rb",
-    "lib/slackware.rb",
-    "lib/slackware/utils.rb",
-    "lib/slackware/package.rb",
-    "lib/slackware/repo.rb",
-    "lib/slackware/version.rb",
-    "lib/slackware/system.rb"
-  ]
+  s.files = %w{
+    README.rdoc
+    bin/slf
+    bin/slt
+    bin/slp
+    bin/slo
+    bin/sll
+    bin/slfindlinked
+    examples/list_packages.rb
+    examples/repo_difference.rb
+    examples/before_then.rb
+    examples/repo.rb
+    lib/slackware.rb
+    lib/slackware/utils.rb
+    lib/slackware/changelog.rb
+    lib/slackware/package.rb
+    lib/slackware/repo.rb
+    lib/slackware/version.rb
+    lib/slackware/system.rb
+  }
   s.executables = ["slf","slo","sll","slp","slt","slfindlinked"]
   s.require_paths = ["lib"]
   s.autorequire = "slack-utils"
