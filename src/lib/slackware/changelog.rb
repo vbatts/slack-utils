@@ -66,12 +66,14 @@ module Slackware
 
     # The class for each item in a change set
     class Entry
-      # FIXME this class needs more proper value setting
-      def initialize(line = nil)
-        @package = @section = @action = nil
-        @notes = ""
-        @security = false
+      def initialize(package = nil, section = nil, action = nil, notes = "", security = false)
+        @package  = package
+        @section  = section
+        @action   = action
+        notes.is_a?(String) ? @notes = notes : @notes = ""
+        security == true ? @security = security : @security = false
       end
+
       def package; @package; end
       def section; @section; end
       def action; @action; end
@@ -81,19 +83,18 @@ module Slackware
       def package=(package_name); @package = package_name ; end
       def section=(section_name); @section = section_name ; end
       def action=(action_name); @action = action_name ; end
-      def notes=(notes_txt); @notes = notes_txt ; end
+      def notes=(notes_txt)
+        notes_txt.is_a?(String) ? @notes = notes_txt : @notes = ""
+      end
       def security=(bool)
-        if (bool == true)
-          @security = bool
-        else
-          @security = false
-        end
+        bool == true ? @security = bool : @security = false
       end
     end
 
-    def initialize(file = nil)
-      @file = file
-      @updates = Array.new
+    def initialize(file = nil, opts = {})
+      @file     = file
+      @opts     = opts
+      @updates  = Array.new
     end
 
     def file; @file; end
