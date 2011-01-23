@@ -117,7 +117,29 @@ module Slackware
       end
     end
 
-    # XXX parse order needs to be
+    def parse
+	    unless @file.nil?
+		    @updates = parse_this_file(@file).updates
+	    end
+	    return self
+    end
+
+    # Class method
+    def self::parse(file)
+	    return parse_this_file(file)
+    end
+
+    def self::open(file)
+	    return parse_this_file(file)
+    end
+
+    def inspect
+      "#<%s:0x%x @file=%s, %d @updates, %d @entries>" % [self.class.name, self.object_id.abs, self.file || '""', self.updates.count || 0, self.entries.count || 0]
+    end
+
+    private
+
+    # Parse order is something like:
     # * if its' a date match, store the date
     # * take change notes until
     # * package match on name and action
@@ -125,7 +147,7 @@ module Slackware
     # * take packge notes until
     # * next package or entry separator
     # * separator creates next change entry
-    def self::parse(file)
+    def parse_this_file(file)
       f_handle = ""
       if file.is_a?(File)
         f_handle = file
@@ -211,8 +233,5 @@ module Slackware
       return changelog
     end
 
-    def inspect
-      "#<%s:0x%x @file=%s, %d @updates, %d @entries>" % [self.class.name, self.object_id.abs, self.file || '""', self.updates.count || 0, self.entries.count || 0]
-    end
   end
 end

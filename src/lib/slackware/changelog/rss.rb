@@ -60,12 +60,12 @@ module Slackware
           if (update.entries.count > 0)
             update.entries.each {|entry|
               if (entry.notes.empty?)
-                i.description = i.description + sprintf("section:\s%s\s\spackage:\s%s\s\saction:\s%s\n",
+                i.description = i.description + sprintf("%s/%s:\s%s\n",
                                                         entry.section,
                                                         entry.package,
                                                         entry.action)
               else
-                i.description = i.description + sprintf("section:\s%s\s\spackage:\s%s\s\saction:\s%s\n\s\s%s\n",
+                i.description = i.description + sprintf("%s/%s:\s%s\n\s\s%s\n",
                                                         entry.section,
                                                         entry.package,
                                                         entry.action,

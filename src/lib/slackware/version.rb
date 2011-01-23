@@ -7,6 +7,6 @@ module Slackware
 		  rescue
 			  nil
 		  end
-	UTILS_VERSION = "0.5.3"
+	UTILS_VERSION = "0.6.0"
 end
 

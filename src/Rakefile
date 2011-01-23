@@ -5,7 +5,7 @@ require 'rake/gempackagetask'
 
 spec = Gem::Specification.new do |s|
   s.name = %q{slack-utils}
-  s.version = "0.5.3"
+  s.version = "0.6.0"
   s.authors = ["Vincent Batts"]
   s.date = %q{2011-11-19}
   s.email = %q{vbatts@hashbangbash.com}
