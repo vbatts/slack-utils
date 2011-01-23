@@ -91,6 +91,11 @@ module Slackware
       end
     end
 
+    # +file+ can be a path to a file, or a +File+ object
+    # +opts+ can include
+    #  * :arch    - basically '64' or '32'
+    #  * :version - 13.1, 13.2, current, etc.
+    #  * :url     - the URL web link to the ChangeLog.txt
     def initialize(file = nil, opts = {})
       @file     = file
       @opts     = opts
@@ -98,12 +103,18 @@ module Slackware
     end
 
     def file; @file; end
+    def opts; @opts; end
     def updates; @updates; end
     def entries
       @updates.map {|update| update.entries.map {|entry| {:date => update.date, :entry => entry } } }.flatten
     end
     def security
       @updates.map {|u| u.entries.map {|e| {:date => u.date, :entry => e } if e.security } }.flatten.compact
+    end
+    def opts=(hash)
+      if hash.is_a?(Hash)
+        @opts = hash
+      end
     end
 
     # XXX parse order needs to be
@@ -122,10 +133,10 @@ module Slackware
         if File.exist?(File.expand_path(file))
           f_handle = File.open(File.expand_path(file))
         else
-          return -1
+          raise StandardError.new("file not found\n")
         end
       else
-        return -1
+        raise StandardError.new("file not found\n")
       end
 
       # Start our changelog

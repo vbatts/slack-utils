@@ -6,20 +6,74 @@ module Slackware
     def to_rss
       version = "2.0" # ["0.9", "1.0", "2.0"]
       content = RSS::Maker.make(version) do |m|
-        m.channel.title = "Example Ruby RSS feed"
-        m.channel.link = "http://www.slackware.com"
-        m.channel.description = "Old news (or new olds) at Ruby RSS"
+        added_title = ""
+        if @opts[:arch]
+          added_title = added_title + "slackware#{@opts[:arch]}"
+        end
+        if @opts[:version]
+          added_title = added_title + "-#{@opts[:version]}"
+        end
+
+        if added_title.empty?
+          m.channel.title = "Slackware ChangeLog.txt feed"
+        else
+          m.channel.title = "Slackware ChangeLog.txt feed for #{added_title}"
+        end
+        if @opts[:url]
+          m.channel.link = "%s#slackagg" % [@opts[:url]]
+        else
+          m.channel.link = "http://www.slackware.com/#slackagg"
+        end
+        #m.channel.logo = "http://connie.slackware.com/~msimons/slackware/grfx/shared/bluepiSW.jpg"
+        m.channel.logo = "http://connie.slackware.com/~msimons/slackware/grfx/shared/dobbslack1.jpg"
+        m.channel.description = "a parsed ChangeLog.txt, is an extendable ChangeLog.txt"
         m.items.do_sort = true # sort items by date
 
-        i = m.items.new_item
-        i.title = "Ruby can parse RSS feeds"
-        i.link = "http://www.rubyrss.com/"
-        i.date = Time.parse("2007/2/11 14:01")
+        @updates.each {|update|
+          i = m.items.new_item
+          # Add a plug to the title of the update, if it includes a security fix
+          # set this here, so we don't have to .map again down below
+          security = update.entries.map {|e| 1 if e.security }.compact.count
+          if (security > 0)
+            i.title = "%s (* Security fix *)" % [update.date.utc.to_s]
+          else
+            i.title = update.date.utc.to_s
+          end
+          if @opts[:url]
+            i.link = "%s#%s" % [@opts[:url], update.date.to_i]
+          else
+            i.link = "http://slackware.com/#slackagg#%s" % [update.date.to_i]
+          end
+          i.date = update.date
 
-        i = m.items.new_item
-        i.title = "Ruby can create RSS feeds"
-        i.link = "http://www.rubyrss.com/"
-        i.date = Time.now
+          i.description = ""
+          if (update.entries.count > 0)
+            if (security > 0)
+              i.description = "%d new update(s), %d security update(s)\n\n" % [update.entries.count, security]
+            else
+              i.description = "%d new update(s)\n\n" % [update.entries.count]
+            end
+          end
+          unless (update.notes.empty?)
+              i.description = i.description + update.notes + "\n\n"
+          end
+          if (update.entries.count > 0)
+            update.entries.each {|entry|
+              if (entry.notes.empty?)
+                i.description = i.description + sprintf("section:\s%s\s\spackage:\s%s\s\saction:\s%s\n",
+                                                        entry.section,
+                                                        entry.package,
+                                                        entry.action)
+              else
+                i.description = i.description + sprintf("section:\s%s\s\spackage:\s%s\s\saction:\s%s\n\s\s%s\n",
+                                                        entry.section,
+                                                        entry.package,
+                                                        entry.action,
+                                                        entry.notes)
+              end
+            }
+          end
+        }
       end
       return content
     end
