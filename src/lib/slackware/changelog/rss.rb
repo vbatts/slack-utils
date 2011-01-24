@@ -17,9 +17,9 @@ module Slackware
         end
 
         if added_title.empty?
-          m.channel.title = "Slackware ChangeLog.txt feed"
+          m.channel.title = "Slackware ChangeLog.txt"
         else
-          m.channel.title = "Slackware ChangeLog.txt feed for #{added_title}"
+          m.channel.title = "#{added_title} ChangeLog.txt"
         end
         if @opts[:url]
           m.channel.link = "%s#slackagg" % [@opts[:url]]
