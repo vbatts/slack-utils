@@ -138,7 +138,6 @@ module Slackware
     end
 
     private
-
     # Parse order is something like:
     # * if its' a date match, store the date
     # * take change notes until
@@ -177,35 +176,37 @@ module Slackware
               break
             end
 
-            # XXX do some hot stuff here
-            # still needs an until check for update notes, and entry notes
-            if (u_line =~ RE_PACKAGE_ENTRY)
+            # the intimate iteration
+            # +Match+ is more expensive than =~,
+            # but ruby-1.8.x is lossing the matched values down below
+            # so this works on both ...
+            if (match = RE_PACKAGE_ENTRY.match(u_line))
               u_entry = Entry.new()
               # This silly iteration catches the different cases of 
               # which package line, matches which Regexp. WIN
-              if $1.nil?
-                if $4.nil?
-                  u_entry.package = $6 unless $6.nil?
+              if match[1].nil?
+                if match[4].nil?
+                  u_entry.package = match[6] unless match[6].nil?
                 else
-                  u_entry.package = $4
+                  u_entry.package = match[4]
                 end
               else
-                u_entry.package = $1
+                u_entry.package = match[1]
               end
               if u_entry.package.include?("/")
                 u_entry.package = u_entry.package.split("/")[-1]
               end
-              if $2.nil?
-                if $5.nil?
-                  u_entry.section = $7 unless $7.nil?
+              if match[2].nil?
+                if match[5].nil?
+                  u_entry.section = match[7] unless match[7].nil?
                 else
-                  u_entry.section = $5
+                  u_entry.section = match[5]
                 end
               else
-                u_entry.section = $2
+                u_entry.section = match[2]
               end
               # set the action for the item, if it's present
-              u_entry.action = $3 unless $3.nil?
+              u_entry.action = match[3] unless match[3].nil?
 
               # Add this entry to the stack
               u.entries << u_entry
