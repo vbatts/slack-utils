@@ -54,6 +54,7 @@ module Slackware
               i.description = "%d new update(s)\n\n" % [update.entries.count]
             end
           end
+          i.description = i.description + "<pre><blockquote>\n"
           unless (update.notes.empty?)
               i.description = i.description + update.notes + "\n\n"
           end
@@ -73,6 +74,8 @@ module Slackware
               end
             }
           end
+          i.description = i.description + "</blockquote></pre>\n"
+          i.description.gsub!(/\n/, "<br/>\n")
         }
       end
       return content
