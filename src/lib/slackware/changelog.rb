@@ -93,9 +93,10 @@ module Slackware
 
     # +file+ can be a path to a file, or a +File+ object
     # +opts+ can include
-    #  * :arch    - basically '64' or '32'
-    #  * :version - 13.1, 13.2, current, etc.
-    #  * :url     - the URL web link to the ChangeLog.txt
+    #  * :arch      - basically '64' or '32'
+    #  * :version   - 13.1, 13.2, current, etc.
+    #  * :url       - the URL web link to the ChangeLog.txt
+    #  * :image_url - the URL for the loge used in the RSS feed
     def initialize(file = nil, opts = {})
       @file     = file
       @opts     = opts

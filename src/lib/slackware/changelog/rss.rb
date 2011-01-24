@@ -3,6 +3,8 @@ require 'slackware/changelog'
 
 module Slackware
   class ChangeLog
+    # or maybe "http://connie.slackware.com/~msimons/slackware/grfx/shared/dobbslack1.jpg"
+    IMAGE_URL = "http://connie.slackware.com/~msimons/slackware/grfx/shared/bluepiSW.jpg"
     def to_rss
       version = "2.0" # ["0.9", "1.0", "2.0"]
       content = RSS::Maker.make(version) do |m|
@@ -24,9 +26,23 @@ module Slackware
         else
           m.channel.link = "http://www.slackware.com/#slackagg"
         end
-        #m.channel.logo = "http://connie.slackware.com/~msimons/slackware/grfx/shared/bluepiSW.jpg"
-        m.channel.logo = "http://connie.slackware.com/~msimons/slackware/grfx/shared/dobbslack1.jpg"
         m.channel.description = "a parsed ChangeLog.txt, is an extendable ChangeLog.txt"
+
+	if @opts[:image_url]
+          m.channel.logo = @opts[:image_url]
+	else
+          m.channel.logo = IMAGE_URL
+	end
+	image = m.image
+	if @opts[:image_url]
+          image.url = @opts[:image_url]
+	else
+	  image.url = IMAGE_URL
+	end
+	image.title = "Slackware Linux"
+	image.width = "144"
+	image.height = "144"
+
         m.items.do_sort = true # sort items by date
 
         @updates.each {|update|
@@ -49,9 +65,9 @@ module Slackware
           i.description = ""
           if (update.entries.count > 0)
             if (security > 0)
-              i.description = "%d new update(s), %d security update(s)\n\n" % [update.entries.count, security]
+              i.description = i.description + "%d new update(s), %d security update(s)\n\n" % [update.entries.count, security]
             else
-              i.description = "%d new update(s)\n\n" % [update.entries.count]
+              i.description = i.description + "%d new update(s)\n\n" % [update.entries.count]
             end
           end
           i.description = i.description + "<pre><blockquote>\n"
