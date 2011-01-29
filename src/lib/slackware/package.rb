@@ -1,4 +1,3 @@
-
 require 'time'
 
 module Slackware
