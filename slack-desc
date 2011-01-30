@@ -1,4 +1,4 @@
-slack-utils: slack-utils (simple slackware sysadmin utils)
+slack-utils: slack-utils (slackware Ruby library, and simple tools)
 slack-utils:
 slack-utils: a simple tool for looking over packages installed,
 slack-utils: finding file owners, or the install times of packages.
