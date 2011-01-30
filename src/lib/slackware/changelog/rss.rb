@@ -5,43 +5,61 @@ module Slackware
   class ChangeLog
     # or maybe "http://connie.slackware.com/~msimons/slackware/grfx/shared/dobbslack1.jpg"
     IMAGE_URL = "http://connie.slackware.com/~msimons/slackware/grfx/shared/bluepiSW.jpg"
-    def to_rss
+    def to_rss(opts = {})
+      # this way we can use the opts from super,
+      # or override for this methods
+      opts = @opts.merge(opts)
+
       version = "2.0" # ["0.9", "1.0", "2.0"]
       content = RSS::Maker.make(version) do |m|
-        added_title = ""
-        if @opts[:arch]
-          added_title = added_title + "slackware#{@opts[:arch]}"
-        end
-        if @opts[:version]
-          added_title = added_title + "-#{@opts[:version]}"
+        if (opts[:title])
+          m.channel.title = opts[:title]
+        else
+          added_title = ""
+          if opts[:arch]
+            added_title = added_title + "slackware#{opts[:arch]}"
+          end
+          if opts[:version]
+            added_title = added_title + "-#{opts[:version]}"
+          end
+  
+          if added_title.empty?
+            m.channel.title = "Slackware ChangeLog.txt"
+          else
+            m.channel.title = "#{added_title} ChangeLog.txt"
+          end
         end
 
-        if added_title.empty?
-          m.channel.title = "Slackware ChangeLog.txt"
-        else
-          m.channel.title = "#{added_title} ChangeLog.txt"
-        end
-        if @opts[:url]
-          m.channel.link = "%s#slackagg" % [@opts[:url]]
+        if (opts[:url])
+          m.channel.link = "%s#slackagg" % [opts[:url]]
         else
           m.channel.link = "http://www.slackware.com/#slackagg"
         end
-        m.channel.description = "a parsed ChangeLog.txt, is an extendable ChangeLog.txt"
 
-	if @opts[:image_url]
-          m.channel.logo = @opts[:image_url]
-	else
+        if (opts[:description])
+          m.channel.description = opts[:description]
+        else
+          m.channel.description = "a parsed ChangeLog.txt, is an extendable ChangeLog.txt"
+        end
+
+        if opts[:image_url]
+          m.channel.logo = opts[:image_url]
+        else
           m.channel.logo = IMAGE_URL
-	end
-	image = m.image
-	if @opts[:image_url]
-          image.url = @opts[:image_url]
-	else
-	  image.url = IMAGE_URL
-	end
-	image.title = "Slackware Linux"
-	image.width = "144"
-	image.height = "144"
+        end
+
+        if (opts[:noimage])
+        else
+          image = m.image
+          if opts[:image_url]
+            image.url = opts[:image_url]
+          else
+            image.url = IMAGE_URL
+          end
+          image.title = "Slackware Linux"
+          image.width = "144"
+          image.height = "144"
+        end
 
         m.items.do_sort = true # sort items by date
 
@@ -55,8 +73,8 @@ module Slackware
           else
             i.title = update.date.utc.to_s
           end
-          if @opts[:url]
-            i.link = "%s#%s" % [@opts[:url], update.date.to_i]
+          if opts[:url]
+            i.link = "%s#%s" % [opts[:url], update.date.to_i]
           else
             i.link = "http://slackware.com/#slackagg#%s" % [update.date.to_i]
           end
