@@ -46,11 +46,6 @@ EOS
 
 		opts.parse!
 
-		if (options[:pkg].nil? && options[:Version].nil? && options[:arch].nil? && options[:build].nil? && options[:tag].nil? && not(options[:force]))
-			$stderr.write("ERROR: force me if you really want to see all files ...\n")
-			puts opts
-			exit 2
-		end
 	end
 rescue OptionParser::InvalidOption => e
 	$stderr.write("ERROR: #{e.message}, see --help\n")
@@ -58,8 +53,12 @@ rescue OptionParser::InvalidOption => e
 end
 
 # handing through that we are listing owned files
+# XXX this is not even jeing used
 options[:list_files] = true
 
+if ARGV.count > 0
+  options[:all] = true
+end
 
 begin
 	print_package_file_list(build_packages(options, ARGV))
