@@ -1,6 +1,6 @@
 
 module Slackware
-	VERSION = begin
+	SLACKWARE_VERSION = begin
 			  data = File.read("/etc/slackware-version")
 			  data =~ /Slackware\s(.*)/
 			  $1

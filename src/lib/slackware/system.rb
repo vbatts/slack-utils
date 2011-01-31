@@ -10,12 +10,7 @@ module Slackware
 	RE_REMOVED_NAMES = /^(.*)-upgraded-(\d{4}-\d{2}-\d{2}),(\d{2}:\d{2}:\d{2})$/
 	RE_BUILD_TAG = /^([[:digit:]]+)([[:alpha:]]+)$/
 
-	def self::version
-		Slackware::VERSION
-	end
-
 	class System
-
 		def self::installed_packages
 			return Dir.glob(DIR_INSTALLED_PACKAGES + "/*").sort.map {|p| Slackware::Package.parse(p) }
 		end
@@ -157,7 +152,7 @@ module Slackware
 
 		# Return the version of Slackware Linux currently installed
 		def self::version
-			Slackware::VERSION
+			SLACKWARE_VERSION
 		end
 	end
 
