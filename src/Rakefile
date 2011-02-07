@@ -34,6 +34,7 @@ See the examples/ for more information.
     lib/slackware/changelog.rb
     lib/slackware/changelog/rss.rb
     lib/slackware/package.rb
+    lib/slackware/package_bundle.rb
     lib/slackware/repo.rb
     lib/slackware/version.rb
     lib/slackware/system.rb

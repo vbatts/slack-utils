@@ -1,9 +1,20 @@
 module Slackware
 	class PackageBundle < Package
-		def initialize
+    attr_accessor :archive
+
+		def initialize(name = nil)
 			super
 		end
-		def self::get_list(pkg)
+
+    def parse(name)
+      super(name)
+      if self.build =~ /^(\d+.*)\.(t[gx]z)$/
+        self.build = $1
+        self.archive = $2
+      end
+    end
+
+		def self::get_file_list(pkg)
 			e_flag = ""
 			if pkg =~ /txz$/
 				e_flag = "J"
