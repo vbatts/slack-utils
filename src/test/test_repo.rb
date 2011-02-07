@@ -51,3 +51,25 @@ class TestRepoDefaults < Test::Unit::TestCase
 		assert_equal(t_arch, @repo.arch)
 	end
 end
+
+class TestRepoFunctions < Test::Unit::TestCase
+	def setup
+		# #<Slackware::Repo:0x00000000e76cb8 @packages=nil, @proto="ftp://", @mirror="ftp.osuosl.org", @path="/pub/slackware/", @version="13.1", @arch="64">
+		@repo = Slackware::Repo.new
+	end
+
+	def teardown
+		# nothing really
+		@repo = nil
+	end
+
+	def test_get_packages
+		pkgs = @repo.get_packages
+		assert_equal(true, pkgs.count > 100)
+	end
+
+	def test_set_packages
+		@repo.set_packages
+		assert_equal(true, @repo.packages.count > 100)
+	end
+end
