@@ -132,8 +132,8 @@ module Slackware
 		# Accessor for the FILE LIST from the package file
 		# unless the :owned_files symbol is populated
 		def get_owned_files
-			unless @owned_files.nil?
-				return @owned_files
+			unless self.owned_files.nil?
+				return self.owned_files
 			else
 				f = File.open(self.path + '/' + self.fullname)
 				files = f.drop_while {|l| not( l =~ /^FILE LIST:/) }[2..-1].map {|l| l.chomp }
@@ -144,8 +144,8 @@ module Slackware
 
 		# Set the file list in the package object in memory
 		def set_owned_files
-			if @owned_files.nil?
-				@owned_files = get_owned_files()
+			if self.owned_files.nil?
+				self.owned_files = get_owned_files()
 				return true
 			else
 				return false
