@@ -112,14 +112,28 @@ module Slackware
     def security
       @updates.map {|u| u.entries.map {|e| {:date => u.date, :entry => e } if e.security } }.flatten.compact
     end
+    def pkgs_removed
+      @updates.map {|u| u.entries.map {|e| {:date => u.date, :entry => e } if e.action == "Removed" } }.flatten.compact
+    end
+    def pkgs_added
+      @updates.map {|u| u.entries.map {|e| {:date => u.date, :entry => e } if e.action == "Added" } }.flatten.compact
+    end
+    def pkgs_upgraded
+      @updates.map {|u| u.entries.map {|e| {:date => u.date, :entry => e } if e.action == "Upgraded" } }.flatten.compact
+    end
+    def pkgs_rebuilt
+      @updates.map {|u| u.entries.map {|e| {:date => u.date, :entry => e } if e.action == "Rebuilt" } }.flatten.compact
+    end
     def opts=(hash)
       if hash.is_a?(Hash)
         @opts = hash
       end
     end
 
-    def parse
-	    unless @file.nil?
+    def parse(opts = {:file => nil, :data => nil})
+	    if not(opts[:file].nil?)
+		    @updates = parse_this_file(opts[:file]).updates
+      elsif not(@file.nil?)
 		    @updates = parse_this_file(@file).updates
 	    end
 	    return self
@@ -138,7 +152,7 @@ module Slackware
       "#<%s:0x%x @file=%s, %d @updates, %d @entries>" % [self.class.name, self.object_id.abs, self.file || '""', self.updates.count || 0, self.entries.count || 0]
     end
 
-    private
+    #protected
     # Parse order is something like:
     # * if its' a date match, store the date
     # * take change notes until
