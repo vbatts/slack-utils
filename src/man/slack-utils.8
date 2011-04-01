@@ -4,24 +4,24 @@
 .B slack-utils - simple slackware sys-admin tools
 
 .SH SYNOPSIS
-.B  slp [options] [search flags] [list of names]
+.B  slp [-c|--color] [[-p|--pkg] PACKAGE_NAME] [[-V|--Version] VERSION_STRING] [[-a|--arch] ARCH] [[-b|--build] BUILD_NUM] [[-t|--tag] TAG] [one or more package names]
 .LP
-.B  slf [options] [pkg search flags] <one or more files>
+.B  slf [-c|--color] [[-p|--pkg] PACKAGE_NAME] [[-V|--Version] VERSION_STRING] [[-a|--arch] ARCH] [[-b|--build] BUILD_NUM] [[-t|--tag] TAG] <one or more file names>
 .LP
-.B  slt [pkg search flags] [list of names]
+.B  slt [-c|--color] [-e|--epoch] [[-p|--pkg] PACKAGE_NAME] [[-V|--Version] VERSION_STRING] [[-a|--arch] ARCH] [[-b|--build] BUILD_NUM] [[-t|--tag] TAG] [one or more package names]
 .LP
-.B  sll [search flags] [list of names]
+.B  sll [-c|--color] [[-p|--pkg] PACKAGE_NAME] [[-V|--Version] VERSION_STRING] [[-a|--arch] ARCH] [[-b|--build] BUILD_NUM] [[-t|--tag] TAG] [-f|--force] [one or more package names]
 .LP
 .B  slo
 .LP
-.B  slfindlinked <full lib filename>
+.B  slfindlinked <full path to libfile>
 .LP
 
 .SH DESCRIPTION
 .B slack-utils
 prints information related to slackware packages installed.
-Mostly a simple chunk of ruby code (rest is bash shell). Updates 
-are welcome :-)
+This is written in Ruby, and should be fine for ruby-1.8 or ruby-1.9.
+Updates are welcome :-)
 
 .SS slp
 By default will list all slackware packages currently installed.
@@ -80,6 +80,8 @@ rsync-3.0.7-x86_64-1: 2010-06-01 22:41:08 -0400
 .SS slo
 This utility searches for orphaned configuration files, that had been
 installed as .new files, but the owning package is no longer installed.
+.br
+TODO this utility and concept could take some loving.
 .RS
 .nf
 .B \fI$>\fI slo
@@ -99,4 +101,7 @@ php-5.2.14-x86_64-1: usr/lib64/php/extensions/gmp.so linked to libgmp.so.10
 [...]
 .fi
 .PP
+
+.SH "SEE ALSO"
+.BR slack-utils(3)
 
