@@ -4,24 +4,24 @@
 .B slack-utils - simple slackware sys-admin tools
 
 .SH SYNOPSIS
-.B  slp [package name(s)]
+.B  slp [-c|--color] [[-p|--pkg] PACKAGE_NAME] [[-V|--Version] VERSION_STRING] [[-a|--arch] ARCH] [[-b|--build] BUILD_NUM] [[-t|--tag] TAG] [one or more package names]
 .LP
-.B  slf [file(s)]
+.B  slf [-c|--color] [[-p|--pkg] PACKAGE_NAME] [[-V|--Version] VERSION_STRING] [[-a|--arch] ARCH] [[-b|--build] BUILD_NUM] [[-t|--tag] TAG] <one or more file names>
 .LP
-.B  slt [package name(s)]
+.B  slt [-c|--color] [-e|--epoch] [[-p|--pkg] PACKAGE_NAME] [[-V|--Version] VERSION_STRING] [[-a|--arch] ARCH] [[-b|--build] BUILD_NUM] [[-t|--tag] TAG] [one or more package names]
 .LP
-.B  sll <package name(s)>
+.B  sll [-c|--color] [[-p|--pkg] PACKAGE_NAME] [[-V|--Version] VERSION_STRING] [[-a|--arch] ARCH] [[-b|--build] BUILD_NUM] [[-t|--tag] TAG] [-f|--force] [one or more package names]
 .LP
 .B  slo
 .LP
-.B  slfindlinked <libname>
+.B  slfindlinked <full path to libfile>
 .LP
 
 .SH DESCRIPTION
 .B slack-utils
 prints information related to slackware packages installed.
-Mostly a simple chunk of ruby code (rest is bash shell). Updates 
-are welcome :-)
+This is written in Ruby, and should be fine for ruby-1.8 or ruby-1.9.
+Updates are welcome :-)
 
 .SS slp
 By default will list all slackware packages currently installed.
@@ -32,6 +32,12 @@ These args can be ruby regex expressions. For example:
 .B \fI$>\fI slp rsync xorg.*nest
 rsync-3.0.7-x86_64-1
 xorg-server-xnest-1.7.7-x86_64-2
+.fi
+.br
+
+.nf
+.B \fI$>\fI slp -t vb -p pony
+my-little-pony-1.1-x86_64-1_vb
 .fi
 .PP
 
@@ -55,7 +61,7 @@ The files owned by [package name(s)], are printed if matched.
 These args can be ruby regex expressions. For example:
 .RS
 .nf
-.B \fI$>\fI sll radeontool
+.B \fI$>\fI sll -p radeontool
 usr/
 usr/bin/
 usr/bin/radeontool
@@ -75,11 +81,19 @@ These args can be ruby regex expressions. For example:
 radeontool-1.6.1-x86_64-1: 2010-06-01 22:40:42 -0400
 rsync-3.0.7-x86_64-1: 2010-06-01 22:41:08 -0400
 .fi
+.br
+
+.nf
+.B \fI$>\fI slt -e -p kernel-generic
+kernel-generic-2.6.37.5-x86_64-1 : 1300975233
+.fi
 .PP
 
 .SS slo
 This utility searches for orphaned configuration files, that had been
 installed as .new files, but the owning package is no longer installed.
+.br
+TODO this utility and concept could take some loving.
 .RS
 .nf
 .B \fI$>\fI slo
@@ -99,4 +113,7 @@ php-5.2.14-x86_64-1: usr/lib64/php/extensions/gmp.so linked to libgmp.so.10
 [...]
 .fi
 .PP
+
+.SH "SEE ALSO"
+.BR slack-utils(3)
 

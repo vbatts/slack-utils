@@ -133,7 +133,7 @@ module Slackware
 
 		def set_packages
 			@packages = get_packages
-			return nil
+			return @packages.count
 		end
 
 	end

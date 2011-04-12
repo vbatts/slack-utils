@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
 
+$PROGRAM_NAME = File.basename(__FILE__)
+
 require 'optparse'
 require 'rubygems'
 require 'slackware/utils'

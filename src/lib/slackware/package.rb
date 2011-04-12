@@ -175,7 +175,7 @@ module Slackware
 		end
 
 		def inspect
-			"#<%s:0x%x name=%s version=%s arch=%s build=%s tag=%s>" % [
+			"#<%s:0x%x name=\"%s\" version=\"%s\" arch=\"%s\" build=%s tag=\"%s\">" % [
 				self.class.name,
 				self.object_id,
 				self.name,
