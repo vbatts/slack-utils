@@ -40,7 +40,7 @@ module Slackware
 							  a
 						  end
 			else
-				## do some hot parsing of repo
+				## TODO do some hot parsing of 'repo'
 			end
 		end
 
@@ -57,7 +57,7 @@ module Slackware
 				if (file.nil?)
 					data = ftp.list('*')
 				else
-					data = ftp.gettextfile(file, nil)
+					data = ftp.get(file, nil)
 				end
 				ftp.close
 				return data
