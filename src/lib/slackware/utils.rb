@@ -108,6 +108,18 @@ def print_packages_times(pkgs, epoch = false)
 	end
 end
 
+def print_packages_description(pkgs)
+	if (pkgs.count > 0 && pkgs.first.class == Slackware::Package)
+		pkgs.each {|pkg|
+			printf("%s: COMPRESSED SIZE: %s\n", pkg.fullname, pkg.compressed_size )
+			printf("%s: UNCOMPRESSED SIZE: %s\n", pkg.fullname, pkg.uncompressed_size )
+			pkg.package_description.each {|line|
+				printf("%s: %s\n", pkg.fullname, line )
+			}
+		}
+	end
+end
+
 # package file listing
 def print_package_file_list(pkgs)
 	if (pkgs.count > 1)

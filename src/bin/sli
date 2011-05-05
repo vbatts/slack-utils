@@ -1,0 +1,65 @@
+#!/usr/bin/env ruby
+
+$PROGRAM_NAME = File.basename(__FILE__)
+
+require 'optparse'
+require 'rubygems'
+require 'slackware/utils'
+
+options = {}
+begin
+	OptionParser.new do |opts|
+		opts.banner = <<-EOS
+
+List installed Slackware package's information.
+
+Usage:
+	#{File.basename(__FILE__)} [options] [search flags] [list of names]
+	
+	if no flags are used, then all entries are listed
+	if no search flags, only names, then those only those matching entries are listed
+
+EOS
+		opts.on("-c", "--color", "Colorize output") do |o|
+			options[:color] = o
+		end
+		opts.on("-p", "--pkg [NAME]", "Package PKGNAME (loose match)") do |o|
+			options[:pkg] = o
+		end
+		opts.on("-V", "--Version [VERSION]", "Package VERSION (loose match)") do |o|
+			options[:version] = o
+		end
+		opts.on("-a", "--arch [ARCH]", "Package ARCH (exact match)") do |o|
+			options[:arch] = o
+		end
+		opts.on("-b", "--build [BUILD]", "Package BUILD (exact match)") do |o|
+			options[:build] = o
+		end
+		opts.on("-t", "--tag [TAG]", "Package TAG (loose match)") do |o|
+			options[:tag] = o
+		end
+		opts.on("-v", "--version", "Display version of this software") do |o|
+			printf("slack-utils (%s) version: %s, Slackware version: %s\n",
+			       File.basename(__FILE__),
+			       Slackware::UTILS_VERSION,
+			       Slackware::System.version
+			      )
+			exit()
+		end
+	end.parse!
+rescue OptionParser::InvalidOption => e
+	$stderr.write("ERROR: #{e.message}, see --help\n")
+	exit 1
+end
+
+if (ARGV.count > 0)
+	options[:all] = true
+end
+
+begin
+	print_packages_description(build_packages(options, ARGV))
+rescue Interrupt
+	exit 0
+end
+
+
