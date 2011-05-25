@@ -34,8 +34,8 @@ expects 1 argument passed.
 
 TODO: 
 * 2010-08-20 09:16 <bailey> which is that I need to run a query to show
-	me what packages I'm running are different than the slack-current
-	versions, since I make local ones and forget about it
+me what packages I'm running are different than the slack-current
+versions, since I make local ones and forget about it
 * enable `slf` to a relative path, and it determine the absolute path
 
 == Installation
@@ -65,9 +65,11 @@ TODO:
 
 == Quick Start
 
-Install the gem as above.
+=== Using the commands
 
-Start using the library
+See the system manual page slack-utils(8)
+
+=== Using the library
 
  $ irb
  >> require 'rubygems'
