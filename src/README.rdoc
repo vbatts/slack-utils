@@ -2,7 +2,8 @@
 
 == Summary
 
-A ruby library to access information on the Slackware Linux distribution
+A handful of commands to quickly/easily access information on the Slackware Linux distribution.
+Further, this provides a ruby library for 'slackware'.
 
 == Description
 
@@ -25,6 +26,8 @@ sll - list the contents of packages matching the
 slo - find files in /etc/, that have been orphaned and left behind
   by unistalled/upgraded packages
 
+sli - display the package information, for matching packages
+
 slfindlinked - finds what is linked to your argument, and it's package
   expects 1 argument passed. 
 
@@ -37,8 +40,28 @@ TODO:
 
 == Installation
 
-To install the gem 
- sudo gem install pkg/slack-utils-0.6.1.gem
+=== From git
+
+	git clone git://github.com/vbatts/slack-utils.git
+
+	make slackpkg
+
+	sudo upgradepkg --install-new pkg/slack-utils-0.6.1-$ARCH-1_vb.tgz
+
+=== From tar ball
+
+	tar xfz slack-utils-0.6.1.tar.gz
+
+	cd slack-utils-0.6.1
+
+	ruby setup.rb config --prefix=/usr --mandir=/usr/man
+
+	ruby setup.rb install 
+
+=== From the gem
+
+	sudo gem install pkg/slack-utils-0.6.1.gem
+
 
 == Quick Start
 

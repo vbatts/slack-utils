@@ -20,9 +20,9 @@ Usage:
 	if no search flags, only names, then those only those matching entries are listed
 
 EOS
-		opts.on("-c", "--color", "Colorize output") do |o|
-			options[:color] = o
-		end
+		#opts.on("-c", "--color", "Colorize output") do |o|
+		#	options[:color] = o
+		#end
 		opts.on("-p", "--pkg [NAME]", "Package PKGNAME (loose match)") do |o|
 			options[:pkg] = o
 		end

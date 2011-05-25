@@ -30,7 +30,8 @@ gem:
 	mkdir -p $(CWD)/pkg && \
 	cd src/ && \
 	rake gem && \
-	mv pkg/$(PKGNAM)-$$VERSION.gem ../pkg
+	mv pkg/$(PKGNAM)-$$VERSION.gem ../pkg && \
+	rm -rf pkg/
 
 reinstall: slackpkg
 	. local.conf && \

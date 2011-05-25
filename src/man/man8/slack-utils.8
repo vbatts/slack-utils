@@ -12,6 +12,8 @@
 .LP
 .B  sll [-c|--color] [[-p|--pkg] PACKAGE_NAME] [[-V|--Version] VERSION_STRING] [[-a|--arch] ARCH] [[-b|--build] BUILD_NUM] [[-t|--tag] TAG] [-f|--force] [one or more package names]
 .LP
+.B  sli [[-p|--pkg] PACKAGE_NAME] [[-V|--Version] VERSION_STRING] [[-a|--arch] ARCH] [[-b|--build] BUILD_NUM] [[-t|--tag] TAG] [one or more package names]
+.LP
 .B  slo
 .LP
 .B  slfindlinked <full path to libfile>
@@ -68,6 +70,29 @@ usr/bin/radeontool
 usr/bin/avivotool
 install/
 install/slack-desc
+.fi
+.PP
+
+.SS sli
+By default will list the information for all slackware packages currently installed.
+The header of the installed package is displayed.
+These args can be ruby regex expressions. For example:
+.RS
+.nf
+.B \fI$>\fI sli -p aaa_base
+aaa_base-13.37-x86_64-3: COMPRESSED SIZE: 4K
+aaa_base-13.37-x86_64-3: UNCOMPRESSED SIZE: 90K
+aaa_base-13.37-x86_64-3: aaa_base (Basic Linux filesystem package)
+aaa_base-13.37-x86_64-3: 
+aaa_base-13.37-x86_64-3: Sets up the empty directory tree for Slackware and adds an email to
+aaa_base-13.37-x86_64-3: root's mailbox welcoming them to Linux. :)  This package should be
+aaa_base-13.37-x86_64-3: installed first, and never uninstalled.
+aaa_base-13.37-x86_64-3: 
+aaa_base-13.37-x86_64-3: 
+aaa_base-13.37-x86_64-3: 
+aaa_base-13.37-x86_64-3: 
+aaa_base-13.37-x86_64-3: 
+aaa_base-13.37-x86_64-3:
 .fi
 .PP
 
