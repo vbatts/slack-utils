@@ -5,7 +5,7 @@ PKGNAM := slack-utils
 TMP := /tmp
 CWD = $(PWD)
 
-build: .slackpkg
+build: slackpkg
 
 bundle: local.conf $(wildcard src/* src/bin/* src/lib/**/*)
 	. local.conf && \

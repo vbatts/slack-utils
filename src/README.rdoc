@@ -100,3 +100,9 @@ For more complex examples, please see the examples directory
  (GEM_ROOT/gems/slack-utils-<version>/examples/).
 
 You can also contact me for more help or suggestions.
+
+
+== Bugs and such
+
+Open an "issue" here https://github.com/vbatts/slack-utils/issues
+
