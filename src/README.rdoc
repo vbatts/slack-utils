@@ -9,27 +9,27 @@ Further, this provides a ruby library for 'slackware'.
 
 slack-utils
 
-slp - shows installed slackware packages
-  with no args, it will show all.
-  or for each arg it will search the package names.
+<b>slp</b> - shows installed slackware packages
+with no args, it will show all.
+or for each arg it will search the package names.
 
-slf - search installed slackware packages for a file
-  this expects an arg(s), and will output, in grep fashion
-  packages matching your search args.
+<b>slf</b> - search installed slackware packages for a file
+this expects an arg(s), and will output, in grep fashion
+packages matching your search args.
 
-slt - mtime/install time of slackware packages
-  with no args, it will show all.
-  or for each arg it will search the package names.
+<b>slt</b> - mtime/install time of slackware packages
+with no args, it will show all.
+or for each arg it will search the package names.
 
-sll - list the contents of packages matching the
+<b>sll</b> - list the contents of packages matching the
 
-slo - find files in /etc/, that have been orphaned and left behind
-  by unistalled/upgraded packages
+<b>slo</b> - find files in /etc/, that have been orphaned and left behind
+by unistalled/upgraded packages
 
-sli - display the package information, for matching packages
+<b>sli</b> - display the package information, for matching packages
 
-slfindlinked - finds what is linked to your argument, and it's package
-  expects 1 argument passed. 
+<b>slfindlinked</b> - finds what is linked to your argument, and it's package
+expects 1 argument passed. 
 
 
 TODO: 
