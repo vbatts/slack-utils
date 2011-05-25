@@ -1,4 +1,4 @@
-#!/usr/bin/env ruby
+#! /usr/bin/ruby
 
 $PROGRAM_NAME = File.basename(__FILE__)
 

@@ -7,22 +7,20 @@ CWD = $(PWD)
 
 build: .slackpkg
 
-.bundle: local.conf $(shell find src/ -type f)
+bundle: local.conf $(wildcard src/* src/bin/* src/lib/**/*)
 	. local.conf && \
 	rm -f $(PKGNAM)-$$VERSION-*.tar.gz && \
-	sh bundle.sh && \
-	touch $@
+	find . -type f -name '*~' -exec rm -f {} \; && \
+	sh bundle.sh
 
-.slackpkg: .bundle
+slackpkg: bundle
 	. local.conf && \
 	mkdir -p $(CWD)/pkg && \
 	sudo OUTPUT=$(CWD)/pkg \
 	VERSION=$$VERSION \
 	TAG=$$TAG \
 	BUILD=$$BUILD \
-	sh $(PKGNAM).SlackBuild && \
-	touch $@
-
+	sh $(PKGNAM).SlackBuild
 
 irb:
 	irb -I$(CWD)/src/lib/ -r slackware
@@ -34,10 +32,10 @@ gem:
 	rake gem && \
 	mv pkg/$(PKGNAM)-$$VERSION.gem ../pkg
 
-reinstall: .slackpkg
+reinstall: slackpkg
 	. local.conf && \
 	sudo upgradepkg --reinstall --install-new $(CWD)/pkg/$(PKGNAM)-$$VERSION-$$ARCH-$$BUILD$$TAG.tgz
 
 clean:
 	. local.conf && \
-	rm -f $(PKGNAM)-$$VERSION.tar.gz .bundle .slackpkg
+	rm -f $(PKGNAM)-$$VERSION.tar.gz
