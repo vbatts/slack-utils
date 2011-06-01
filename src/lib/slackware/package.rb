@@ -61,7 +61,11 @@ module Slackware
 			f = File.open(self.path + '/' + self.fullname)
 			while true
 				if (f.readline =~ /^PACKAGE DESCRIPTION:\s+(.*)$/)
-					desc = f.take_while {|l| not(l =~ /FILE LIST:/) }.map {|l| l.sub(/^#{self.name}:\s*/, '').chomp }
+					desc = f.take_while {|l|
+                                                not(l =~ /FILE LIST:/)
+                                        }.map {|l|
+                                                l.sub(/^#{self.name}:\s?/, '').chomp
+                                        }
 					return desc
 				end
 			end
