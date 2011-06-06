@@ -109,7 +109,7 @@ module Slackware
             }
           end
           i.description = i.description + "</blockquote></pre>\n"
-          i.description.gsub!(/\n/, "<br/>\n")
+          #i.description.gsub!(/\n/, "<br/>\n")
         }
       end
       return content
