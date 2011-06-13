@@ -37,7 +37,10 @@ module Slackware
                         end
                 end
 
-		def self::get_file_list(pkg)
+		def get_file_list
+                        pkg = "%s/%s.%s" % [self.path, self.fullname, self.archive]
+                        return nil unless File.exist?(pkg)
+
 			e_flag = ""
 			if pkg =~ /txz$/
 				e_flag = "J"
@@ -50,7 +53,11 @@ module Slackware
 				f.readlines.map {|l| l.chomp }
 			} 
 		end
-		def get_slack_desc(pkg,file)
+
+		def read_file(file)
+                        pkg = "%s/%s.%s" % [self.path, self.fullname, self.archive]
+                        return nil unless File.exist?(pkg)
+
 			e_flag = ""
 			if pkg =~ /txz$/
 				e_flag = "J"
@@ -59,8 +66,9 @@ module Slackware
 			elsif pkg =~ /tbz$/
 				e_flag = "j"
 			end
-			IO.popen("tar #{e_flag}xOf #{pkg} #{file}") {|f| f.readlines.map {|l| l.chomp } }
+			IO.popen("tar #{e_flag}xOf #{pkg} #{file}") {|f| f.read }
 		end
+
 		def inspect
 			"#<%s:0x%x name=%s version=%s arch=%s build=%s tag=%s archive=%s>" % [
 				self.class.name,
