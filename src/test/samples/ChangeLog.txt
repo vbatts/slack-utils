@@ -1,0 +1,227 @@
+Thu Jul 14 21:34:41 UTC 2011
+l/seamonkey-solibs-2.2-i486-1.txz:  Upgraded.
+  This update contains security fixes and improvements.
+  For more information, see:
+    http://www.mozilla.org/security/announce/
+  (* Security fix *)
+xap/mozilla-firefox-5.0.1-i486-1.txz:  Upgraded.
+  I guess this is only a fix for Mac OS X, but it's still 0.0.1 better.  ;-)
+xap/mozilla-thunderbird-5.0-i486-1.txz:  Upgraded.
+  Thanks to dolphin77 for some hints about the ./configure options.
+xap/seamonkey-2.2-i486-1.txz:  Upgraded.
+  This update contains security fixes and improvements.
+  For more information, see:
+    http://www.mozilla.org/security/announce/
+  (* Security fix *)
++--------------------------+
+Fri Jul  8 16:55:13 UTC 2011
+n/bind-9.7.3_P3-i486-1.txz:  Upgraded.
+  A specially constructed packet will cause BIND 9 ("named") to exit,
+  affecting DNS service.  The issue exists in BIND 9.6.3 and newer.
+   "Change #2912 (see CHANGES) exposed a latent bug in the DNS message
+    processing code that could allow certain UPDATE requests to crash
+    named. This was fixed by disambiguating internal database
+    representation vs DNS wire format data. [RT #24777] [CVE-2011-2464]"
+  For more information, see:
+    http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2011-2464
+  (* Security fix *)
+xap/mozilla-thunderbird-3.1.11-i486-1.txz:  Upgraded.
+  This release contains security fixes and improvements.
+  For more information, see:
+    http://www.mozilla.org/security/known-vulnerabilities/thunderbird30.html
+  (* Security fix *)
++--------------------------+
+Tue Jun 28 18:19:47 UTC 2011
+ap/ghostscript-9.02-i486-2.txz:  Rebuilt.
+  Provide pstoraster -> gstoraster symlink.
+  Include latest History file, but not all the old ones.
+  Is this ready for 13.37/patches now?
++--------------------------+
+Mon Jun 27 21:29:54 UTC 2011
+n/gnutls-2.12.7-i486-1.txz:  Upgraded.
+xap/pidgin-2.9.0-i486-1.txz:  Upgraded.
+  Fixed a remote denial of service.  A remote attacker could set a specially
+  crafted GIF file as their buddy icon causing vulerable versions of pidgin
+  to crash due to excessive memory use.
+  For more information, see:
+    http://pidgin.im/news/security/?id=52
+    http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2011-2485
+  (* Security fix *)
++--------------------------+
+Fri Jun 24 02:55:39 UTC 2011
+ap/ghostscript-9.02-i486-1.txz:  Upgraded.
+  I welcome reports about how well this version of ghostscript works compared
+  with the 9.00 that shipped in Slackware 13.37.  If it fixes important bugs
+  without regressions, then it might be considered as a patch for 13.37.
+l/jre-6u26-i586-1.txz:  Upgraded.
+xap/mozilla-firefox-5.0-i486-1.txz:  Upgraded.
+  This release contains security fixes and improvements.
+  For more information, see:
+    http://www.mozilla.org/security/known-vulnerabilities/firefox.html
+  (* Security fix *)
+extra/jdk-6/jdk-6u26-i586-1.txz:  Upgraded.
++--------------------------+
+Mon Jun 20 04:09:11 UTC 2011
+n/getmail-4.20.3-i486-1.txz:  Upgraded.
+n/fetchmail-6.3.20-i486-1.txz:  Upgraded.
+  This release fixes a denial of service in STARTTLS protocol phases.
+  For more information, see:
+    http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2011-1947
+    http://www.fetchmail.info/fetchmail-SA-2011-01.txt
+  (* Security fix *)
+l/seamonkey-solibs-2.1-i486-1.txz:  Upgraded.
+xap/seamonkey-2.1-i486-1.txz:  Upgraded.
++--------------------------+
+Sat May 28 19:28:21 UTC 2011
+a/file-5.07-i486-1.txz:  Upgraded.
+d/gcc-4.5.3-i486-2.txz:  Rebuilt.
+d/gcc-g++-4.5.3-i486-2.txz:  Rebuilt.
+d/gcc-gfortran-4.5.3-i486-2.txz:  Rebuilt.
+d/gcc-gnat-4.5.3-i486-2.txz:  Rebuilt.
+d/gcc-java-4.5.3-i486-2.txz:  Rebuilt.
+d/gcc-objc-4.5.3-i486-2.txz:  Rebuilt.
+  Added --enable-objc-gc option to enable Objective-C garbage collection.
+  Thanks to Luca De Pandis.
++--------------------------+
+Fri May 27 22:56:00 UTC 2011
+n/bind-9.7.3_P1-i486-1.txz:  Upgraded.
+  This release fixes security issues:
+     * A large RRSET from a remote authoritative server that results in
+       the recursive resolver trying to negatively cache the response can
+       hit an off by one code error in named, resulting in named crashing.
+       [RT #24650] [CVE-2011-1910]
+     * Zones that have a DS record in the parent zone but are also listed
+       in a DLV and won't validate without DLV could fail to validate. [RT
+       #24631]
+  For more information, see:
+    http://www.isc.org/software/bind/advisories/cve-2011-1910
+    http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2011-1910
+  (* Security fix *)
++--------------------------+
+Wed May 25 20:03:16 UTC 2011
+a/cxxlibs-6.0.14-i486-2.txz:  Rebuilt.
+a/glibc-solibs-2.13-i486-5.txz:  Rebuilt.
+a/glibc-zoneinfo-2.13-noarch-5.txz:  Rebuilt.
+  Upgraded to tzcode2011g and tzdata2011g.
+a/kernel-firmware-2.6.38.7-noarch-1.txz:  Upgraded.
+a/kernel-generic-2.6.38.7-i486-1.txz:  Upgraded.
+a/kernel-generic-smp-2.6.38.7_smp-i686-1.txz:  Upgraded.
+a/kernel-huge-2.6.38.7-i486-1.txz:  Upgraded.
+a/kernel-huge-smp-2.6.38.7_smp-i686-1.txz:  Upgraded.
+a/kernel-modules-2.6.38.7-i486-1.txz:  Upgraded.
+a/kernel-modules-smp-2.6.38.7_smp-i686-1.txz:  Upgraded.
+ap/linuxdoc-tools-0.9.66-i486-9.txz:  Rebuilt.
+ap/nano-2.3.1-i486-1.txz:  Upgraded.
+d/gcc-4.5.3-i486-1.txz:  Upgraded.
+d/gcc-g++-4.5.3-i486-1.txz:  Upgraded.
+d/gcc-gfortran-4.5.3-i486-1.txz:  Upgraded.
+d/gcc-gnat-4.5.3-i486-1.txz:  Upgraded.
+d/gcc-java-4.5.3-i486-1.txz:  Upgraded.
+d/gcc-objc-4.5.3-i486-1.txz:  Upgraded.
+d/git-1.7.5.1-i486-1.txz:  Upgraded.
+d/kernel-headers-2.6.38.7_smp-x86-1.txz:  Upgraded.
+d/perl-5.14.0-i486-1.txz:  Upgraded.
+d/subversion-1.6.16-i486-2.txz:  Rebuilt.
+k/kernel-source-2.6.38.7_smp-noarch-1.txz:  Upgraded.
+  These are the main configuration changes from the 2.6.37.6 kernel in 13.37:
+    BLK_DEV_LOOP y -> m
+    HIGHMEM4G y -> n
+    HIGHMEM64G n -> y
+    LOG_BUF_SHIFT 15 -> 18
+    M686 y -> n
+    MPENTIUMIII n -> y
+    MOUSE_PS2_ELANTECH n -> y
+  And, compared with the 2.6.38.4 kernel in 13.37/testing:
+    LOG_BUF_SHIFT 15 -> 18
+    M686 y -> n
+    MPENTIUMIII n -> y
+    PREEMPT_NONE y -> n
+    PREEMPT_VOLUNTARY n -> y
+    SCHED_AUTOGROUP y -> n
+  It remains to be seen where the PREEMPT_* options will settle in the future.
+  SCHED_AUTOGROUP still seems sketchy to me, and might be behind some odd
+  clockskew issues.  And, thanks to Carl Wenninger for reporting that the
+  LOG_BUF_SHIFT setting was less than the kernel defaults and was leading to
+  a few missing lines at the beginning of 'dmesg' output.
+kde/kdebindings-4.5.5-i486-3.txz:  Rebuilt.
+l/apr-1.4.5-i486-1.txz:  Upgraded.
+  This fixes a possible denial of service due to a problem with a loop in
+  the new apr_fnmatch() implementation consuming CPU.
+  For more information, see:
+    http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2011-1928
+  (* Security fix *)
+l/apr-util-1.3.12-i486-1.txz:  Upgraded.
+  Fix crash because of NULL cleanup registered by apr_ldap_rebind_init().
+l/glibc-2.13-i486-5.txz:  Rebuilt.
+l/glibc-i18n-2.13-i486-5.txz:  Rebuilt.
+l/glibc-profile-2.13-i486-5.txz:  Rebuilt.
+l/libidn-1.22-i486-1.txz:  Upgraded.
+l/pilot-link-0.12.5-i486-4.txz:  Rebuilt.
+l/virtuoso-ose-6.1.2-i486-2.txz:  Rebuilt.
+n/gnutls-2.12.5-i486-1.txz:  Upgraded.
+n/httpd-2.2.19-i486-1.txz:  Upgraded.
+  Revert ABI breakage in 2.2.18 caused by the function signature change
+  of ap_unescape_url_keep2f().  This release restores the signature from
+  2.2.17 and prior, and introduces ap_unescape_url_keep2f_ex().
+  Apache httpd-2.2.18 is considered abandoned.  All users must upgrade.
+n/irssi-0.8.15-i486-4.txz:  Rebuilt.
+n/net-snmp-5.6.1-i486-2.txz:  Rebuilt.
+n/ntp-4.2.6p3-i486-2.txz:  Rebuilt.
+n/obexftp-0.23-i486-6.txz:  Rebuilt.
+x/libdrm-2.4.25-i486-1.txz:  Upgraded.
+x/mesa-7.10.2-i486-1.txz:  Upgraded.
+x/xf86-video-nouveau-git_20110515_8378443-i486-1.txz:  Upgraded.
+xap/gv-3.7.2-i486-1.txz:  Upgraded.
+xap/imagemagick-6.6.9_8-i486-1.txz:  Upgraded.
+xap/pidgin-2.7.11-i486-2.txz:  Rebuilt.
+xap/xchat-2.8.8-i486-4.txz:  Rebuilt.
+isolinux/initrd.img:  Rebuilt.
+kernels/*:  Rebuilt.
+usb-and-pxe-installers/usbboot.img:  Rebuilt.
+extra/linux-2.6.38.7-nosmp-sdk/*:  Rebuilt.
++--------------------------+
+Fri May 13 20:30:07 UTC 2011
+l/apr-1.4.4-i486-1.txz:  Upgraded.
+  This fixes a possible denial of service due to an unconstrained, recursive
+  invocation of apr_fnmatch().  This function has been reimplemented using a
+  non-recursive algorithm.  Thanks to William Rowe.
+  For more information, see:
+    http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2011-0419
+  (* Security fix *)
+l/apr-util-1.3.11-i486-1.txz:  Upgraded.
+n/httpd-2.2.18-i486-1.txz:  Upgraded.
+  This is a bug fix release, but since the upgrades to apr/apr-util require at
+  least an httpd recompile we opted to upgrade to the newest httpd.
++--------------------------+
+Thu May  5 23:23:20 UTC 2011
+a/coreutils-8.12-i486-1.txz:  Upgraded.
++--------------------------+
+Mon May  2 20:20:50 UTC 2011
+xap/mozilla-firefox-4.0.1-i486-1.txz:  Upgraded.
+  This release contains security fixes and improvements.
+  For more information, see:
+    http://www.mozilla.org/security/known-vulnerabilities/firefox40.html
+  (* Security fix *)
+xap/mozilla-thunderbird-3.1.10-i486-1.txz:  Upgraded.
+  This release contains security fixes and improvements.
+  For more information, see:
+    http://www.mozilla.org/security/known-vulnerabilities/thunderbird31.html
+  (* Security fix *)
++--------------------------+
+Mon Apr 25 13:37:00 UTC 2011
+Slackware 13.37 x86 stable is released!
+
+Thanks to everyone who pitched in on this release: the Slackware team,
+the folks producing upstream code, and linuxquestions.org for providing
+a great forum for collaboration and testing.
+
+The ISOs are off to be replicated, a 6 CD-ROM 32-bit set and a dual-sided
+32-bit/64-bit x86/x86_64 DVD.  Please consider supporting the Slackware
+project by picking up a copy from store.slackware.com.  We're taking
+pre-orders now, and offer a discount if you sign up for a subscription.
+
+As always, thanks to the Slackware community for testing, suggestions,
+and feedback.  :-)
+
+Have fun!
++--------------------------+
