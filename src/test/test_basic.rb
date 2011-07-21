@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# http://en.wikibooks.org/wiki/Ruby_Programming/Unit_testing
 
 $:.insert(0, File.expand_path(File.dirname(File.expand_path(__FILE__)) + "/../lib/"))
 
@@ -16,6 +17,9 @@ class TestBasics < Test::Unit::TestCase
 		assert_not_nil(Slackware::UTILS_VERSION)
 	end
 	def test_slackware_version
+		assert_not_nil(Slackware::SLACKWARE_VERSION)
+	end
+	def test_slackware_system_version
 		assert_not_nil(Slackware::System.version)
 	end
 end
