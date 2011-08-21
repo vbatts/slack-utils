@@ -24,6 +24,8 @@ if [ -z $1 ] ; then
 	exit 1
 fi
 
+echo "INFO: have patience ... this is going to take a while ... " >&2
+
 find /lib /lib64 /usr/lib /usr/lib64 /bin /sbin /usr/bin /usr/sbin -type f | \
 	xargs file | \
 	grep -E 'ELF.*(executable|shared object)' | \

@@ -23,6 +23,20 @@ $PROGRAM_NAME = File.basename(__FILE__)
 
 require 'rubygems'
 require 'slackware/utils'
+require 'slackware/args'
+
+option_banner = <<-EOS
+Attempt to find the files
+Usage:
+	#{File.basename(__FILE__)} [libname or path]
+EOS
+options = Slackware::Args.parse(ARGV, [], option_banner)
+
+if (ARGV.count == 0)
+	$stderr.write("ERROR: a library name is needed to search for\n")
+	exit(2)
+end
+
 
 # XXX needs better boilerplating
 print_find_linked(ARGV[0])
