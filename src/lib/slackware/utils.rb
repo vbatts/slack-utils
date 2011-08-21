@@ -32,9 +32,12 @@ require 'slackware'
 
 
 # Functions
+
+# This is base builder of the packe list
 def build_packages(opts = {}, args = [])
 	pkgs = Slackware::System.installed_packages
 	
+	# separated this little thing out, since it adds a little more time
 	if (opts[:time])
 		pkgs = pkgs.each {|p| p.get_time }
 	end
