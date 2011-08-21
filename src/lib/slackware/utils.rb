@@ -41,12 +41,22 @@ def build_packages(opts = {}, args = [])
 	if (opts[:time])
 		pkgs = pkgs.each {|p| p.get_time }
 	end
+
 	if (opts[:all])
 		if (args.count > 0)
 			selected_pkgs = []
 			args.each {|arg|
+
+				# about 0.012s performance improvement,
+				# by compiling it here, instead of inside the iteration.
+				if (opts[:case_insensitive])
+					re_arg = Regexp.compile(/#{arg}/i)
+				else
+					re_arg = Regexp.compile(/#{arg}/)
+				end
+
 				pkgs.each {|pkg|
-					if pkg.fullname =~ /#{arg}/
+					if pkg.fullname =~ re_arg
 						selected_pkgs << pkg
 					end
 				}
@@ -56,8 +66,12 @@ def build_packages(opts = {}, args = [])
 		end
 	end
 	if (opts[:pkg])
+		if (opts[:case_insensitive])
+			re = Regexp.compile(/#{opts[:pkg]}/i)
+		else
+			re = Regexp.compile(/#{opts[:pkg]}/)
+		end
 		pkgs = pkgs.map {|p|
-			re = /#{opts[:pkg]}/i
 			if p.name =~ re
 				if (opts[:color])
 					p.name = p.name.gsub(re, "#{@st}\\&#{@en}")
@@ -65,10 +79,15 @@ def build_packages(opts = {}, args = [])
 				p
 			end
 		}.compact
+		re = nil
 	end
 	if (opts[:Version])
+		if (opts[:case_insensitive])
+			re = Regexp.compile(Regexp.escape(/#{opts[:Version]}/i))
+		else
+			re = Regexp.compile(Regexp.escape(/#{opts[:Version]}/))
+		end
 		pkgs = pkgs.map {|p|
-			re = Regexp.new(Regexp.escape(opts[:Version]))
 			if p.version =~ re
 				if (opts[:color])
 					p.version = p.version.gsub(re, "#{@st}\\&#{@en}")
@@ -76,10 +95,15 @@ def build_packages(opts = {}, args = [])
 				p
 			end
 		}.compact
+		re = nil
 	end
 	if (opts[:arch])
+		if (opts[:case_insensitive])
+			re = Regexp.compile(/#{opts[:arch]}/i)
+		else
+			re = Regexp.compile(/#{opts[:arch]}/)
+		end
 		pkgs = pkgs.map {|p|
-			re = /#{opts[:arch]}/
 			if p.arch =~ re
 				if (opts[:color])
 					p.arch = p.arch.gsub(re, "#{@st}\\&#{@en}")
@@ -87,10 +111,15 @@ def build_packages(opts = {}, args = [])
 				p
 			end
 		}.compact
+		re = nil
 	end
 	if (opts[:build])
+		if (opts[:case_insensitive])
+			re = Regexp.compile(/#{opts[:build]}/i)
+		else
+			re = Regexp.compile(/#{opts[:build]}/)
+		end
 		pkgs = pkgs.map {|p|
-			re = /#{opts[:build]}/
 			if p.build =~ re
 				if (opts[:color])
 					p.build = p.build.gsub(re, "#{@st}\\&#{@en}")
@@ -98,10 +127,15 @@ def build_packages(opts = {}, args = [])
 				p
 			end
 		}.compact
+		re = nil
 	end
 	if (opts[:tag])
+		if (opts[:case_insensitive])
+			re = Regexp.compile(/#{opts[:tag]}/i)
+		else
+			re = Regexp.compile(/#{opts[:tag]}/)
+		end
 		pkgs = pkgs.map {|p|
-			re = /#{opts[:tag]}/i
 			if p.tag =~ re
 				if (opts[:color])
 					p.tag = p.tag.gsub(re, "#{@st}\\&#{@en}")
@@ -109,6 +143,7 @@ def build_packages(opts = {}, args = [])
 				p
 			end
 		}.compact
+		re = nil
 	end
 
 	return pkgs

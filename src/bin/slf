@@ -34,7 +34,7 @@ Usage:
 	if no search flags, only names, then those only those matching entries are listed
 EOS
 # This is all the flags we want to use, from Slackware::Args
-option_flags = [:color, :pkg_name, :pkg_version,
+option_flags = [:color, :case_insensitive, :pkg_name, :pkg_version,
 		:pkg_arch, :pkg_build, :pkg_tag]
 
 options = Slackware::Args.parse(ARGV, option_flags, option_banner)

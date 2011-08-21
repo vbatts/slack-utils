@@ -65,6 +65,11 @@ module Slackware
 						options[:tag] = o
 					end
 				end
+				if flags.include?(:case_insensitive)
+					opts.on("-i", "When searching, do a case insensitive match") do |o|
+						options[:case_insensitive] = o
+					end
+				end
 				if flags.include?(:force_all)
 					opts.on("-f", "--force", "force me to show all files") do |o|
 						options[:force] = o
