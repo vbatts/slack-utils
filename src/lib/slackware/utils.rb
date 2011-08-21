@@ -44,26 +44,19 @@ def build_packages(opts = {}, args = [])
 
 	if (opts[:all])
 		if (args.count > 0)
-			selected_pkgs = []
 			args.each {|arg|
-
 				# about 0.012s performance improvement,
 				# by compiling it here, instead of inside the iteration.
 				if (opts[:case_insensitive])
-					re_arg = Regexp.compile(/#{arg}/i)
+					re = Regexp.compile(/#{arg}/i)
 				else
-					re_arg = Regexp.compile(/#{arg}/)
+					re = Regexp.compile(/#{arg}/)
 				end
 
-				pkgs.each {|pkg|
-					if pkg.fullname =~ re_arg
-						selected_pkgs << pkg
-					end
-				}
+				pkgs = pkgs.find_all {|pkg| pkg.fullname =~ re }
 			}
-			pkgs = selected_pkgs.uniq
-			selected_pkgs = nil
 		end
+		re = nil
 	end
 	if (opts[:pkg])
 		if (opts[:case_insensitive])
