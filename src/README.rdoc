@@ -46,13 +46,13 @@ versions, since I make local ones and forget about it
 
 	make slackpkg
 
-	sudo upgradepkg --install-new pkg/slack-utils-0.6.1-$ARCH-1_vb.tgz
+	sudo upgradepkg --install-new pkg/slack-utils-0.6.2-$ARCH-1_vb.tgz
 
 === From tar ball
 
-	tar xfz slack-utils-0.6.1.tar.gz
+	tar xfz slack-utils-0.6.2.tar.gz
 
-	cd slack-utils-0.6.1
+	cd slack-utils-0.6.2
 
 	ruby setup.rb config --prefix=/usr --mandir=/usr/man
 
@@ -60,7 +60,7 @@ versions, since I make local ones and forget about it
 
 === From the gem
 
-	sudo gem install pkg/slack-utils-0.6.1.gem
+	sudo gem install pkg/slack-utils-0.6.2.gem
 
 
 == Quick Start
