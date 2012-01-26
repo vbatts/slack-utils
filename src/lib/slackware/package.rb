@@ -169,7 +169,7 @@ module Slackware
               break
             end
           end
-          files = file.read().split()
+          files = f.read().split()
         end
         return files
       end
