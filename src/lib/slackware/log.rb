@@ -19,10 +19,24 @@
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 require 'logger'
+require 'singleton'
 
 module Slackware
-  Log = Logger.new(STDERR)
-  Log.level = Logger::WARN
-end
+
+  class SLog < Logger
+    include Singleton
+
+    # Since Singleton does a lazy loader, this will not get initialized
+    # until it is first used. So it'll be nil, or you can set $logdev early on.
+    # It defaults to WARN level and STDERR
+    def initialize(*args)
+      if $logdev
+	super($logdev, args)
+      else
+	super(STDERR, args)
+      end
+    end
+  end # class SLog
+end # module Slackware
 
 # vim : set sw=2 sts=2 noet :
