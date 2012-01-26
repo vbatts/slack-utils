@@ -160,10 +160,8 @@ module Slackware
       file = file.sub(/^\//, "") # clean off the leading '/'
       re = Regexp::new(/#{file}/)
       pkgs.each {|pkg|
-        if (found = pkg.get_owned_files.map {|f| f if f =~ re}.compact)
-          found.each {|f|
+        pkg.get_owned_files().select {|f| f =~ re }.each do |f|
             found_files << [pkg, f]
-          }
         end
       }
       return found_files
