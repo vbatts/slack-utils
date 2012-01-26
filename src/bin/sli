@@ -29,7 +29,7 @@ require 'slackware/args'
 option_banner = <<-EOS
 List installed Slackware package's information.
 Usage:
-  #{File.basename(__FILE__)} [options] [search flags] [list of names]
+  #{$PROGRAM_NAME} [options] [search flags] [list of names]
   
   if no flags are used, then all entries are listed
   if no search flags, only names, then those only those matching entries are listed

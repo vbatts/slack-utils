@@ -29,7 +29,7 @@ require 'slackware/args'
 option_banner = <<-EOS
 Search for a file within installed Slackware package's FILE LIST.
 Usage:
-  #{File.basename(__FILE__)} [options] [pkg search flags] <one or more files>
+  #{$PROGRAM_NAME} [options] [pkg search flags] <one or more files>
   
   one or more files must be list
   if no search flags, only names, then those only those matching entries are listed

@@ -29,7 +29,7 @@ require 'slackware/args'
 option_banner = <<-EOS
 List owned for files for a given Slackware package.
 Usage:
-  #{File.basename(__FILE__)} [search flags] [list of names]
+  #{$PROGRAM_NAME} [search flags] [list of names]
   
   if no search flags, only names, then those only those matching entries are listed
 

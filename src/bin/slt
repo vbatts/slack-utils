@@ -29,7 +29,7 @@ require 'slackware/args'
 option_banner = <<-EOS
 List (and search) installed Slackware package's times.
 Usage:
-  #{File.basename(__FILE__)} [pkg search flags] [list of names]
+  #{$PROGRAM_NAME} [pkg search flags] [list of names]
   
   if no flags are used, then all entries are listed
   if no search flags, only names, then those only those matching entries are listed
