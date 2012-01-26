@@ -1,4 +1,4 @@
-# Copyright 2010,2011  Vincent Batts, Vienna, VA
+# Copyright 2010,2011,2012  Vincent Batts, Vienna, VA
 # All rights reserved.
 #
 # Redistribution and use of this source, with or without modification, is
@@ -21,7 +21,8 @@
 require 'optparse'
 
 module Slackware
-        class Args
+  # Args is the unified arguement parser for the slack-utils utilities.
+  class Args
     def self.parse(args,flags = nil, banner = nil)
       flags = [] unless flags.is_a?(Array)
       options = {}
@@ -91,15 +92,13 @@ module Slackware
       end
 
       begin
-
         opts.parse!
         return options
-
       rescue OptionParser::InvalidOption => ex
         $stderr.write("ERROR: #{e.message}, see --help\n")
         exit(1)
       end
     end
-        end
+  end
 end
 # vim : set sw=2 sts=2 noet :

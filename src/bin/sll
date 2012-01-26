@@ -1,5 +1,5 @@
 #! /usr/bin/ruby
-# Copyright 2010,2011  Vincent Batts, Vienna, VA
+# Copyright 2010,2011,2012  Vincent Batts, Vienna, VA
 # All rights reserved.
 #
 # Redistribution and use of this source, with or without modification, is
@@ -38,8 +38,14 @@ EOS
 option_flags = [:force_all, :case_insensitive, :pkg_name, :pkg_version,
     :debug, :pkg_arch, :pkg_build, :pkg_tag]
 
+slog = Slackware::Log.instance
+slog.level = Slackware::Log::WARN
+
 options = Slackware::Args.parse(ARGV, option_flags, option_banner)
-Slackware::Log.debug("options: %s" % options)
+
+# update level if specified
+slog.level = Slackware::Log::DEBUG if options[:debug]
+slog.debug($PROGRAM_NAME) {"options: %s" % options}
 
 if ((ARGV.count == 0) && 
     (options[:pkg].nil?) &&
@@ -61,8 +67,8 @@ begin
 rescue Interrupt
   exit 0
 rescue Exception => e
-  puts "ERROR: #{e.message}"
-  puts e.backtrace.join("\n") if options[:debug]
+  slog.info($PROGRAM_NAME) { e.message }
+  slog.debug($PROGRAM_NAME) { e.backtrace.join("\n") }
   exit 1
 end
 

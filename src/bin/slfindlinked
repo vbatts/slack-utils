@@ -28,7 +28,7 @@ require 'slackware/args'
 option_banner = <<-EOS
 Attempt to find the files
 Usage:
-	#{File.basename(__FILE__)} [libname or path]
+	#{$PROGRAM_NAME} [libname or path]
 EOS
 options = Slackware::Args.parse(ARGV, [], option_banner)
 

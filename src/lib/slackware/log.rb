@@ -23,7 +23,16 @@ require 'singleton'
 
 module Slackware
 
-  class SLog < Logger
+  # Log is a subclass of Logger, but is implemented as a singleton,
+  # so it can be used across library in a somewhat unified manner.
+  # Example:
+  #   require 'slackware/log'
+  #   
+  #   slog = Slackware::Log.instance
+  #   slog.info("LOG ALL THE THINGS!")
+  #   slog.debug('my_app') { ex.backtrace }
+  #
+  class Log < Logger
     include Singleton
 
     # Since Singleton does a lazy loader, this will not get initialized
@@ -36,7 +45,7 @@ module Slackware
 	super(STDERR, args)
       end
     end
-  end # class SLog
+  end # class Log
 end # module Slackware
 
 # vim : set sw=2 sts=2 noet :
