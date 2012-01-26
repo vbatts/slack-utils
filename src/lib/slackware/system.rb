@@ -30,20 +30,40 @@ module Slackware
   RE_BUILD_TAG = /^([[:digit:]]+)([[:alpha:]]+)$/
 
   class System
+    def self::root_dir()
+      return ENV["ROOT"] ? ENV["ROOT"] : "/"
+    end
+    
+    def self::dir_installed_packages(*args)
+      return File.join(root_dir, DIR_INSTALLED_PACKAGES, args)
+    end
+
+    def self::dir_removed_packages(*args)
+      return File.join(root_dir, DIR_REMOVED_PACKAGES, args)
+    end
+
+    def self::dir_installed_scripts(*args)
+      return File.join(root_dir, DIR_INSTALLED_SCRIPTS, args)
+    end
+
+    def self::dir_removed_scripts(*args)
+      return File.join(root_dir, DIR_REMOVED_SCRIPTS, args)
+    end
+
     def self::installed_packages
-      return Dir.glob(DIR_INSTALLED_PACKAGES + "/*").sort.map {|p| Slackware::Package.parse(p) }
+      return Dir.glob(dir_installed_packages("*")).sort.map {|p| Slackware::Package.parse(p) }
     end
 
     def self::removed_packages
-      return Dir.glob(DIR_REMOVED_PACKAGES + "/*").sort.map {|p| Slackware::Package.parse(p) }
+      return Dir.glob(dir_removed_packages("*")).sort.map {|p| Slackware::Package.parse(p) }
     end
 
     def self::installed_scripts
-      return Dir.glob(DIR_INSTALLED_SCRIPTS + "/*").sort.map {|s| Script.parse(s) }
+      return Dir.glob(dir_installed_scripts("*")).sort.map {|s| Script.parse(s) }
     end
 
     def self::removed_scripts
-      return Dir.glob(DIR_REMOVED_SCRIPTS + "/*").sort.map {|s| Script.parse(s) }
+      return Dir.glob(dir_removed_scripts("*")).sort.map {|s| Script.parse(s) }
     end
 
     def self::tags_used
