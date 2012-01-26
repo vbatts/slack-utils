@@ -30,6 +30,8 @@ module Slackware
   RE_BUILD_TAG = /^([[:digit:]]+)([[:alpha:]]+)$/
 
   class System
+    # A helper to return the ROOT directory of the system in question.
+    # Like pkgtools, if the environment has "ROOT" set, use it, otherwise "/"
     def self::root_dir()
       return ENV["ROOT"] ? ENV["ROOT"] : "/"
     end
@@ -51,11 +53,11 @@ module Slackware
     end
 
     def self::installed_packages
-      return Dir.glob(dir_installed_packages("*")).sort.map {|p| Slackware::Package.parse(p) }
+      return Dir.glob(dir_installed_packages("*")).sort.map {|p| Package.parse(p) }
     end
 
     def self::removed_packages
-      return Dir.glob(dir_removed_packages("*")).sort.map {|p| Slackware::Package.parse(p) }
+      return Dir.glob(dir_removed_packages("*")).sort.map {|p| Package.parse(p) }
     end
 
     def self::installed_scripts
@@ -67,7 +69,7 @@ module Slackware
     end
 
     def self::tags_used
-      pkgs = installed_packages
+      pkgs = installed_packages()
       set = []
       pkgs.map {|p| p.tag }.uniq.each {|tag|
         m_set = {}
@@ -79,24 +81,24 @@ module Slackware
     end
 
     def self::with_tag(tag)
-      return installed_packages.select {|pkg| pkg.tag == tag }
+      return installed_packages().select {|pkg| pkg.tag == tag }
     end
 
     def self::arch_used
-      return installed_packages.map {|p| p.arch }.uniq
+      return installed_packages().map {|p| p.arch }.uniq
     end
 
     def self::with_arch(arch)
-      return installed_packages.select {|pkg| pkg.arch == arch }
+      return installed_packages().select {|pkg| pkg.arch == arch }
     end
 
     def self::find_installed(name)
-      d = Dir.new(DIR_INSTALLED_PACKAGES)
+      d = Dir.new(dir_installed_packages())
       return d.select {|p| p.include?(name) }.map {|p| Package.parse(p) }
     end
 
     def self::find_removed(name)
-      d = Dir.new(DIR_REMOVED_PACKAGES)
+      d = Dir.new(dir_removed_packages())
       return d.select {|p| p.include?(name) }.map {|p| Package.parse(p) }
     end
 
@@ -111,9 +113,8 @@ module Slackware
     # Return an Array of packages, that were installed after provided +time+
     def self::installed_after(time)
       arr = []
-      di = Dir.new(DIR_INSTALLED_PACKAGES)
-      di.each {|p|
-        if (File.mtime(DIR_INSTALLED_PACKAGES + "/" + p) >= time)
+      Dir.new(dir_installed_packages()).each {|p|
+        if (File.mtime(dir_installed_packages(p)) >= time)
           pkg = Package.parse(p)
           pkg.get_time
           arr << pkg
@@ -125,9 +126,8 @@ module Slackware
     # Return an Array of packages, that were installed before provided +time+
     def self::installed_before(time)
       arr = []
-      di = Dir.new(DIR_INSTALLED_PACKAGES)
-      di.each {|p|
-        if (File.mtime(DIR_INSTALLED_PACKAGES + "/" + p) <= time)
+      Dir.new(dir_installed_packages()).each {|p|
+        if (File.mtime(dir_installed_packages(p)) <= time)
           pkg = Package.parse(p)
           pkg.get_time
           arr << pkg
@@ -139,9 +139,8 @@ module Slackware
     # Return an Array of packages, that were removed after provided +time+
     def self::removed_after(time)
       arr = []
-      dr = Dir.new(DIR_REMOVED_PACKAGES)
-      dr.each {|p|
-        if (DIR_INSTALLED_PACKAGES + "/" + p =~ RE_REMOVED_NAMES)
+      Dir.new(dir_removed_packages()).each {|p|
+        if (dir_installed_packages(p) =~ RE_REMOVED_NAMES)
           if (Time.strptime($2 + ' ' + $3, fmt='%F %H:%M:%S') >= time)
             arr << Package.parse(p)
           end
@@ -153,9 +152,8 @@ module Slackware
     # Return an Array of packages, that were removed before provided +time+
     def self::removed_before(time)
       arr = []
-      dr = Dir.new(DIR_REMOVED_PACKAGES)
-      dr.each {|p|
-        if (DIR_INSTALLED_PACKAGES + "/" + p =~ RE_REMOVED_NAMES)
+      Dir.new(dir_removed_packages()).each {|p|
+        if (dir_installed_packages(p) =~ RE_REMOVED_NAMES)
           if (Time.strptime($2 + ' ' + $3, fmt='%F %H:%M:%S') <= time)
             arr << Package.parse(p)
           end
