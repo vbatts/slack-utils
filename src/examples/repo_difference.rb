@@ -15,3 +15,4 @@ printf("%d should be removed\n", (pkgs & c[:removed].map {|p| p.name }).count)
 #p pkgs & c[:removed].map {|p| p.name }
 ca = c[:added].map {|p| p.name }
 printf("%d should be added\n", (ca.count - (pkgs & ca).count))
+# vim : set sw=2 sts=2 noet :

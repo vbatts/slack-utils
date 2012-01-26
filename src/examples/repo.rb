@@ -12,3 +12,4 @@ sr.set_packages
 
 printf("%d packages in the slackware%s-%s repo\n", sr.packages.count, sr.arch, sr.version)
 
+# vim : set sw=2 sts=2 noet :

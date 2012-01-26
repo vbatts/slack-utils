@@ -6,3 +6,4 @@ require 'rubygems'
 require 'slackware'
 
 p Slackware::System.tags_used
+# vim : set sw=2 sts=2 noet :

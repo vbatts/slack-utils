@@ -19,12 +19,12 @@
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 module Slackware
-	class PackageBundle < Package
+  class PackageBundle < Package
                 attr_accessor :archive
 
-		def initialize(name = nil)
-			super
-		end
+    def initialize(name = nil)
+      super
+    end
 
                 def parse(name)
                         super(name)
@@ -37,49 +37,50 @@ module Slackware
                         end
                 end
 
-		def get_file_list
+    def get_file_list
                         pkg = "%s/%s.%s" % [self.path, self.fullname, self.archive]
                         return nil unless File.exist?(pkg)
 
-			e_flag = ""
-			if pkg =~ /txz$/
-				e_flag = "J"
-			elsif pkg =~ /tgz$/
-				e_flag = "z"
-			elsif pkg =~ /tbz$/
-				e_flag = "j"
-			end
-			IO.popen("tar #{e_flag}wtf #{pkg}") {|f|
-				f.readlines.map {|l| l.chomp }
-			} 
-		end
+      e_flag = ""
+      if pkg =~ /txz$/
+        e_flag = "J"
+      elsif pkg =~ /tgz$/
+        e_flag = "z"
+      elsif pkg =~ /tbz$/
+        e_flag = "j"
+      end
+      IO.popen("tar #{e_flag}wtf #{pkg}") {|f|
+        f.readlines.map {|l| l.chomp }
+      } 
+    end
 
-		def read_file(file)
+    def read_file(file)
                         pkg = "%s/%s.%s" % [self.path, self.fullname, self.archive]
                         return nil unless File.exist?(pkg)
 
-			e_flag = ""
-			if pkg =~ /txz$/
-				e_flag = "J"
-			elsif pkg =~ /tgz$/
-				e_flag = "z"
-			elsif pkg =~ /tbz$/
-				e_flag = "j"
-			end
-			IO.popen("tar #{e_flag}xOf #{pkg} #{file}") {|f| f.read }
-		end
+      e_flag = ""
+      if pkg =~ /txz$/
+        e_flag = "J"
+      elsif pkg =~ /tgz$/
+        e_flag = "z"
+      elsif pkg =~ /tbz$/
+        e_flag = "j"
+      end
+      IO.popen("tar #{e_flag}xOf #{pkg} #{file}") {|f| f.read }
+    end
 
-		def inspect
-			"#<%s:0x%x name=%s version=%s arch=%s build=%s tag=%s archive=%s>" % [
-				self.class.name,
-				self.object_id,
-				self.name.inspect,
-				self.version.inspect,
-				self.arch.inspect,
-				self.build,
-				self.tag.inspect,
+    def inspect
+      "#<%s:0x%x name=%s version=%s arch=%s build=%s tag=%s archive=%s>" % [
+        self.class.name,
+        self.object_id,
+        self.name.inspect,
+        self.version.inspect,
+        self.arch.inspect,
+        self.build,
+        self.tag.inspect,
                                 self.archive.inspect
-			]
-		end
-	end
+      ]
+    end
+  end
 end
+# vim : set sw=2 sts=2 noet :

@@ -19,13 +19,14 @@
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 module Slackware
-	SLACKWARE_VERSION = begin
-			  data = File.read("/etc/slackware-version")
-			  data =~ /Slackware\s(.*)/
-			  $1
-		  rescue
-			  nil
-		  end
-	UTILS_VERSION = "0.6.2"
+  SLACKWARE_VERSION = begin
+        data = File.read("/etc/slackware-version")
+        data =~ /Slackware\s(.*)/
+        $1
+      rescue
+        nil
+      end
+  UTILS_VERSION = "0.6.2"
 end
 
+# vim : set sw=2 sts=2 noet :

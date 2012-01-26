@@ -9,9 +9,10 @@ puts "tags used are: " + Slackware::System.tags_used.to_s
 
 pkg = "kernel-modules"
 if (Slackware::System.is_upgraded?(pkg))
-	puts pkg + " has been upgraded before"
-	Slackware::System.upgrades(pkg).each {|up| printf("%s upgraded from version %s\n", up.upgrade_time, up.version) }
+  puts pkg + " has been upgraded before"
+  Slackware::System.upgrades(pkg).each {|up| printf("%s upgraded from version %s\n", up.upgrade_time, up.version) }
 else
-	puts pkg + " apparently has not ever been upgraded before"
+  puts pkg + " apparently has not ever been upgraded before"
 end
 
+# vim : set sw=2 sts=2 noet :

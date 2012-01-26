@@ -150,21 +150,21 @@ module Slackware
     end
 
     def parse(opts = {:file => nil, :data => nil})
-	    if not(opts[:file].nil?)
-		    @updates = parse_this_file(opts[:file]).updates
+      if not(opts[:file].nil?)
+        @updates = parse_this_file(opts[:file]).updates
       elsif not(@file.nil?)
-		    @updates = parse_this_file(@file).updates
-	    end
-	    return self
+        @updates = parse_this_file(@file).updates
+      end
+      return self
     end
 
     # Class method
     def self::parse(file)
-	    return parse_this_file(file)
+      return parse_this_file(file)
     end
 
     def self::open(file)
-	    return parse_this_file(file)
+      return parse_this_file(file)
     end
 
     def inspect
@@ -270,3 +270,4 @@ module Slackware
 
   end
 end
+# vim : set sw=2 sts=2 noet :
