@@ -52,36 +52,36 @@ module Slackware
       pkgs.map {|p| p.tag }.uniq.each {|tag|
         m_set = {}
         m_set[:tag] = tag
-        m_set[:count] = pkgs.map {|p| p if p.tag == tag }.compact.count
+        m_set[:count] = pkgs.select {|p| p.tag == tag }.count
         set << m_set
       }
       return set
     end
 
     def self::with_tag(tag)
-      return installed_packages.map {|pkg| pkg if pkg.tag == tag }.compact
+      return installed_packages.select {|pkg| pkg.tag == tag }
     end
 
     def self::arch_used
-      return installed_packages.map {|p| p.arch }.uniq.compact
+      return installed_packages.map {|p| p.arch }.uniq
     end
 
     def self::with_arch(arch)
-      return installed_packages.map {|pkg| pkg if pkg.arch == arch }.compact
+      return installed_packages.select {|pkg| pkg.arch == arch }
     end
 
     def self::find_installed(name)
       d = Dir.new(DIR_INSTALLED_PACKAGES)
-      return d.map {|p| Package.parse(p) if p.include?(name) }.compact
+      return d.select {|p| p.include?(name) }.map {|p| Package.parse(p) }
     end
 
     def self::find_removed(name)
       d = Dir.new(DIR_REMOVED_PACKAGES)
-      return d.map {|p| Package.parse(p) if p.include?(name) }.compact
+      return d.select {|p| p.include?(name) }.map {|p| Package.parse(p) }
     end
 
     def self::upgrades(pkg)
-      if (m = find_removed(pkg).map {|p| p if (p.name == pkg) }.compact )
+      if (m = find_removed(pkg).select {|p| (p.name == pkg) } )
         return m
       else
         return nil
