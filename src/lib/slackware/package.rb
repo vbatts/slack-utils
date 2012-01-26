@@ -159,9 +159,18 @@ module Slackware
 			unless self.owned_files.nil?
 				return self.owned_files
 			else
-				f = File.open(self.path + '/' + self.fullname)
-				files = f.drop_while {|l| not( l =~ /^FILE LIST:/) }[2..-1].map {|l| l.chomp }
-				f.close
+				files = nil
+				File.open(self.path + '/' + self.fullname) do |f|
+					while true
+						break if f.eof?
+						line = f.readline()
+						if line =~ /^FILE LIST:/
+							f.seek(2, IO::SEEK_CUR)
+							break
+						end
+					end
+					files = file.read().split()
+				end
 				return files
 			end
 		end

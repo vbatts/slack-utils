@@ -155,7 +155,7 @@ module Slackware
 
 		# Search installation of Slackware::Package's for what owns the questioned file
 		def self::owns_file(file)
-			pkgs = installed_packages
+			pkgs = installed_packages()
 			found_files = []
 			file = file.sub(/^\//, "") # clean off the leading '/'
 			re = Regexp::new(/#{file}/)
