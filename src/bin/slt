@@ -28,31 +28,34 @@ require 'slackware/args'
 option_banner = <<-EOS
 List (and search) installed Slackware package's times.
 Usage:
-	#{File.basename(__FILE__)} [pkg search flags] [list of names]
-	
-	if no flags are used, then all entries are listed
-	if no search flags, only names, then those only those matching entries are listed
+  #{File.basename(__FILE__)} [pkg search flags] [list of names]
+  
+  if no flags are used, then all entries are listed
+  if no search flags, only names, then those only those matching entries are listed
 
 EOS
 # This is all the flags we want to use, from Slackware::Args
 option_flags = [:color, :epoch, :case_insensitive, :pkg_name, :pkg_version,
-		:pkg_arch, :pkg_build, :pkg_tag]
+    :debug, :pkg_arch, :pkg_build, :pkg_tag]
 
 options = Slackware::Args.parse(ARGV, option_flags, option_banner)
+Slackware::Log.debug("options: %s" % options)
 
 # handing through that we are gathering times
 options[:time] = true
 
 if (ARGV.count > 0)
-	options[:all] = true
+  options[:all] = true
 end
 
 begin
-	print_packages_times(build_packages(options, ARGV), options[:epoch])
+  print_packages_times(build_packages(options, ARGV), options[:epoch])
 rescue Interrupt
-	exit 0
+  exit 0
 rescue Exception => e
-	puts "ERROR: #{e.message}"
-	exit 1
+  puts "ERROR: #{e.message}"
+  puts e.backtrace.join("\n") if options[:debug]
+  exit 1
 end
 
+# vim : set sw=2 sts=2 noet :

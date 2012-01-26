@@ -22,6 +22,7 @@
 $PROGRAM_NAME = File.basename(__FILE__)
 
 require 'rubygems'
+require 'slackware/log'
 require 'slackware/utils'
 require 'slackware/args'
 
@@ -35,9 +36,10 @@ Usage:
 EOS
 # This is all the flags we want to use, from Slackware::Args
 option_flags = [:color, :case_insensitive, :pkg_name, :pkg_version,
-    :pkg_arch, :pkg_build, :pkg_tag]
+    :debug, :pkg_arch, :pkg_build, :pkg_tag]
 
 options = Slackware::Args.parse(ARGV, option_flags, option_banner)
+Slackware::Log.debug("options: %s" % options)
 
 
 if (ARGV.count > 0)
@@ -50,6 +52,8 @@ rescue Interrupt
   exit 0
 rescue Exception => e
   puts "ERROR: #{e.message}"
+  puts e.backtrace.join("\n") if options[:debug]
   exit 1
 end
 
+# vim : set sw=2 sts=2 noet :

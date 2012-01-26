@@ -1,5 +1,4 @@
-#! /usr/bin/ruby
-# Copyright 2010,2011  Vincent Batts, Vienna, VA
+# Copyright 2011  Vincent Batts, Vienna, VA
 # All rights reserved.
 #
 # Redistribution and use of this source, with or without modification, is
@@ -19,41 +18,11 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-$PROGRAM_NAME = File.basename(__FILE__)
+require 'logger'
 
-require 'rubygems'
-require 'slackware/utils'
-require 'slackware/args'
-
-option_banner = <<-EOS
-List installed Slackware packages.
-Usage:
-  #{File.basename(__FILE__)} [options] [search flags] [list of names]
-  
-  if no flags are used, then all entries are listed
-  if no search flags, only names, then those only those matching entries are listed
-
-EOS
-# This is all the flags we want to use, from Slackware::Args
-option_flags = [:color, :case_insensitive, :pkg_name,
-    :debug, :pkg_version, :pkg_arch, :pkg_build, :pkg_tag]
-
-options = Slackware::Args.parse(ARGV, option_flags, option_banner)
-Slackware::Log.debug("options: %s" % options)
-
-if (ARGV.count > 0)
-  options[:all] = true
+module Slackware
+	Log = Logger.new(STDERR)
+	Log.level = Logger::WARN
 end
-
-begin
-  print_packages(build_packages(options, ARGV))
-rescue Interrupt
-  exit 0
-rescue Exception => e
-  puts "ERROR: #{e.message}"
-  puts e.backtrace.join("\n") if options[:debug]
-  exit 1
-end
-
 
 # vim : set sw=2 sts=2 noet :

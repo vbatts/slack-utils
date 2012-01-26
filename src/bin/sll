@@ -28,16 +28,17 @@ require 'slackware/args'
 option_banner = <<-EOS
 List owned for files for a given Slackware package.
 Usage:
-	#{File.basename(__FILE__)} [search flags] [list of names]
-	
-	if no search flags, only names, then those only those matching entries are listed
+  #{File.basename(__FILE__)} [search flags] [list of names]
+  
+  if no search flags, only names, then those only those matching entries are listed
 
 EOS
 # This is all the flags we want to use, from Slackware::Args
 option_flags = [:force_all, :case_insensitive, :pkg_name, :pkg_version,
-		:pkg_arch, :pkg_build, :pkg_tag]
+    :debug, :pkg_arch, :pkg_build, :pkg_tag]
 
 options = Slackware::Args.parse(ARGV, option_flags, option_banner)
+Slackware::Log.debug("options: %s" % options)
 
 if ((ARGV.count == 0) && 
     (options[:pkg].nil?) &&
@@ -46,8 +47,8 @@ if ((ARGV.count == 0) &&
     (options[:build].nil?) && 
     (options[:tag].nil?) && 
     not(options[:force]) )
-	$stderr.write("WARNING: If you really want to see *ALL* files, use the --force flag\n")
-	exit(2)
+  $stderr.write("WARNING: If you really want to see *ALL* files, use the --force flag\n")
+  exit(2)
 end
 
 if (ARGV.count > 0)
@@ -55,8 +56,13 @@ if (ARGV.count > 0)
 end
 
 begin
-	print_package_file_list(build_packages(options, ARGV))
+  print_package_file_list(build_packages(options, ARGV))
 rescue Interrupt
-	exit 0
+  exit 0
+rescue Exception => e
+  puts "ERROR: #{e.message}"
+  puts e.backtrace.join("\n") if options[:debug]
+  exit 1
 end
 
+# vim : set sw=2 sts=2 noet :

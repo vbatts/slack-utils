@@ -75,6 +75,11 @@ module Slackware
             options[:force] = o
           end
         end
+        if flags.include?(:debug)
+          opts.on("-D", "--debug", "show debugging output") do |o|
+            options[:debug] = o
+          end
+        end
 
         opts.on("-v", "--version", "Display version of this software") do |o|
           printf("slack-utils version: %s, Slackware version: %s\n",

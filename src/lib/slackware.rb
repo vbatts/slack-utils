@@ -1,4 +1,5 @@
 
+require 'slackware/log'
 require 'slackware/version'
 require 'slackware/package'
 require 'slackware/system'
