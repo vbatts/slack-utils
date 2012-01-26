@@ -1,2 +1,0 @@
-* implement an interoperation between Slackware::Repo and Slackware::ChangeLog for pulling the file data and rendering it.
-** further, it could allow for timestamp changes
