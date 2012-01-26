@@ -1,4 +1,4 @@
-# Copyright 2010,2011  Vincent Batts, Vienna, VA
+# Copyright 2010,2011,2012  Vincent Batts, Vienna, VA
 # All rights reserved.
 #
 # Redistribution and use of this source, with or without modification, is
@@ -19,6 +19,7 @@
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 require 'time'
+require 'slackware/log'
 
 module Slackware
   class Package
@@ -164,7 +165,7 @@ module Slackware
           while true
             break if f.eof?
             line = f.readline()
-            if line =~ /^FILE LIST:/
+            if line =~ /^FILE LIST:/ # FIXME ArgumentError: invalid byte sequence in US-ASCII
               f.seek(2, IO::SEEK_CUR)
               break
             end

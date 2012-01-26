@@ -19,8 +19,8 @@
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 require 'slackware/version'
-require 'slackware/log'
 require 'slackware/package'
+require 'slackware/log'
 
 module Slackware
   DIR_INSTALLED_PACKAGES = "/var/log/packages"
@@ -31,6 +31,11 @@ module Slackware
   RE_BUILD_TAG = /^([[:digit:]]+)([[:alpha:]]+)$/
 
   class System
+    # A debug log helper
+    def self::debug(msg)
+      Slackware::Log.instance.debug(self.name) { msg }
+    end
+
     # A helper to return the ROOT directory of the system in question.
     # Like pkgtools, if the environment has "ROOT" set, use it, otherwise "/"
     def self::root_dir()
@@ -54,19 +59,27 @@ module Slackware
     end
 
     def self::installed_packages
-      return Dir.glob(dir_installed_packages("*")).sort.map {|p| Package.parse(p) }
+      path = dir_installed_packages("*")
+      debug('dir_installed_packages: %s' % path)
+      return Dir.glob(path).sort.map {|p| Package.parse(p) }
     end
 
     def self::removed_packages
-      return Dir.glob(dir_removed_packages("*")).sort.map {|p| Package.parse(p) }
+      path = dir_removed_packages("*")
+      debug('dir_removed_packages: %s' % path)
+      return Dir.glob(path).sort.map {|p| Package.parse(p) }
     end
 
     def self::installed_scripts
-      return Dir.glob(dir_installed_scripts("*")).sort.map {|s| Script.parse(s) }
+      path = dir_installed_scripts("*")
+      debug('dir_installed_scripts: %s' % path)
+      return Dir.glob(path).sort.map {|s| Script.parse(s) }
     end
 
     def self::removed_scripts
-      return Dir.glob(dir_removed_scripts("*")).sort.map {|s| Script.parse(s) }
+      path = dir_removed_scripts("*")
+      debug('dir_removed_scripts: %s' % path)
+      return Dir.glob(path).sort.map {|s| Script.parse(s) }
     end
 
     def self::tags_used
@@ -103,15 +116,19 @@ module Slackware
       return d.select {|p| p.include?(name) }.map {|p| Package.parse(p) }
     end
 
+    # Returns a list of the upgrades for a particular package name
+    # Example:
+    #   Slackware::System.upgrades("xz")
+    #   => [#<Slackware::Package:0x981e6c name="xz" version="5.0.0" arch="x86_64" build=1 tag="">,
+    #   #<Slackware::Package:0x97e04c name="xz" version="4.999.9beta" arch="x86_64" build=1 tag="">]
+    #   Slackware::System.upgrades("fart")
+    #   => []
     def self::upgrades(pkg)
-      if (m = find_removed(pkg).select {|p| (p.name == pkg) } )
-        return m
-      else
-        return nil
-      end
+      find_removed(pkg).select {|p| (p.name == pkg) }
     end
 
     # Return an Array of packages, that were installed after provided +time+
+    # ("installed" meaning the file's mtime)
     def self::installed_after(time)
       arr = []
       Dir.new(dir_installed_packages()).each {|p|
@@ -125,6 +142,7 @@ module Slackware
     end
 
     # Return an Array of packages, that were installed before provided +time+
+    # ("installed" meaning the file's mtime)
     def self::installed_before(time)
       arr = []
       Dir.new(dir_installed_packages()).each {|p|
@@ -175,9 +193,11 @@ module Slackware
     # Search installation of Slackware::Package's for what owns the questioned file
     def self::owns_file(file)
       pkgs = installed_packages()
+      debug('owns_file(): pkgs.count => %d' % pkgs.count)
       found_files = []
       file = file.sub(/^\//, "") # clean off the leading '/'
       re = Regexp::new(/#{file}/)
+      debug('owns_file(): file Regexp => %' % re.inspect)
       pkgs.each {|pkg|
         pkg.get_owned_files().select {|f| f =~ re }.each do |f|
             found_files << [pkg, f]
@@ -188,6 +208,7 @@ module Slackware
 
     # Return the version of Slackware Linux currently installed
     def self::version
+      debug(SLACKWARE_VERSION)
       SLACKWARE_VERSION
     end
   end
