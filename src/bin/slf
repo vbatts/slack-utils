@@ -47,7 +47,6 @@ options = Slackware::Args.parse(ARGV, option_flags, option_banner)
 slog.level = Slackware::Log::DEBUG if options[:debug]
 slog.debug($PROGRAM_NAME) {"options: %s" % options}
 
-
 if (ARGV.count > 0)
   options[:all] = true
 end
