@@ -1,4 +1,4 @@
-# Copyright 2010,2011  Vincent Batts, Vienna, VA
+# Copyright 2010,2011,2012  Vincent Batts, Vienna, VA
 # All rights reserved.
 #
 # Redistribution and use of this source, with or without modification, is
@@ -19,6 +19,7 @@
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 require 'slackware/version'
+require 'slackware/log'
 require 'slackware/package'
 
 module Slackware

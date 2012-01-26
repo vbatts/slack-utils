@@ -1,4 +1,4 @@
-# Copyright 2011  Vincent Batts, Vienna, VA
+# Copyright 2012  Vincent Batts, Vienna, VA
 # All rights reserved.
 #
 # Redistribution and use of this source, with or without modification, is
@@ -21,8 +21,8 @@
 require 'logger'
 
 module Slackware
-	Log = Logger.new(STDERR)
-	Log.level = Logger::WARN
+  Log = Logger.new(STDERR)
+  Log.level = Logger::WARN
 end
 
 # vim : set sw=2 sts=2 noet :
