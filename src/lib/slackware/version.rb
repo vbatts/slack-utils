@@ -1,3 +1,5 @@
+# encoding: UTF-8
+
 # Copyright 2010,2011  Vincent Batts, Vienna, VA
 # All rights reserved.
 #
