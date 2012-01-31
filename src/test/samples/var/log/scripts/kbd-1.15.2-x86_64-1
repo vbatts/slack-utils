@@ -1,0 +1,39 @@
+
+config() {
+  NEW="$1"
+  OLD="$(dirname $NEW)/$(basename $NEW .new)"
+  # If there's no config file by that name, mv it over:
+  if [ ! -r $OLD ]; then
+    mv $NEW $OLD
+  elif [ "$(cat $OLD | md5sum)" = "$(cat $NEW | md5sum)" ]; then
+    # toss the redundant copy
+    rm $NEW
+  fi
+  # Otherwise, we leave the .new copy for the admin to consider...
+}
+
+# Leave any new rc.font with the same permissions as the old one:
+# This is a kludge, but it's because there's no --reference option
+# on busybox's 'chmod':
+if [ -e etc/rc.d/rc.font ]; then
+  if [ -x etc/rc.d/rc.font ]; then
+    chmod 755 etc/rc.d/rc.font.new
+  else
+    chmod 644 etc/rc.d/rc.font.new
+  fi
+fi
+# Then config() it:
+config etc/rc.d/rc.font.new
+
+( cd usr/share/kbd/keymaps/i386/qwerty ; rm -rf ko.map.gz )
+( cd usr/share/kbd/keymaps/i386/qwerty ; ln -sf us.map.gz ko.map.gz )
+( cd usr/share/kbd/keymaps ; rm -rf ppc )
+( cd usr/share/kbd/keymaps ; ln -sf mac ppc )
+( cd usr/bin ; rm -rf loadkeys )
+( cd usr/bin ; ln -sf ../../bin/loadkeys loadkeys )
+( cd usr/bin ; rm -rf psfgettable )
+( cd usr/bin ; ln -sf psfxtable psfgettable )
+( cd usr/bin ; rm -rf psfaddtable )
+( cd usr/bin ; ln -sf psfxtable psfaddtable )
+( cd usr/bin ; rm -rf psfstriptable )
+( cd usr/bin ; ln -sf psfxtable psfstriptable )
