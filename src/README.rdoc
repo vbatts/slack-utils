@@ -67,7 +67,7 @@ See the system manual page slack-utils(8)
  >> pkg.name = "hello-kitty"
  >> pkg.version = "1.0"
 
- or 
+or 
  >> require 'rubygems'
  >> require 'slackware'
  >> tags = Slackware::System.tags_used
