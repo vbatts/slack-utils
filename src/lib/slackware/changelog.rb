@@ -182,7 +182,7 @@ module Slackware
     # * take packge notes until
     # * next package or entry separator
     # * separator creates next change entry
-    def parse_this_file(file)
+    def self::parse_this_file(file)
       f_handle = ""
       if file.is_a?(File)
         f_handle = file

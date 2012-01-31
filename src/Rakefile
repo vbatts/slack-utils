@@ -2,7 +2,7 @@
 # rake gem
 
 require 'rake/testtask'
-require 'rake/gempackagetask'
+require 'rubygems/package_task'
 
 spec = Gem::Specification.new do |s|
   s.name = %q{slack-utils}
@@ -42,16 +42,16 @@ See the examples/ for more information.
     lib/slackware/version.rb
     lib/slackware/system.rb
   }
-  s.executables = ["sli","slf","slo","sll","slp","slt","slfindlinked"]
-  s.require_paths = ["lib"]
+  s.executables = %w{ sli slf slo sll slp slt slfindlinked }
+  s.require_paths = %w{ lib }
   s.autorequire = "slack-utils"
   s.has_rdoc = true
-  s.extra_rdoc_files = ["README.rdoc"]
+  s.extra_rdoc_files = %w{ README.rdoc }
   s.rdoc_options = ["--main=README.rdoc", "--line-numbers", "--inline-source", "--title=Slackware utils (#{s.name}) #{s.version} Documentation"]
   #s.add_dependency("")
 end
 
-Rake::GemPackageTask.new(spec) do |pkg|
+Gem::PackageTask.new(spec) do |pkg|
   pkg.need_tar = true
 end
 
