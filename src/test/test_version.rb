@@ -4,7 +4,6 @@ $:.insert(0, File.expand_path(File.dirname(File.expand_path(__FILE__)) + "/../li
 
 require 'test/unit'
 require 'slackware/log'
-require 'slackware/version'
 
 def log(msg)
     Slackware::Log.instance.info(File.basename(__FILE__)) { msg }
@@ -21,9 +20,11 @@ class TestVersion < Test::Unit::TestCase
   end
 
   def test_version
+    # sticking it here, so that the variable is setup *after* the ROOT environment is declared
+    require 'slackware/version'
     a = Slackware::SLACKWARE_VERSION
     log(a)
-    assert_equal("13.37.TEST", a, "the version of slackware deduced, does not match")
+    assert_equal("13.37.314159", a, "the version of slackware deduced, does not match")
   end
 end
 

@@ -1,6 +1,4 @@
-# encoding: UTF-8
-
-# Copyright 2010,2011  Vincent Batts, Vienna, VA
+# Copyright 2010,2011,2012  Vincent Batts, Vienna, VA
 # All rights reserved.
 #
 # Redistribution and use of this source, with or without modification, is
@@ -30,7 +28,7 @@ module Slackware
                       rescue
                         nil
                       end
-  UTILS_VERSION = "0.6.2"
+  UTILS_VERSION = "0.7"
 end
 
 # vim : set sw=2 sts=2 et :
