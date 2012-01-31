@@ -10,6 +10,8 @@ else
 	exit 1
 fi
 
+find . -type f -name '*~' -exec rm -f "{}" \;
+
 rm -rf $TMP/${PRGNAM}-${VERSION}
 cp -a $CWD/src $TMP/${PRGNAM}-${VERSION}
 (cd $TMP && tar zcvf $CWD/${PRGNAM}-${VERSION}.tar.gz ${PRGNAM}-${VERSION})
