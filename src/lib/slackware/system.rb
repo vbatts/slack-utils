@@ -30,6 +30,8 @@ module Slackware
   RE_REMOVED_NAMES = /^(.*)-upgraded-(\d{4}-\d{2}-\d{2}),(\d{2}:\d{2}:\d{2})$/
   RE_BUILD_TAG = /^([[:digit:]]+)([[:alpha:]]+)$/
 
+  FMT_UPGRADE_TIME = "%F %H:%M:%S"
+
   class System
 
     # A debug log helper
@@ -135,7 +137,7 @@ module Slackware
       arr = []
       Dir.new(Paths::removed_packages()).each {|p|
         if (Paths::installed_packages(p) =~ RE_REMOVED_NAMES)
-          if (Time.strptime($2 + ' ' + $3, fmt='%F %H:%M:%S') >= time)
+          if (Time.strptime($2 + ' ' + $3, fmt=FMT_UPGRADE_TIME) >= time)
             arr << Package.parse(p)
           end
         end
@@ -148,7 +150,7 @@ module Slackware
       arr = []
       Dir.new(Paths::removed_packages()).each {|p|
         if (Paths::installed_packages(p) =~ RE_REMOVED_NAMES)
-          if (Time.strptime($2 + ' ' + $3, fmt='%F %H:%M:%S') <= time)
+          if (Time.strptime($2 + ' ' + $3, fmt=FMT_UPGRADE_TIME) <= time)
             arr << Package.parse(p)
           end
         end
@@ -166,6 +168,7 @@ module Slackware
     end
 
     # Search installation of Slackware::Package's for what owns the questioned file
+    # Returns an Array, of matching pairs. The pairs are [Slackware::Package, <matching file>]
     def self::owns_file(file)
       pkgs = installed_packages()
       debug('owns_file(): pkgs.count => %d' % pkgs.count)
@@ -199,4 +202,4 @@ module Slackware
 
 end
 
-# vim: set sw=2 sts=2 noet:
+# vim: set sw=2 sts=2 et:

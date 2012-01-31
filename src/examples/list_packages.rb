@@ -15,4 +15,4 @@ else
   puts pkg + " apparently has not ever been upgraded before"
 end
 
-# vim : set sw=2 sts=2 noet :
+# vim : set sw=2 sts=2 et :

@@ -56,4 +56,4 @@ module Slackware
   end # module Paths
 end # module Slackware
 
-# vim:sw=2:sts=2:noet:
+# vim : set sw=2 sts=2 et :

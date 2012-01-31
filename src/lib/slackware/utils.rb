@@ -332,4 +332,4 @@ def filemagic(file)
   return `/usr/bin/file "#{file}"`.chomp
 end
 
-# vim:sw=2:sts=2:noet:
+# vim:sw=2:sts=2:et:

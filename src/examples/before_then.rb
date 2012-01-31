@@ -9,4 +9,4 @@ t = Time.now - 10000877
 s = Slackware::System.installed_before(t)
 
 puts "#{s.count} packages installed before #{t}"
-# vim : set sw=2 sts=2 noet :
+# vim : set sw=2 sts=2 et :

@@ -33,4 +33,4 @@ module Slackware
   UTILS_VERSION = "0.6.2"
 end
 
-# vim : set sw=2 sts=2 noet :
+# vim : set sw=2 sts=2 et :

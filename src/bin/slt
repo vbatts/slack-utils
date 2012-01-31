@@ -65,4 +65,4 @@ rescue Exception => e
   exit 1
 end
 
-# vim:sw=2:sts=2:noet:
+# vim:sw=2:sts=2:et:

@@ -255,4 +255,4 @@ module Slackware
   end
 end
 
-# vim:sw=2:sts=2:noet:
+# vim:sw=2:sts=2:et:
