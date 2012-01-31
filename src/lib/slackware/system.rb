@@ -21,66 +21,39 @@
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 require 'slackware/version'
+require 'slackware/paths'
 require 'slackware/package'
 require 'slackware/log'
 
 module Slackware
-  DIR_INSTALLED_PACKAGES = "/var/log/packages"
-  DIR_REMOVED_PACKAGES = "/var/log/removed_packages"
-  DIR_INSTALLED_SCRIPTS = "/var/log/scripts"
-  DIR_REMOVED_SCRIPTS = "/var/log/removed_scripts"
+
   RE_REMOVED_NAMES = /^(.*)-upgraded-(\d{4}-\d{2}-\d{2}),(\d{2}:\d{2}:\d{2})$/
   RE_BUILD_TAG = /^([[:digit:]]+)([[:alpha:]]+)$/
 
   class System
+
     # A debug log helper
     def self::debug(msg)
       Slackware::Log.instance.debug(self.name) { msg }
     end
 
-    # A helper to return the ROOT directory of the system in question.
-    # Like pkgtools, if the environment has "ROOT" set, use it, otherwise "/"
-    def self::root_dir()
-      return ENV["ROOT"] ? ENV["ROOT"] : "/"
-    end
-    
-    def self::dir_installed_packages(*args)
-      return File.join(root_dir, DIR_INSTALLED_PACKAGES, args)
-    end
-
-    def self::dir_removed_packages(*args)
-      return File.join(root_dir, DIR_REMOVED_PACKAGES, args)
-    end
-
-    def self::dir_installed_scripts(*args)
-      return File.join(root_dir, DIR_INSTALLED_SCRIPTS, args)
-    end
-
-    def self::dir_removed_scripts(*args)
-      return File.join(root_dir, DIR_REMOVED_SCRIPTS, args)
-    end
-
     def self::installed_packages
-      path = dir_installed_packages("*")
-      debug('dir_installed_packages: %s' % path)
+      path = Paths::installed_packages("*")
       return Dir.glob(path).sort.map {|p| Package.parse(p) }
     end
 
     def self::removed_packages
-      path = dir_removed_packages("*")
-      debug('dir_removed_packages: %s' % path)
+      path = Paths::removed_packages("*")
       return Dir.glob(path).sort.map {|p| Package.parse(p) }
     end
 
     def self::installed_scripts
-      path = dir_installed_scripts("*")
-      debug('dir_installed_scripts: %s' % path)
+      path = Paths::installed_scripts("*")
       return Dir.glob(path).sort.map {|s| Script.parse(s) }
     end
 
     def self::removed_scripts
-      path = dir_removed_scripts("*")
-      debug('dir_removed_scripts: %s' % path)
+      path = Paths::removed_scripts("*")
       return Dir.glob(path).sort.map {|s| Script.parse(s) }
     end
 
@@ -109,12 +82,12 @@ module Slackware
     end
 
     def self::find_installed(name)
-      d = Dir.new(dir_installed_packages())
+      d = Dir.new(Paths::installed_packages())
       return d.select {|p| p.include?(name) }.map {|p| Package.parse(p) }
     end
 
     def self::find_removed(name)
-      d = Dir.new(dir_removed_packages())
+      d = Dir.new(Paths::removed_packages())
       return d.select {|p| p.include?(name) }.map {|p| Package.parse(p) }
     end
 
@@ -133,8 +106,8 @@ module Slackware
     # ("installed" meaning the file's mtime)
     def self::installed_after(time)
       arr = []
-      Dir.new(dir_installed_packages()).each {|p|
-        if (File.mtime(dir_installed_packages(p)) >= time)
+      Dir.new(Paths::installed_packages()).each {|p|
+        if (File.mtime(Paths::installed_packages(p)) >= time)
           pkg = Package.parse(p)
           pkg.get_time
           arr << pkg
@@ -147,8 +120,8 @@ module Slackware
     # ("installed" meaning the file's mtime)
     def self::installed_before(time)
       arr = []
-      Dir.new(dir_installed_packages()).each {|p|
-        if (File.mtime(dir_installed_packages(p)) <= time)
+      Dir.new(Paths::installed_packages()).each {|p|
+        if (File.mtime(Paths::installed_packages(p)) <= time)
           pkg = Package.parse(p)
           pkg.get_time
           arr << pkg
@@ -160,8 +133,8 @@ module Slackware
     # Return an Array of packages, that were removed after provided +time+
     def self::removed_after(time)
       arr = []
-      Dir.new(dir_removed_packages()).each {|p|
-        if (dir_installed_packages(p) =~ RE_REMOVED_NAMES)
+      Dir.new(Paths::removed_packages()).each {|p|
+        if (Paths::installed_packages(p) =~ RE_REMOVED_NAMES)
           if (Time.strptime($2 + ' ' + $3, fmt='%F %H:%M:%S') >= time)
             arr << Package.parse(p)
           end
@@ -173,8 +146,8 @@ module Slackware
     # Return an Array of packages, that were removed before provided +time+
     def self::removed_before(time)
       arr = []
-      Dir.new(dir_removed_packages()).each {|p|
-        if (dir_installed_packages(p) =~ RE_REMOVED_NAMES)
+      Dir.new(Paths::removed_packages()).each {|p|
+        if (Paths::installed_packages(p) =~ RE_REMOVED_NAMES)
           if (Time.strptime($2 + ' ' + $3, fmt='%F %H:%M:%S') <= time)
             arr << Package.parse(p)
           end
@@ -199,9 +172,18 @@ module Slackware
       found_files = []
       file = file.sub(/^\//, "") # clean off the leading '/'
       re = Regexp::new(/#{file}/)
-      debug('owns_file(): file Regexp => %' % re.inspect)
+      debug('owns_file(): file Regexp => %s' % re.inspect)
       pkgs.each {|pkg|
-        pkg.get_owned_files().select {|f| f =~ re }.each do |f|
+        pkg.get_owned_files().select {|f|
+          begin
+            f =~ re
+          rescue ArgumentError => ex
+            Log.instance.debug(self.name) {
+              "encoding mismatch: " + f
+            }
+            false # this needs to return false, for the .select
+          end
+        }.each do |f|
             found_files << [pkg, f]
         end
       }
@@ -217,4 +199,4 @@ module Slackware
 
 end
 
-# vim : set sw=2 sts=2 noet :
+# vim: set sw=2 sts=2 noet:

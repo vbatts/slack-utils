@@ -1,4 +1,5 @@
-#! /usr/bin/ruby
+# encoding: UTF-8
+
 # Copyright 2010,2011,2012  Vincent Batts, Vienna, VA
 # All rights reserved.
 #
@@ -19,30 +20,35 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-$PROGRAM_NAME = File.basename(__FILE__)
+module Slackware
+  module Paths
+    INSTALLED_PACKAGES = "/var/log/packages"
+    REMOVED_PACKAGES = "/var/log/removed_packages"
+    INSTALLED_SCRIPTS = "/var/log/scripts"
+    REMOVED_SCRIPTS = "/var/log/removed_scripts"
+ 
+    # A helper to return the ROOT directory of the system in question.
+    # Like pkgtools, if the environment has "ROOT" set, use it, otherwise "/"
+    def self::root_dir()
+      return ENV["ROOT"] ? ENV["ROOT"] : "/"
+    end
+    
+    def self::installed_packages(*args)
+      return File.join(root_dir, INSTALLED_PACKAGES, args)
+    end
 
-require 'rubygems'
-require 'slackware/log'
-require 'slackware/utils'
+    def self::removed_packages(*args)
+      return File.join(root_dir, REMOVED_PACKAGES, args)
+    end
 
-slog = Slackware::Log.instance
-slog.level = Slackware::Log::WARN
+    def self::installed_scripts(*args)
+      return File.join(root_dir, INSTALLED_SCRIPTS, args)
+    end
 
-options = Slackware::Args.parse(ARGV, [:debug])
-Slackware::Log.debug("options: %s" % options)
-
-# update level if specified
-slog.level = Slackware::Log::DEBUG if options[:debug]
-slog.debug($PROGRAM_NAME) {"options: %s" % options}
-
-begin
-  print_orphaned_files(find_orphaned_config_files())
-rescue Interrupt
-  exit 0
-rescue Exception => e
-  slog.warn($PROGRAM_NAME) { e.message }
-  slog.debug($PROGRAM_NAME) { e.class.to_s + "\n" + e.backtrace.join("\n") }
-  exit 1
-end
+    def self::removed_scripts(*args)
+      return File.join(root_dir, REMOVED_SCRIPTS, args)
+    end
+  end # module Paths
+end # module Slackware
 
 # vim:sw=2:sts=2:noet:

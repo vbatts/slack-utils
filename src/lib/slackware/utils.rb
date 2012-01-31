@@ -190,7 +190,7 @@ end
 def print_package_searched_files(pkgs, files)
   found_files = []
   files.each {|file|
-    found_files = found_files.concat(Slackware::System.owns_file(file))
+    found_files += Slackware::System.owns_file(file)
   }
   found_files.each {|file|
     puts file[0].fullname + ": " + file[1]
@@ -332,4 +332,4 @@ def filemagic(file)
   return `/usr/bin/file "#{file}"`.chomp
 end
 
-# vim : set sw=2 sts=2 noet :
+# vim:sw=2:sts=2:noet:

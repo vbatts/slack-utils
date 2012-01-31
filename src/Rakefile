@@ -32,10 +32,12 @@ See the examples/ for more information.
     examples/repo.rb
     lib/slackware.rb
     lib/slackware/utils.rb
+    lib/slackware/args.rb
     lib/slackware/changelog.rb
     lib/slackware/changelog/rss.rb
     lib/slackware/package.rb
     lib/slackware/package_bundle.rb
+    lib/slackware/paths.rb
     lib/slackware/repo.rb
     lib/slackware/version.rb
     lib/slackware/system.rb
@@ -45,7 +47,7 @@ See the examples/ for more information.
   s.autorequire = "slack-utils"
   s.has_rdoc = true
   s.extra_rdoc_files = ["README.rdoc"]
-  s.rdoc_options = ["--main=README.rdoc", "--line-numbers", "--inline-source", "--title=Slackware utils (slack-utils) #{s.version} Documentation"]
+  s.rdoc_options = ["--main=README.rdoc", "--line-numbers", "--inline-source", "--title=Slackware utils (#{s.name}) #{s.version} Documentation"]
   #s.add_dependency("")
 end
 

@@ -49,6 +49,9 @@ slog.debug($PROGRAM_NAME) {"options: %s" % options}
 
 if (ARGV.count > 0)
   options[:all] = true
+elsif (ARGV.count == 0)
+  slog.warn($PROGRAM_NAME) { "no files provided" }
+  exit 1
 end
 
 begin
@@ -56,9 +59,9 @@ begin
 rescue Interrupt
   exit 0
 rescue Exception => e
-  slog.info($PROGRAM_NAME) { e.message }
-  slog.debug($PROGRAM_NAME) { e.backtrace.join("\n") }
+  slog.warn($PROGRAM_NAME) { e.message }
+  slog.debug($PROGRAM_NAME) { e.class.to_s + "\n" + e.backtrace.join("\n") }
   exit 1
 end
 
-# vim : set sw=2 sts=2 noet :
+# vim:sw=2:sts=2:noet:
