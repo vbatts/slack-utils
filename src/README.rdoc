@@ -32,35 +32,24 @@ by unistalled/upgraded packages
 expects 1 argument passed. 
 
 
-TODO: 
-* 2010-08-20 09:16 <bailey> which is that I need to run a query to show
-me what packages I'm running are different than the slack-current
-versions, since I make local ones and forget about it
-* enable `slf` to a relative path, and it determine the absolute path
-
 == Installation
 
 === From git
 
-	git clone git://github.com/vbatts/slack-utils.git
-
-	make slackpkg
-
-	sudo upgradepkg --install-new pkg/slack-utils-0.6.2-$ARCH-1_vb.tgz
+ >> git clone git://github.com/vbatts/slack-utils.git
+ >> make slackpkg
+ >> sudo upgradepkg --install-new pkg/slack-utils-0.6.2-$ARCH-1_vb.tgz
 
 === From tar ball
 
-	tar xfz slack-utils-0.6.2.tar.gz
-
-	cd slack-utils-0.6.2
-
-	ruby setup.rb config --prefix=/usr --mandir=/usr/man
-
-	ruby setup.rb install 
+ >> tar xfz slack-utils-0.6.2.tar.gz
+ >> cd slack-utils-0.6.2
+ >> ruby setup.rb config --prefix=/usr --mandir=/usr/man
+ >> ruby setup.rb install 
 
 === From the gem
 
-	sudo gem install pkg/slack-utils-0.6.2.gem
+ >> sudo gem install pkg/slack-utils-0.6.2.gem
 
 
 == Quick Start
