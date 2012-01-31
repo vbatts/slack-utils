@@ -97,6 +97,30 @@ class TestSystem < Test::Unit::TestCase
     assert_equal('bash', pkg.name, "Only the bash package should own this pattern")
   end
 
+  def test_removed_after
+    t = Time.at(1)
+    a = Slackware::System.removed_after(t)
+    assert_equal(1, a.length, "check the times on the packages")
+  end
+
+  def test_removed_before
+    t = Time.now()
+    a = Slackware::System.removed_before(t)
+    assert_equal(1, a.length, "check the times on the packages")
+  end
+
+  def test_installed_after
+    t = Time.at(1)
+    a = Slackware::System.installed_after(t)
+    assert_equal(5, a.length, "check the times on the packages")
+  end
+
+  def test_installed_before
+    t = Time.now
+    a = Slackware::System.installed_before(t)
+    assert_equal(5, a.length, "check the times on the packages")
+  end
+
   def test_version
     a = Slackware::System.version()
     assert_not_nil(a, "The version of Slackware should be set")
