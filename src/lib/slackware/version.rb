@@ -20,14 +20,16 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+require 'slackware/paths'
+
 module Slackware
   SLACKWARE_VERSION = begin
-        data = File.read("/etc/slackware-version")
-        data =~ /Slackware\s(.*)/
-        $1
-      rescue
-        nil
-      end
+                        data = File.read(Paths::slackware_version())
+                        data =~ /Slackware\s(.*)/
+                        $1
+                      rescue
+                        nil
+                      end
   UTILS_VERSION = "0.6.2"
 end
 

@@ -26,6 +26,7 @@ module Slackware
     REMOVED_PACKAGES = "/var/log/removed_packages"
     INSTALLED_SCRIPTS = "/var/log/scripts"
     REMOVED_SCRIPTS = "/var/log/removed_scripts"
+    VERSION_FILE = "/etc/slackware-version"
  
     # A helper to return the ROOT directory of the system in question.
     # Like pkgtools, if the environment has "ROOT" set, use it, otherwise "/"
@@ -47,6 +48,10 @@ module Slackware
 
     def self::removed_scripts(*args)
       return File.join(root_dir, REMOVED_SCRIPTS, args)
+    end
+
+    def self::slackware_version()
+      return File.join(root_dir, VERSION_FILE)
     end
   end # module Paths
 end # module Slackware
