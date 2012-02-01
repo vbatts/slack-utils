@@ -16,12 +16,12 @@ if [ "$(git status --short | grep '^??' | wc -l)" -gt 0 ] ; then
 	exit 1
 fi
 
-#find . -type f -name '*~' -exec rm -f "{}" \;
-
 rm -rf $TMP/${PRGNAM}-${VERSION}
 mkdir -p $TMP/${PRGNAM}-${VERSION}
-git ls-files | grep '^src' | while read line ; do
+cd  src/
+git ls-files | while read line ; do
 	echo "$line" | cpio -dump $TMP/${PRGNAM}-${VERSION}
 done
+cd ..
 (cd $TMP && tar zcvf $CWD/${PRGNAM}-${VERSION}.tar.gz ${PRGNAM}-${VERSION})
 
