@@ -32,11 +32,16 @@ by unistalled/upgraded packages
 expects 1 argument passed. 
 
 
+== Release Notes
+
+See https://github.com/vbatts/slack-utils/wiki/Release-Notes
+
 == Installation
 
 === From git
 
  >> git clone git://github.com/vbatts/slack-utils.git
+ >> cd slack-utils
  >> make slackpkg
  >> sudo upgradepkg --install-new pkg/slack-utils-0.6.2-$ARCH-1_vb.tgz
 
@@ -47,9 +52,16 @@ expects 1 argument passed.
  >> ruby setup.rb config --prefix=/usr --mandir=/usr/man
  >> ruby setup.rb install 
 
+=== From the rubygems repo
+
+ >> sudo gem install slack-utils
+
 === From the gem
 
- >> sudo gem install pkg/slack-utils-0.6.2.gem
+ >> git clone git://github.com/vbatts/slack-utils.git
+ >> cd slack-utils/src
+ >> rake gem
+ >> sudo gem install pkg/slack-utils-$VERSION.gem
 
 
 == Quick Start
