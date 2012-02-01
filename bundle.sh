@@ -10,9 +10,18 @@ else
 	exit 1
 fi
 
-find . -type f -name '*~' -exec rm -f "{}" \;
+if [ "$(git status --short | grep '^??' | wc -l)" -gt 0 ] ; then
+	echo "ERROR: you have untracked files to address!"
+	git status --short -uall | grep '^??'
+	exit 1
+fi
+
+#find . -type f -name '*~' -exec rm -f "{}" \;
 
 rm -rf $TMP/${PRGNAM}-${VERSION}
-cp -a $CWD/src $TMP/${PRGNAM}-${VERSION}
+mkdir -p $TMP/${PRGNAM}-${VERSION}
+git ls-files | grep '^src' | while read line ; do
+	echo "$line" | cpio -dump $TMP/${PRGNAM}-${VERSION}
+done
 (cd $TMP && tar zcvf $CWD/${PRGNAM}-${VERSION}.tar.gz ${PRGNAM}-${VERSION})
 
