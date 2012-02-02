@@ -144,6 +144,34 @@ def build_packages(opts = {}, args = [])
   return pkgs
 end
 
+def print_upgrades(pkgs)
+  count = 1
+  p_count = pkgs.count
+  pkgs.each do |pkg|
+    if (Slackware::System.is_upgraded?(pkg.name))
+      puts '"%s" (current version %s build %s%s) has been upgraded before' % [pkg.name,
+                                                                        pkg.version,
+                                                                        pkg.build,
+                                                                        pkg.tag]
+      Slackware::System.upgrades(pkg.name).each do |up|
+        puts "  %s build %s%s upgraded on  %s" % [up.version,
+                                            up.build,
+                                            up.tag,
+                                            up.upgrade_time]
+      end
+    else
+      puts '"%s" (current version %s build %s%s) has not been upgraded' % [pkg.name,
+                                                                     pkg.version,
+                                                                     pkg.build,
+                                                                     pkg.tag]
+    end
+    if count < p_count
+      puts
+    end
+    count += 1
+  end
+end
+
 def print_packages(pkgs)
   if (pkgs.count > 0 && pkgs.first.class == Slackware::Package)
     pkgs.each {|pkg|

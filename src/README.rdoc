@@ -26,7 +26,9 @@ or for each arg it will search the package names.
 <b>slo</b> - find files in /etc/, that have been orphaned and left behind
 by unistalled/upgraded packages
 
-<b>sli</b> - display the package information, for matching packages
+<b>sli</b> - display the package information for matching packages
+
+<b>slu</b> - display the upgrade history for matching packages
 
 <b>slfindlinked</b> - finds what is linked to your argument, and it's package
 expects 1 argument passed. 

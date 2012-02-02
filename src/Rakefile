@@ -25,6 +25,7 @@ See the examples/ for more information.
     bin/slo
     bin/sll
     bin/sli
+    bin/slu
     bin/slfindlinked
     examples/list_packages.rb
     examples/repo_difference.rb
@@ -43,7 +44,7 @@ See the examples/ for more information.
     lib/slackware/version.rb
     lib/slackware/system.rb
   }
-  s.executables = %w{ sli slf slo sll slp slt slfindlinked }
+  s.executables = %w{ sli slf slo sll slp slt slu slfindlinked }
   s.require_paths = %w{ lib }
   s.autorequire = "slack-utils"
   s.has_rdoc = true
