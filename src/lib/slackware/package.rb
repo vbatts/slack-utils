@@ -176,9 +176,15 @@ module Slackware
           while true
             break if f.eof?
             line = f.readline()
-            if line.force_encoding("US-ASCII") =~ RE_FILE_LIST # FIXME ArgumentError: invalid byte sequence in US-ASCII
-              f.seek(2, IO::SEEK_CUR)
-              break
+            begin
+              if line.force_encoding("US-ASCII") =~ RE_FILE_LIST
+                f.seek(2, IO::SEEK_CUR)
+                break
+              end
+            rescue ArgumentError
+              # ArgumentError: invalid byte sequence in US-ASCII
+              # so dumb, i wish i could determine a better solution for this
+              true
             end
           end
           begin
