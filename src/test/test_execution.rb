@@ -35,6 +35,38 @@ class TestExecution < Test::Unit::TestCase
      assert_equal(true, pid.success?, "the process did not return successfully")
   end
 
+  def test_slt
+     res = nil
+     IO.popen("ruby %s/slt -D -e -p ^bash$ " % $bin_path) {|io| res = io.read }
+     pid = $?
+     assert_equal("1328035381", res.chomp.split(": ").last, "the command did not return the expected time of the package")
+     assert_equal(true, pid.success?, "the process did not return successfully")
+  end
+
+  def test_slu
+     res = nil
+     IO.popen("ruby %s/slu -D -p ^bash$ " % $bin_path) {|io| res = io.read }
+     pid = $?
+     assert_equal(2, res.split("\n").length, "the command did not return the correct number of results")
+     assert_equal(true, pid.success?, "the process did not return successfully")
+  end
+
+  def test_sli
+     res = nil
+     IO.popen("ruby %s/sli -D -p ^bash$ " % $bin_path) {|io| res = io.read }
+     pid = $?
+     assert_equal(13, res.split("\n").length, "the command did not return the correct number of results")
+     assert_equal(true, pid.success?, "the process did not return successfully")
+  end
+
+  def test_sll
+     res = nil
+     IO.popen("ruby %s/sll -D bash" % $bin_path) {|io| res = io.read }
+     pid = $?
+     assert_equal(316, res.split("\n").length, "the command did not return the correct number of results")
+     assert_equal(true, pid.success?, "the process did not return successfully")
+  end
+
   def test_slo
      res = nil
      IO.popen("ruby %s/slo -D" % $bin_path) {|io| res = io.read }
