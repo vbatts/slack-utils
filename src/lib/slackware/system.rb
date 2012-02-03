@@ -101,7 +101,7 @@ module Slackware
     #   Slackware::System.upgrades("fart")
     #   => []
     def self::upgrades(pkg)
-      find_removed(pkg).select {|p| (p.name == pkg) }.sort {|a,b| a.upgrade_time <=> b.upgrade_time }
+      find_removed(pkg).select {|p| (p.name == pkg) && (p.upgrade_time) }.sort {|a,b| a.upgrade_time <=> b.upgrade_time }
     end
 
     # Return an Array of packages, that were installed after provided +time+
