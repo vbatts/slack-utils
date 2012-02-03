@@ -6,9 +6,9 @@ require 'rubygems/package_task'
 
 spec = Gem::Specification.new do |s|
   s.name = %q{slack-utils}
-  s.version = "0.7.1"
+  s.version = "0.7.2"
   s.authors = ["Vincent Batts"]
-  s.date = %q{2012-01-31}
+  s.date = %q{2012-02-03}
   s.email = %q{vbatts@hashbangbash.com}
   s.homepage = %q{https://github.com/vbatts/slack-utils/}
   s.platform = Gem::Platform::RUBY
