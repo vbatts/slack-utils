@@ -2,3 +2,7 @@
 src/.config
 slack-utils*.tar.gz
 *~
+tags
+.bundle
+.project
+pkg/

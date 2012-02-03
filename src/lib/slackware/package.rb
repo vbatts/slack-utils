@@ -22,9 +22,18 @@
 
 require 'time'
 require 'slackware/log'
+require 'slackware/paths'
 
 module Slackware
   class Package
+    RE_FILE_LIST = /^FILE LIST:/
+    RE_COMPRESSED_PACKAGE_SIZE = /^COMPRESSED PACKAGE SIZE:\s+(.*)$/
+    RE_UNCOMPRESSED_PACKAGE_SIZE = /^UNCOMPRESSED PACKAGE SIZE:\s+(.*)$/
+    RE_PACKAGE_LOCATION = /^PACKAGE LOCATION:\s+(.*)$/
+    RE_PACKAGE_DESCRIPTION = /^PACKAGE DESCRIPTION:\s+(.*)$/
+
+    FMT_UPGRADE_TIME = "%F %H:%M:%S"
+
     attr_accessor :time, :path, :file, :name, :version, :arch, :build, :tag, :tag_sep, :upgrade_time, :owned_files
     def initialize(name = nil)
       self.name = name
@@ -38,7 +47,7 @@ module Slackware
       end
       if (name =~ RE_REMOVED_NAMES)
         name = $1
-        self.upgrade_time = Time.strptime($2 + ' ' + $3, fmt='%F %H:%M:%S')
+        self.upgrade_time = Time.strptime($2 + ' ' + $3, fmt=FMT_UPGRADE_TIME)
       end
       arr = name.split('-')
       build = arr.pop
@@ -83,9 +92,9 @@ module Slackware
 
       f = File.open(self.path + '/' + self.fullname)
       while true
-        if (f.readline =~ /^PACKAGE DESCRIPTION:\s+(.*)$/)
+        if (f.readline =~ RE_PACKAGE_DESCRIPTION)
           desc = f.take_while {|l|
-                                                not(l =~ /FILE LIST:/)
+                                                not(l =~ RE_FILE_LIST)
                                         }.map {|l|
                                                 l.sub(/^#{self.name}:\s?/, '').chomp
                                         }
@@ -107,7 +116,7 @@ module Slackware
 
       f = File.open(self.path + '/' + self.fullname)
       while true
-        if (f.readline =~ /^PACKAGE LOCATION:\s+(.*)$/)
+        if (f.readline =~ RE_PACKAGE_LOCATION)
           return $1
         end
       end
@@ -126,7 +135,7 @@ module Slackware
 
       f = File.open(self.path + '/' + self.fullname)
       while true
-        if (f.readline =~ /^UNCOMPRESSED PACKAGE SIZE:\s+(.*)$/)
+        if (f.readline =~ RE_UNCOMPRESSED_PACKAGE_SIZE)
           return $1
         end
       end
@@ -145,7 +154,7 @@ module Slackware
 
       f = File.open(self.path + '/' + self.fullname)
       while true
-        if (f.readline =~ /^COMPRESSED PACKAGE SIZE:\s+(.*)$/)
+        if (f.readline =~ RE_COMPRESSED_PACKAGE_SIZE)
           return $1
         end
       end
@@ -162,17 +171,29 @@ module Slackware
       unless self.owned_files.nil?
         return self.owned_files
       else
-        files = nil
+        files = []
         File.open(self.path + '/' + self.fullname) do |f|
           while true
             break if f.eof?
             line = f.readline()
-            if line =~ /^FILE LIST:/ # FIXME ArgumentError: invalid byte sequence in US-ASCII
-              f.seek(2, IO::SEEK_CUR)
-              break
+            begin
+              if line.force_encoding("US-ASCII") =~ RE_FILE_LIST
+                f.seek(2, IO::SEEK_CUR)
+                break
+              end
+            rescue ArgumentError
+              # ArgumentError: invalid byte sequence in US-ASCII
+              # so dumb, i wish i could determine a better solution for this
+              true
             end
           end
-          files = f.read().split()
+          begin
+            files = f.readlines().map {|line| line.rstrip.force_encoding("US-ASCII") }
+          rescue ArgumentError
+            Log.instance.debug("Slackware::Package") {
+	      "encoding in : " + self.path + '/' + self.fullname
+	    }
+          end
         end
         return files
       end
@@ -195,8 +216,8 @@ module Slackware
           self.time = File.mtime(self.path + "/" + self.fullname)
         end
       elsif (not(self.path) && (self.time.nil?))
-        if (File.exist?(DIR_INSTALLED_PACKAGES + "/" + self.fullname))
-          self.time = File.mtime(DIR_INSTALLED_PACKAGES + "/" + self.fullname)
+        if (File.exist?(Paths::installed_packages() + "/" + self.fullname))
+          self.time = File.mtime(Paths::installed_packages() + "/" + self.fullname)
         end
       end
       return self.time
@@ -204,9 +225,9 @@ module Slackware
 
     # Fill in the path information
     def get_path
-      if (self.path.nil? && File.exist?(DIR_INSTALLED_PACKAGES + "/" + self.name))
-        self.path = DIR_INSTALLED_PACKAGE
-        return DIR_INSTALLED_PACKAGE
+      if (self.path.nil? && File.exist?(Paths::installed_packages() + "/" + self.name))
+        self.path = Paths::installed_packages()
+        return Paths::installed_packages()
       end
     end
 
@@ -239,4 +260,5 @@ module Slackware
 
   end
 end
-# vim : set sw=2 sts=2 noet :
+
+# vim:sw=2:sts=2:et:

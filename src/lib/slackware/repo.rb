@@ -21,8 +21,10 @@
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 require 'slackware/package'
+require 'slackware/log'
 require 'slackware/changelog'
 require 'slackware/system'
+
 require 'net/http'
 require 'net/ftp'
 require 'rbconfig'
@@ -31,10 +33,10 @@ module Slackware
 
   # Stub
   class Repo
-    RE_PACKAGE_NAME    = Regexp.new(/^PACKAGE NAME:\s+(.*)\.t[gbx]z\s*/)
-    RE_PACKAGE_LOCATION  = Regexp.new(/^PACKAGE LOCATION:\s+(.*)$/)
-    RE_COMPRESSED_SIZE  = Regexp.new(/^PACKAGE SIZE \(compressed\):\s+(.*)$/)
-    RE_UNCOMPRESSED_SIZE  = Regexp.new(/^PACKAGE SIZE \(uncompressed\):\s+(.*)$/)
+    RE_PACKAGE_NAME    = /^PACKAGE NAME:\s+(.*)\.t[gbx]z\s*/
+    RE_PACKAGE_LOCATION  = /^PACKAGE LOCATION:\s+(.*)$/
+    RE_COMPRESSED_SIZE  = /^PACKAGE SIZE \(compressed\):\s+(.*)$/
+    RE_UNCOMPRESSED_SIZE  = /^PACKAGE SIZE \(uncompressed\):\s+(.*)$/
 
     attr_accessor :proto, :mirror, :path, :version, :arch, :changelog, :packages
 
@@ -162,4 +164,4 @@ module Slackware
 
 end
 
-# vim : set sw=2 sts=2 noet :
+# vim : set sw=2 sts=2 et :

@@ -1,0 +1,130 @@
+PACKAGE NAME:     bash-4.1.007-x86_64-1
+COMPRESSED PACKAGE SIZE:     939K
+UNCOMPRESSED PACKAGE SIZE:     3760K
+PACKAGE LOCATION: /var/log/mount/slackware64/a/bash-4.1.007-x86_64-1.txz
+PACKAGE DESCRIPTION:
+bash: bash (sh-compatible shell)
+bash:
+bash: The GNU Bourne-Again SHell.  Bash is a sh-compatible command
+bash: interpreter that executes commands read from the standard input or
+bash: from a file.  Bash also incorporates useful features from the Korn
+bash: and C shells (ksh and csh).  Bash is ultimately intended to be a
+bash: conformant implementation of the IEEE Posix Shell and Tools
+bash: specification (IEEE Working Group 1003.2).
+bash:
+bash: Bash must be present for the system to boot properly.
+bash:
+FILE LIST:
+./
+install/
+install/slack-desc
+install/doinst.sh
+usr/
+usr/share/
+usr/share/locale/
+usr/share/locale/pl/
+usr/share/locale/pl/LC_MESSAGES/
+usr/share/locale/pl/LC_MESSAGES/bash.mo
+usr/share/locale/ja/
+usr/share/locale/ja/LC_MESSAGES/
+usr/share/locale/ja/LC_MESSAGES/bash.mo
+usr/share/locale/fi/
+usr/share/locale/fi/LC_MESSAGES/
+usr/share/locale/fi/LC_MESSAGES/bash.mo
+usr/share/locale/et/
+usr/share/locale/et/LC_MESSAGES/
+usr/share/locale/et/LC_MESSAGES/bash.mo
+usr/share/locale/de/
+usr/share/locale/de/LC_MESSAGES/
+usr/share/locale/de/LC_MESSAGES/bash.mo
+usr/share/locale/pt_BR/
+usr/share/locale/pt_BR/LC_MESSAGES/
+usr/share/locale/pt_BR/LC_MESSAGES/bash.mo
+usr/share/locale/zh_TW/
+usr/share/locale/zh_TW/LC_MESSAGES/
+usr/share/locale/zh_TW/LC_MESSAGES/bash.mo
+usr/share/locale/ro/
+usr/share/locale/ro/LC_MESSAGES/
+usr/share/locale/ro/LC_MESSAGES/bash.mo
+usr/share/locale/eo/
+usr/share/locale/eo/LC_MESSAGES/
+usr/share/locale/eo/LC_MESSAGES/bash.mo
+usr/share/locale/ru/
+usr/share/locale/ru/LC_MESSAGES/
+usr/share/locale/ru/LC_MESSAGES/bash.mo
+usr/share/locale/af/
+usr/share/locale/af/LC_MESSAGES/
+usr/share/locale/af/LC_MESSAGES/bash.mo
+usr/share/locale/hu/
+usr/share/locale/hu/LC_MESSAGES/
+usr/share/locale/hu/LC_MESSAGES/bash.mo
+usr/share/locale/vi/
+usr/share/locale/vi/LC_MESSAGES/
+usr/share/locale/vi/LC_MESSAGES/bash.mo
+usr/share/locale/ga/
+usr/share/locale/ga/LC_MESSAGES/
+usr/share/locale/ga/LC_MESSAGES/bash.mo
+usr/share/locale/es/
+usr/share/locale/es/LC_MESSAGES/
+usr/share/locale/es/LC_MESSAGES/bash.mo
+usr/share/locale/en@quot/
+usr/share/locale/en@quot/LC_MESSAGES/
+usr/share/locale/en@quot/LC_MESSAGES/bash.mo
+usr/share/locale/ca/
+usr/share/locale/ca/LC_MESSAGES/
+usr/share/locale/ca/LC_MESSAGES/bash.mo
+usr/share/locale/id/
+usr/share/locale/id/LC_MESSAGES/
+usr/share/locale/id/LC_MESSAGES/bash.mo
+usr/share/locale/en@boldquot/
+usr/share/locale/en@boldquot/LC_MESSAGES/
+usr/share/locale/en@boldquot/LC_MESSAGES/bash.mo
+usr/share/locale/sk/
+usr/share/locale/sk/LC_MESSAGES/
+usr/share/locale/sk/LC_MESSAGES/bash.mo
+usr/share/locale/cs/
+usr/share/locale/cs/LC_MESSAGES/
+usr/share/locale/cs/LC_MESSAGES/bash.mo
+usr/share/locale/nl/
+usr/share/locale/nl/LC_MESSAGES/
+usr/share/locale/nl/LC_MESSAGES/bash.mo
+usr/share/locale/bg/
+usr/share/locale/bg/LC_MESSAGES/
+usr/share/locale/bg/LC_MESSAGES/bash.mo
+usr/share/locale/sv/
+usr/share/locale/sv/LC_MESSAGES/
+usr/share/locale/sv/LC_MESSAGES/bash.mo
+usr/share/locale/lt/
+usr/share/locale/lt/LC_MESSAGES/
+usr/share/locale/lt/LC_MESSAGES/bash.mo
+usr/share/locale/tr/
+usr/share/locale/tr/LC_MESSAGES/
+usr/share/locale/tr/LC_MESSAGES/bash.mo
+usr/share/locale/fr/
+usr/share/locale/fr/LC_MESSAGES/
+usr/share/locale/fr/LC_MESSAGES/bash.mo
+usr/man/
+usr/man/man1/
+usr/man/man1/rbash.1.gz
+usr/man/man1/builtins.1.gz
+usr/man/man1/bash.1.gz
+usr/info/
+usr/info/bash.info.gz
+usr/doc/
+usr/doc/bash-4.1/
+usr/doc/bash-4.1/Y2K
+usr/doc/bash-4.1/FAQ
+usr/doc/bash-4.1/INTRO
+usr/doc/bash-4.1/INSTALL
+usr/doc/bash-4.1/COPYING
+usr/doc/bash-4.1/ChangeLog
+usr/doc/bash-4.1/README
+usr/doc/bash-4.1/NEWS
+usr/doc/bash-4.1/CHANGES
+usr/doc/bash-4.1/NOTES
+usr/doc/bash-4.1/COMPAT
+usr/doc/bash-4.1/article.txt
+usr/doc/bash-4.1/AUTHORS
+usr/doc/bash-4.1/MANIFEST
+bin/
+bin/bash4.new

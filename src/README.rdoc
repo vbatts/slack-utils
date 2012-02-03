@@ -26,41 +26,44 @@ or for each arg it will search the package names.
 <b>slo</b> - find files in /etc/, that have been orphaned and left behind
 by unistalled/upgraded packages
 
-<b>sli</b> - display the package information, for matching packages
+<b>sli</b> - display the package information for matching packages
+
+<b>slu</b> - display the upgrade history for matching packages
 
 <b>slfindlinked</b> - finds what is linked to your argument, and it's package
 expects 1 argument passed. 
 
 
-TODO: 
-* 2010-08-20 09:16 <bailey> which is that I need to run a query to show
-me what packages I'm running are different than the slack-current
-versions, since I make local ones and forget about it
-* enable `slf` to a relative path, and it determine the absolute path
+== Release Notes
+
+See https://github.com/vbatts/slack-utils/wiki/Release-Notes
 
 == Installation
 
 === From git
 
-	git clone git://github.com/vbatts/slack-utils.git
-
-	make slackpkg
-
-	sudo upgradepkg --install-new pkg/slack-utils-0.6.2-$ARCH-1_vb.tgz
+ >> git clone git://github.com/vbatts/slack-utils.git
+ >> cd slack-utils
+ >> make slackpkg
+ >> sudo upgradepkg --install-new pkg/slack-utils-0.6.2-$ARCH-1_vb.tgz
 
 === From tar ball
 
-	tar xfz slack-utils-0.6.2.tar.gz
+ >> tar xfz slack-utils-0.6.2.tar.gz
+ >> cd slack-utils-0.6.2
+ >> ruby setup.rb config --prefix=/usr --mandir=/usr/man
+ >> ruby setup.rb install 
 
-	cd slack-utils-0.6.2
+=== From the rubygems repo
 
-	ruby setup.rb config --prefix=/usr --mandir=/usr/man
-
-	ruby setup.rb install 
+ >> sudo gem install slack-utils
 
 === From the gem
 
-	sudo gem install pkg/slack-utils-0.6.2.gem
+ >> git clone git://github.com/vbatts/slack-utils.git
+ >> cd slack-utils/src
+ >> rake gem
+ >> sudo gem install pkg/slack-utils-$VERSION.gem
 
 
 == Quick Start
@@ -78,7 +81,7 @@ See the system manual page slack-utils(8)
  >> pkg.name = "hello-kitty"
  >> pkg.version = "1.0"
 
- or 
+or 
  >> require 'rubygems'
  >> require 'slackware'
  >> tags = Slackware::System.tags_used

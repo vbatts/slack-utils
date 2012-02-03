@@ -2,13 +2,13 @@
 # rake gem
 
 require 'rake/testtask'
-require 'rake/gempackagetask'
+require 'rubygems/package_task'
 
 spec = Gem::Specification.new do |s|
   s.name = %q{slack-utils}
-  s.version = "0.6.2"
+  s.version = "0.7.1"
   s.authors = ["Vincent Batts"]
-  s.date = %q{2011-11-19}
+  s.date = %q{2012-01-31}
   s.email = %q{vbatts@hashbangbash.com}
   s.homepage = %q{https://github.com/vbatts/slack-utils/}
   s.platform = Gem::Platform::RUBY
@@ -25,6 +25,7 @@ See the examples/ for more information.
     bin/slo
     bin/sll
     bin/sli
+    bin/slu
     bin/slfindlinked
     examples/list_packages.rb
     examples/repo_difference.rb
@@ -32,24 +33,26 @@ See the examples/ for more information.
     examples/repo.rb
     lib/slackware.rb
     lib/slackware/utils.rb
+    lib/slackware/args.rb
     lib/slackware/changelog.rb
     lib/slackware/changelog/rss.rb
+    lib/slackware/log.rb
     lib/slackware/package.rb
     lib/slackware/package_bundle.rb
+    lib/slackware/paths.rb
     lib/slackware/repo.rb
     lib/slackware/version.rb
     lib/slackware/system.rb
   }
-  s.executables = ["sli","slf","slo","sll","slp","slt","slfindlinked"]
-  s.require_paths = ["lib"]
-  s.autorequire = "slack-utils"
+  s.executables = %w{ sli slf slo sll slp slt slu slfindlinked }
+  s.require_paths = %w{ lib }
   s.has_rdoc = true
-  s.extra_rdoc_files = ["README.rdoc"]
-  s.rdoc_options = ["--main=README.rdoc", "--line-numbers", "--inline-source", "--title=Slackware utils (slack-utils) #{s.version} Documentation"]
+  s.extra_rdoc_files = %w{ README.rdoc }
+  s.rdoc_options = ["--main=README.rdoc", "--line-numbers", "--inline-source", "--title=Slackware utils (#{s.name}) #{s.version} Documentation"]
   #s.add_dependency("")
 end
 
-Rake::GemPackageTask.new(spec) do |pkg|
+Gem::PackageTask.new(spec) do |pkg|
   pkg.need_tar = true
 end
 

@@ -24,8 +24,8 @@
 
 set -e
 
-PRGNAM=slack-utils
-VERSION=${VERSION:-0.6.2}
+PKGNAM=slack-utils
+VERSION=$(ls -rt $PKGNAM-*.tar.?z* | tail -1 | rev | cut -f 3- -d . | cut -f 1 -d - | rev)
 BUILD=${BUILD:-1}
 TAG=${TAG:-_vb}
 
@@ -40,15 +40,15 @@ fi
 
 CWD=$(pwd)
 TMP=${TMP:-/tmp/${TAG}}
-PKG=$TMP/package-$PRGNAM
+PKG=$TMP/package-$PKGNAM
 OUTPUT=${OUTPUT:-/tmp}
 
 rm -rf $PKG
 mkdir -p $TMP $PKG $OUTPUT
 cd $TMP
-rm -rf $PRGNAM-$VERSION
-tar xvf $CWD/$PRGNAM-$VERSION.tar.gz
-cd $PRGNAM-$VERSION
+rm -rf $PKGNAM-$VERSION
+tar xvf $CWD/$PKGNAM-$VERSION.tar.gz
+cd $PKGNAM-$VERSION
 
 ruby setup.rb config \
 	--prefix=/usr \
@@ -57,9 +57,9 @@ ruby setup.rb config \
 ruby setup.rb install \
 	--prefix=$PKG
 
-mkdir -p $PKG/usr/doc/$PRGNAM-$VERSION
-cp -a README.rdoc examples $PKG/usr/doc/$PRGNAM-$VERSION/
-cat $CWD/$PRGNAM.SlackBuild > $PKG/usr/doc/$PRGNAM-$VERSION/$PRGNAM.SlackBuild
+mkdir -p $PKG/usr/doc/$PKGNAM-$VERSION
+cp -a README.rdoc examples $PKG/usr/doc/$PKGNAM-$VERSION/
+cat $CWD/$PKGNAM.SlackBuild > $PKG/usr/doc/$PKGNAM-$VERSION/$PKGNAM.SlackBuild
 
 find $PKG/usr/man -type f -exec gzip -9 {} \;
 for i in $( find $PKG/usr/man -type l ) ; do ln -s $( readlink $i ).gz $i.gz ; rm $i ; done
@@ -68,4 +68,4 @@ mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 
 cd $PKG
-/sbin/makepkg -p -l y -c n ${OUTPUT}/${PRGNAM}-${VERSION}-${ARCH}-${BUILD}${TAG}.${PKGTYPE:-tgz}
+/sbin/makepkg -p -l y -c n ${OUTPUT}/${PKGNAM}-${VERSION}-${ARCH}-${BUILD}${TAG}.${PKGTYPE:-tgz}

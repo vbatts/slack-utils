@@ -50,9 +50,9 @@ def build_packages(opts = {}, args = [])
         # about 0.012s performance improvement,
         # by compiling it here, instead of inside the iteration.
         if (opts[:case_insensitive])
-          re = Regexp.compile(/#{arg}/i)
+          re = /#{arg}/i
         else
-          re = Regexp.compile(/#{arg}/)
+          re = /#{arg}/
         end
 
         pkgs = pkgs.find_all {|pkg| pkg.fullname =~ re }
@@ -62,9 +62,9 @@ def build_packages(opts = {}, args = [])
   end
   if (opts[:pkg])
     if (opts[:case_insensitive])
-      re = Regexp.compile(/#{opts[:pkg]}/i)
+      re = /#{opts[:pkg]}/i
     else
-      re = Regexp.compile(/#{opts[:pkg]}/)
+      re = /#{opts[:pkg]}/
     end
     pkgs = pkgs.map {|p|
       if p.name =~ re
@@ -78,9 +78,9 @@ def build_packages(opts = {}, args = [])
   end
   if (opts[:Version])
     if (opts[:case_insensitive])
-      re = Regexp.compile(Regexp.escape(/#{opts[:Version]}/i))
+      re = Regexp.new(Regexp.escape(opts[:Version]), Regexp::IGNORECASE)
     else
-      re = Regexp.compile(Regexp.escape(/#{opts[:Version]}/))
+      re = Regexp.new(Regexp.escape(opts[:Version]))
     end
     pkgs = pkgs.map {|p|
       if p.version =~ re
@@ -94,9 +94,9 @@ def build_packages(opts = {}, args = [])
   end
   if (opts[:arch])
     if (opts[:case_insensitive])
-      re = Regexp.compile(/#{opts[:arch]}/i)
+      re = /#{opts[:arch]}/i
     else
-      re = Regexp.compile(/#{opts[:arch]}/)
+      re = /#{opts[:arch]}/
     end
     pkgs = pkgs.map {|p|
       if p.arch =~ re
@@ -110,9 +110,9 @@ def build_packages(opts = {}, args = [])
   end
   if (opts[:build])
     if (opts[:case_insensitive])
-      re = Regexp.compile(/#{opts[:build]}/i)
+      re = /#{opts[:build]}/i
     else
-      re = Regexp.compile(/#{opts[:build]}/)
+      re = /#{opts[:build]}/
     end
     pkgs = pkgs.map {|p|
       if p.build =~ re
@@ -126,9 +126,9 @@ def build_packages(opts = {}, args = [])
   end
   if (opts[:tag])
     if (opts[:case_insensitive])
-      re = Regexp.compile(/#{opts[:tag]}/i)
+      re = /#{opts[:tag]}/i
     else
-      re = Regexp.compile(/#{opts[:tag]}/)
+      re = /#{opts[:tag]}/
     end
     pkgs = pkgs.map {|p|
       if p.tag =~ re
@@ -142,6 +142,34 @@ def build_packages(opts = {}, args = [])
   end
 
   return pkgs
+end
+
+def print_upgrades(pkgs)
+  count = 1
+  p_count = pkgs.count
+  pkgs.each do |pkg|
+    if (Slackware::System.is_upgraded?(pkg.name))
+      puts '"%s" (current version %s build %s%s) has been upgraded before' % [pkg.name,
+                                                                        pkg.version,
+                                                                        pkg.build,
+                                                                        pkg.tag]
+      Slackware::System.upgrades(pkg.name).each do |up|
+        puts "  %s build %s%s upgraded on  %s" % [up.version,
+                                            up.build,
+                                            up.tag,
+                                            up.upgrade_time]
+      end
+    else
+      puts '"%s" (current version %s build %s%s) has not been upgraded' % [pkg.name,
+                                                                     pkg.version,
+                                                                     pkg.build,
+                                                                     pkg.tag]
+    end
+    if count < p_count
+      puts
+    end
+    count += 1
+  end
 end
 
 def print_packages(pkgs)
@@ -190,7 +218,7 @@ end
 def print_package_searched_files(pkgs, files)
   found_files = []
   files.each {|file|
-    found_files = found_files.concat(Slackware::System.owns_file(file))
+    found_files += Slackware::System.owns_file(file)
   }
   found_files.each {|file|
     puts file[0].fullname + ": " + file[1]
@@ -269,8 +297,8 @@ def find_linked(file_to_find)
   require 'find'
 
   dirs = %w{ /lib /lib64 /usr/lib /usr/lib64 /bin /sbin /usr/bin /usr/sbin }
-  re_so = Regexp.new(/ELF.*shared object/)
-  re_exec = Regexp.new(/ELF.*executable/)
+  re_so = /ELF.*shared object/
+  re_exec = /ELF.*executable/
 
   if File.exist?(file_to_find)
     file_to_find = File.expand_path(file_to_find)
@@ -332,4 +360,4 @@ def filemagic(file)
   return `/usr/bin/file "#{file}"`.chomp
 end
 
-# vim : set sw=2 sts=2 noet :
+# vim:sw=2:sts=2:et:

@@ -1,0 +1,18 @@
+if [ -x /usr/bin/update-desktop-database ]; then
+  /usr/bin/update-desktop-database -q usr/share/applications >/dev/null 2>&1
+fi
+
+if [ -e usr/share/icons/hicolor/icon-theme.cache ]; then
+  if [ -x /usr/bin/gtk-update-icon-cache ]; then
+    /usr/bin/gtk-update-icon-cache usr/share/icons/hicolor >/dev/null 2>&1
+  fi
+fi
+
+( cd usr/lib64 ; rm -rf libtwitterapihelper.so )
+( cd usr/lib64 ; ln -sf libtwitterapihelper.so.0 libtwitterapihelper.so )
+( cd usr/lib64 ; rm -rf libchoqok.so )
+( cd usr/lib64 ; ln -sf libchoqok.so.0 libchoqok.so )
+( cd usr/lib64 ; rm -rf libchoqok.so.0 )
+( cd usr/lib64 ; ln -sf libchoqok.so.0.9.90 libchoqok.so.0 )
+( cd usr/lib64 ; rm -rf libtwitterapihelper.so.0 )
+( cd usr/lib64 ; ln -sf libtwitterapihelper.so.0.9.5 libtwitterapihelper.so.0 )

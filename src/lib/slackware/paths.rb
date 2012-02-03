@@ -18,17 +18,40 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-require 'slackware/paths'
-
 module Slackware
-  SLACKWARE_VERSION = begin
-                        data = File.read(Paths::slackware_version())
-                        data =~ /Slackware\s(.*)/
-                        $1
-                      rescue
-                        nil
-                      end
-  UTILS_VERSION = "0.7.1"
-end
+  module Paths
+    INSTALLED_PACKAGES = "/var/log/packages"
+    REMOVED_PACKAGES = "/var/log/removed_packages"
+    INSTALLED_SCRIPTS = "/var/log/scripts"
+    REMOVED_SCRIPTS = "/var/log/removed_scripts"
+    VERSION_FILE = "/etc/slackware-version"
+ 
+    # A helper to return the ROOT directory of the system in question.
+    # Like pkgtools, if the environment has "ROOT" set, use it, otherwise "/"
+    def self::root_dir()
+      return ENV["ROOT"] ? ENV["ROOT"] : "/"
+    end
+    
+    def self::installed_packages(*args)
+      return File.join(root_dir, INSTALLED_PACKAGES, args)
+    end
+
+    def self::removed_packages(*args)
+      return File.join(root_dir, REMOVED_PACKAGES, args)
+    end
+
+    def self::installed_scripts(*args)
+      return File.join(root_dir, INSTALLED_SCRIPTS, args)
+    end
+
+    def self::removed_scripts(*args)
+      return File.join(root_dir, REMOVED_SCRIPTS, args)
+    end
+
+    def self::slackware_version()
+      return File.join(root_dir, VERSION_FILE)
+    end
+  end # module Paths
+end # module Slackware
 
 # vim : set sw=2 sts=2 et :

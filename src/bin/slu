@@ -27,17 +27,13 @@ require 'slackware/utils'
 require 'slackware/args'
 
 option_banner = <<-EOS
-List (and search) installed Slackware package's times.
+List upgrades for specifed Slackware packages.
 Usage:
-  #{$PROGRAM_NAME} [pkg search flags] [list of names]
-  
-  if no flags are used, then all entries are listed
-  if no search flags, only names, then those only those matching entries are listed
+  #{$PROGRAM_NAME} [options] [search flags] [list of pkg names]
 
 EOS
 # This is all the flags we want to use, from Slackware::Args
-option_flags = [:color, :epoch, :case_insensitive, :pkg_name, :pkg_version,
-    :debug, :pkg_arch, :pkg_build, :pkg_tag]
+option_flags = [:case_insensitive, :pkg_name, :debug, :pkg_tag, :force_all]
 
 slog = Slackware::Log.instance
 slog.level = Slackware::Log::WARN
@@ -48,15 +44,20 @@ options = Slackware::Args.parse(ARGV, option_flags, option_banner)
 slog.level = Slackware::Log::DEBUG if options[:debug]
 slog.debug($PROGRAM_NAME) {"options: %s" % options}
 
-# handing through that we are gathering times
-options[:time] = true
+if ((ARGV.count == 0) && 
+    (options[:pkg].nil?) &&
+    (options[:tag].nil?) && 
+    not(options[:force]) )
+  $stderr.write("WARNING: If you really want to see *ALL* files, use the --force flag\n")
+  exit(2)
+end
 
 if (ARGV.count > 0)
   options[:all] = true
 end
 
 begin
-  print_packages_times(build_packages(options, ARGV), options[:epoch])
+  print_upgrades(build_packages(options, ARGV))
 rescue Interrupt
   exit 0
 rescue Exception => e

@@ -43,16 +43,16 @@ module Slackware
 
     # The regular entry, accounting for usb-and-pxe-installers directory,
     # and notes after the action
-    re_package_entry0 = Regexp.new(/^(([\w+-]+).*\/.*):\s+(\w+).*\.?$/)
+    re_package_entry0 = /^(([\w+-]+).*\/.*):\s+(\w+).*\.?$/
     # Some didn't have an action after the name
-    re_package_entry1 = Regexp.new(/^(([\w+-]+).*\/.*):/)
+    re_package_entry1 = /^(([\w+-]+).*\/.*):/
     # and some didn't have the ':' or an action
-    re_package_entry2 = Regexp.new(/^(([\w+-]+).*\/.*\.t[gbx]z)/)
+    re_package_entry2 = /^(([\w+-]+).*\/.*\.t[gbx]z)/
     # combine them
     RE_PACKAGE_ENTRY = Regexp.union(re_package_entry0, re_package_entry1, re_package_entry2)
 
     # (* Security fix *)
-    RE_SECURITY_FIX = Regexp.new(/\(\*\s+security\s+fix\s+\*\)/i)
+    RE_SECURITY_FIX = /\(\*\s+security\s+fix\s+\*\)/i
 
     # for hacks sake, make these usbable elsewhere
     def self::re_date ; RE_DATE ; end
@@ -182,7 +182,7 @@ module Slackware
     # * take packge notes until
     # * next package or entry separator
     # * separator creates next change entry
-    def parse_this_file(file)
+    def self::parse_this_file(file)
       f_handle = ""
       if file.is_a?(File)
         f_handle = file
@@ -272,4 +272,4 @@ module Slackware
 
   end
 end
-# vim : set sw=2 sts=2 noet :
+# vim : set sw=2 sts=2 et :

@@ -26,4 +26,4 @@ sr.changelog[:rebuilt].concat(sr.changelog[:upgraded]).each {|pkg|
 }
 
 p @@upgrades
-# vim : set sw=2 sts=2 noet :
+# vim : set sw=2 sts=2 et :

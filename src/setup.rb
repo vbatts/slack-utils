@@ -1583,4 +1583,4 @@ if $0 == __FILE__
     exit 1
   end
 end
-# vim : set sw=2 sts=2 noet :
+# vim : set sw=2 sts=2 et :
