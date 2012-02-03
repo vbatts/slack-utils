@@ -12,7 +12,7 @@ end
 class TestSystem < Test::Unit::TestCase
   def setup
     @root_prev = ENV["ROOT"]
-    ENV["ROOT"] = File.join(File.dirname(__FILE__), 'samples')
+    ENV["ROOT"] = File.expand_path(File.join(File.dirname(__FILE__), 'samples'))
     log( "ROOT: #{ENV["ROOT"]} ")
   end
   def teardown
