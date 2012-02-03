@@ -72,7 +72,7 @@ See https://github.com/vbatts/slack-utils/wiki/Release-Notes
 
 See the system manual page slack-utils(8)
 
-=== Using the library
+=== Using the API / library
 
  $ irb
  >> require 'rubygems'
