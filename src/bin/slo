@@ -23,6 +23,7 @@ $PROGRAM_NAME = File.basename(__FILE__)
 
 require 'rubygems'
 require 'slackware/log'
+require 'slackware/args'
 require 'slackware/utils'
 
 slog = Slackware::Log.instance
