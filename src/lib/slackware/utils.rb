@@ -267,12 +267,12 @@ def find_orphaned_config_files
 
   # setup list of files to check whether they still exist on the filesystem
   files = []
-  pkgs.map {|pkg| files << pkg[:files] }
-  files.flatten!.uniq!
+  pkgs.map {|pkg| files += pkg[:files] }
+  files.uniq!
 
   orphaned_config_files = []
   files.each {|file|
-    if (File.exist?("/" + file))
+    if (File.exist?(File.join(Slackware::Paths.root_dir(),file)))
       orphaned_config_files << file
     end
   }

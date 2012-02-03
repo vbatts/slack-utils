@@ -30,7 +30,7 @@ slog = Slackware::Log.instance
 slog.level = Slackware::Log::WARN
 
 options = Slackware::Args.parse(ARGV, [:debug])
-Slackware::Log.debug("options: %s" % options)
+slog.debug("options: %s" % options)
 
 # update level if specified
 slog.level = Slackware::Log::DEBUG if options[:debug]
