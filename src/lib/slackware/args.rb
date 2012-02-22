@@ -38,6 +38,11 @@ module Slackware
             options[:color] = o
           end
         end
+        if flags.include?(:reverse)
+          opts.on("-r", "--reverse", "Reverse the output") do |o|
+            options[:reverse] = o
+          end
+        end
         if flags.include?(:epoch)
           opts.on("-e", "--epoch", "Print the time stamp in seconds since 1970-01-01 00:00:00 UTC ") do |o|
             options[:epoch] = o

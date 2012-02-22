@@ -1,6 +1,8 @@
 # encoding: UTF-8
 
-# Copyright 2010,2011  Vincent Batts, Vienna, VA
+# Copyright 2009,2010  Vincent Batts, http://hashbangbash.com/
+# Copyright 2010,2011  Vincent Batts, Vienna, VA, USA
+# Copyright 2012  Vincent Batts, Raleigh, NC, USA
 # All rights reserved.
 #
 # Redistribution and use of this source, with or without modification, is
@@ -22,18 +24,13 @@
 
 # started - Fri Oct  9 15:48:43 CDT 2009
 # updated for args - Tue Mar 23 14:54:19 CDT 2010
-# Copyright 2009, 2010 Vincent Batts, http://hashbangbash.com/
 
 require 'slackware'
 
 # Variables
 @st = "\033[31;1m"
 @en = "\033[0m"
-
-# Classes
-
-
-# Functions
+@slog = Slackware::Log.instance
 
 # This is base builder of the packe list
 def build_packages(opts = {}, args = [])
@@ -180,12 +177,17 @@ def print_packages(pkgs)
   end
 end
 
-def print_packages_times(pkgs, epoch = false)
-  if (epoch == true)
-    pkgs.each {|pkg| printf("%s : %s\n", pkg.fullname, pkg.time.to_i) }
-  else
-    pkgs.each {|pkg| printf("%s : %s\n", pkg.fullname, pkg.time.to_s) }
-  end
+def print_packages_times(pkgs, epoch = false, reverse = false)
+  @slog.debug('print_packages_times') { "epoch: #{epoch} ; reverse: #{reverse}" }
+  begin
+    if reverse
+        pkgs.sort_by {|x| x.time }
+    else
+        pkgs.sort_by {|x| x.time }.reverse
+    end
+  end.each {|pkg|
+    printf("%s : %s\n", pkg.fullname, epoch ? pkg.time.to_i : pkg.time.to_s )
+  }
 end
 
 def print_packages_description(pkgs)

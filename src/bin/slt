@@ -37,7 +37,7 @@ Usage:
 EOS
 # This is all the flags we want to use, from Slackware::Args
 option_flags = [:color, :epoch, :case_insensitive, :pkg_name, :pkg_version,
-    :debug, :pkg_arch, :pkg_build, :pkg_tag]
+    :reverse, :debug, :pkg_arch, :pkg_build, :pkg_tag]
 
 slog = Slackware::Log.instance
 slog.level = Slackware::Log::WARN
@@ -46,6 +46,7 @@ options = Slackware::Args.parse(ARGV, option_flags, option_banner)
 
 # update level if specified
 slog.level = Slackware::Log::DEBUG if options[:debug]
+slog.debug($PROGRAM_NAME) { "option_flags: #{option_flags} " }
 slog.debug($PROGRAM_NAME) {"options: %s" % options}
 
 # handing through that we are gathering times
@@ -56,7 +57,7 @@ if (ARGV.count > 0)
 end
 
 begin
-  print_packages_times(build_packages(options, ARGV), options[:epoch])
+  print_packages_times(build_packages(options, ARGV), options[:epoch], options[:reverse])
 rescue Interrupt
   exit 0
 rescue Exception => e
