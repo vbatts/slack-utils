@@ -24,6 +24,9 @@ require 'time'
 require 'slackware/log'
 require 'slackware/paths'
 
+MyTime = RUBY_VERSION < '1.9'? DateTime : Time
+
+
 module Slackware
   class Package
     RE_FILE_LIST = /^FILE LIST:/
@@ -47,7 +50,7 @@ module Slackware
       end
       if (name =~ RE_REMOVED_NAMES)
         name = $1
-        self.upgrade_time = Time.strptime($2 + ' ' + $3, fmt=FMT_UPGRADE_TIME)
+        self.upgrade_time = MyTime.strptime($2 + ' ' + $3, fmt=FMT_UPGRADE_TIME)
       end
       arr = name.split('-')
       build = arr.pop
