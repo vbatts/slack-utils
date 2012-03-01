@@ -38,7 +38,7 @@ module Slackware
     RE_COMPRESSED_SIZE  = /^PACKAGE SIZE \(compressed\):\s+(.*)$/
     RE_UNCOMPRESSED_SIZE  = /^PACKAGE SIZE \(uncompressed\):\s+(.*)$/
 
-    attr_accessor :proto, :mirror, :path, :version, :arch, :changelog, :packages
+    attr_accessor :proto, :mirror, :path, :version, :arch, :changelog, :packages, :uri
 
     def initialize(repo = nil)
       @packages = nil
@@ -53,18 +53,23 @@ module Slackware
                 end
                 v
               end
-        self.arch  = begin
-                a = RbConfig::CONFIG["arch"]
-                if a =~ /x86_64/
-                  a = "64"
-                else
-                  a = ""
-                end
-                a
-              end
+        self.arch = RbConfig::CONFIG["arch"] =~ /x86_64/ ? "64" : ""
       else
         ## TODO do some hot parsing of 'repo'
+        self.uri = URI.parse(repo)
       end
+    end
+
+    def url
+      "%s%s%sslackware%s-%s/" % [self.proto,
+                                 self.mirror,
+                                 self.path,
+                                 self.arch,
+                                 self.version]
+    end
+
+    def url=(thisurl)
+      self.uri = URI.parse(thisurl)
     end
 
     def fetch(file = nil)
