@@ -36,10 +36,10 @@ module Slackware
     # Compiling a fat regex to find the date entries
     re_daynames = Regexp.new(ABBR_DAYNAMES.join('|'))
     re_monthnames = Regexp.new(ABBR_MONTHNAMES.join('|'))
-    RE_DATE = Regexp.new(/^(#{re_daynames}\s+#{re_monthnames}\s+\d+\s+\d{2}:\d{2}:\d{2}\s\w+\s+\d+)$/)
+    RE_DATE = /^(#{re_daynames}\s+#{re_monthnames}\s+\d+\s+\d{2}:\d{2}:\d{2}\s\w+\s+\d+)$/
  
     # This break has been the same as long as I can find
-    RE_CHANGELOG_BREAK = Regexp.new(/^\+--------------------------\+$/)
+    RE_CHANGELOG_BREAK = /^\+--------------------------\+$/
 
     # The regular entry, accounting for usb-and-pxe-installers directory,
     # and notes after the action
@@ -161,19 +161,19 @@ module Slackware
     end
 
     # Class method
-    def self::parse(file)
-      return parse_this_file(file)
-    end
-
-    def self::open(file)
-      return parse_this_file(file)
+    class << self
+      def parse(file)
+        cl = ChangeLog.new(file)
+        return cl.parse()
+      end
+      alias_method :open, :parse
     end
 
     def inspect
       "#<%s:0x%x @file=%s, %d @updates, %d @entries>" % [self.class.name, self.object_id.abs, self.file || '""', self.updates.count || 0, self.entries.count || 0]
     end
 
-    #protected
+    protected
     # Parse order is something like:
     # * if its' a date match, store the date
     # * take change notes until
@@ -182,7 +182,7 @@ module Slackware
     # * take packge notes until
     # * next package or entry separator
     # * separator creates next change entry
-    def self::parse_this_file(file)
+    def parse_this_file(file)
       f_handle = ""
       if file.is_a?(File)
         f_handle = file
@@ -268,8 +268,9 @@ module Slackware
 
       # Give them their change set
       return changelog
-    end
+    end # def self::parse_this_file
 
-  end
-end
+  end # class ChangeLog
+end # module Slackware
+
 # vim : set sw=2 sts=2 et :
