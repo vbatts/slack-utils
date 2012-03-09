@@ -40,14 +40,37 @@ if defined?(Gem)
   end
 
   def slackpkg()
-    sh "sudo OUTPUT=#{Dir.pwd}/pkg " +
-       "VERSION=#{spec.version} " +
-       "sh slack-utils.SlackBuild"
+    "pkg/slack-utils-#{spec.version}-#{arch()}-1_vb.tgz"
+  end
+  def arch()
+    unless ENV["ARCH"]
+      uname = `uname -m`.chomp
+      case uname
+      when /i.86/
+        "i486"
+      when /arm.*/
+        "arm"
+      else
+        uname
+      end
+    end
   end
 
-  desc 'Build slackware package'
-  task :slackpkg => package('.tar.gz') do
-    slackpkg()
+  desc 'irb shell with the slackware bits baked in'
+  task :shell do
+    sh "irb -I#{Dir.pwd}/lib/ -r slackware"
+  end
+
+  namespace :slackware do
+    desc 'Build slackware package'
+    task :build => slackpkg()
+
+    desc '(re)install the slackware package'
+    task :install => slackpkg() do
+      sh "sudo /sbin/upgradepkg " +
+         "--reinstall --install-new " +
+         "#{slackpkg()}"
+    end
   end
 
   desc 'Build packages'
@@ -63,6 +86,13 @@ if defined?(Gem)
 
   directory 'pkg/'
   CLOBBER.include('pkg')
+
+  file slackpkg() => package('.tar.gz') do |f|
+    sh "sudo OUTPUT=#{Dir.pwd}/pkg " +
+       "VERSION=#{spec.version} " +
+       "TAG=_vb BUILD=1 " +
+       "sh slack-utils.SlackBuild"
+  end
 
   file package('.gem') => %w[pkg/ slack-utils.gemspec] + spec.files do |f|
     sh "gem build slack-utils.gemspec"
