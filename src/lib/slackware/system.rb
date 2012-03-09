@@ -195,7 +195,6 @@ module Slackware
 
     # Return the version of Slackware Linux currently installed
     def self::version
-      debug(SLACKWARE_VERSION)
       SLACKWARE_VERSION
     end
   end

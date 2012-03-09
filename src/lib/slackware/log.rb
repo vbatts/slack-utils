@@ -24,7 +24,6 @@ require 'logger'
 require 'singleton'
 
 module Slackware
-
   # Log is a subclass of Logger, but is implemented as a singleton,
   # so it can be used across library in a somewhat unified manner.
   # Example:
@@ -42,10 +41,11 @@ module Slackware
     # It defaults to WARN level and STDERR
     def initialize(*args)
       if $logdev
-	super($logdev, args)
+        super($logdev, args)
       else
-	super(STDERR, args)
+        super(STDERR, args)
       end
+      self.level = Logger::ERROR
     end
   end # class Log
 end # module Slackware
