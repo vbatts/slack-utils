@@ -25,6 +25,11 @@ class TestChangeLog < Test::Unit::TestCase
     assert_not_nil(c)
     c = nil
   end
+  def test_parse_changelog
+    c = Slackware::ChangeLog.parse(@changlog_file)
+    assert_not_nil(c)
+    c = nil
+  end
   def test_open_changelog
     c = Slackware::ChangeLog.open(@changlog_file)
     assert_not_nil(c)
@@ -39,6 +44,45 @@ class TestChangeLog < Test::Unit::TestCase
     c = Slackware::ChangeLog::Entry.new()
     assert_not_nil(c)
     c = nil
+  end
+
+  # testing entries
+
+  def test_sort
+    c = Slackware::ChangeLog.parse(@changlog_file)
+    assert_equal(1303738620, c.sort.first.date.to_i)
+  end
+  def test_latest
+    c = Slackware::ChangeLog.parse(@changlog_file)
+    assert_equal(1310679281, c.latest.date.to_i)
+  end
+  def test_updates
+    c = Slackware::ChangeLog.parse(@changlog_file)
+    assert_equal(13, c.updates.length)
+  end
+  def test_entries
+    c = Slackware::ChangeLog.parse(@changlog_file)
+    assert_equal(80, c.entries.length)
+  end
+  def test_security
+    c = Slackware::ChangeLog.parse(@changlog_file)
+    assert_equal(12, c.security.length)
+  end
+  def test_pkgs_removed
+    c = Slackware::ChangeLog.parse(@changlog_file)
+    assert_equal(0, c.pkgs_removed.length)
+  end
+  def test_pkgs_added
+    c = Slackware::ChangeLog.parse(@changlog_file)
+    assert_equal(0, c.pkgs_added.length)
+  end
+  def test_pkgs_upgraded
+    c = Slackware::ChangeLog.parse(@changlog_file)
+    assert_equal(52, c.pkgs_upgraded.length)
+  end
+  def test_pkgs_rebuilt
+    c = Slackware::ChangeLog.parse(@changlog_file)
+    assert_equal(28, c.pkgs_rebuilt.length)
   end
 
   # testing constants
