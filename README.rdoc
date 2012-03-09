@@ -1,1 +1,111 @@
-src/README.rdoc
+= slackware utilities
+
+== Summary
+
+A handful of commands to quickly/easily access information on the Slackware Linux distribution.
+Further, this provides a ruby library for 'slackware'.
+
+== Description
+
+slack-utils
+
+<b>slp</b> - shows installed slackware packages
+with no args, it will show all.
+or for each arg it will search the package names.
+
+<b>slf</b> - search installed slackware packages for a file
+this expects an arg(s), and will output, in grep fashion
+packages matching your search args.
+
+<b>slt</b> - mtime/install time of slackware packages
+with no args, it will show all.
+or for each arg it will search the package names.
+
+<b>sll</b> - list the contents of packages matching the
+
+<b>slo</b> - find files in /etc/, that have been orphaned and left behind
+by unistalled/upgraded packages
+
+<b>sli</b> - display the package information for matching packages
+
+<b>slu</b> - display the upgrade history for matching packages
+
+<b>slfindlinked</b> - finds what is linked to your argument, and it's package
+expects 1 argument passed. 
+
+
+== Release Notes
+
+See https://github.com/vbatts/slack-utils/wiki/Release-Notes
+
+== Installation
+
+=== From git
+
+ >> git clone git://github.com/vbatts/slack-utils.git
+ >> cd slack-utils
+ >> make slackpkg
+ >> sudo upgradepkg --install-new pkg/slack-utils-0.6.2-$ARCH-1_vb.tgz
+
+=== From tar ball
+
+ >> tar xfz slack-utils-0.6.2.tar.gz
+ >> cd slack-utils-0.6.2
+ >> ruby setup.rb config --prefix=/usr --mandir=/usr/man
+ >> ruby setup.rb install 
+
+=== From the rubygems repo
+
+ >> sudo gem install slack-utils
+
+=== From the gem
+
+ >> git clone git://github.com/vbatts/slack-utils.git
+ >> cd slack-utils/src
+ >> rake gem
+ >> sudo gem install pkg/slack-utils-$VERSION.gem
+
+
+== Quick Start
+
+=== Using the commands
+
+See the system manual page slack-utils(8)
+
+=== Using the API / library
+
+ $ irb
+ >> require 'rubygems'
+ >> require 'slackware'
+ >> pkg = Slackware::Packware.new()
+ >> pkg.name = "hello-kitty"
+ >> pkg.version = "1.0"
+
+or 
+ >> require 'rubygems'
+ >> require 'slackware'
+ >> tags = Slackware::System.tags_used
+ => ["SBo","alien","rlw"]
+
+== Usage
+=== Show data
+
+<b>Note: </b>
+
+==== Examples
+see the exmamples/ files
+
+== Help
+There are many more methods than are documented on this page.  Please explore
+the RDOC to find more functionality.
+
+For more complex examples, please see the examples directory 
+ (GEM_ROOT/gems/slack-utils-<version>/examples/).
+
+You can also contact me for more help or suggestions.
+
+
+== Bugs and such
+
+Open an "issue" here https://github.com/vbatts/slack-utils/issues
+

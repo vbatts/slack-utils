@@ -39,6 +39,17 @@ if defined?(Gem)
     "pkg/slack-utils-#{spec.version}" + ext
   end
 
+  def slackpkg()
+    sh "sudo OUTPUT=#{Dir.pwd}/pkg " +
+       "VERSION=#{spec.version} " +
+       "sh slack-utils.SlackBuild"
+  end
+
+  desc 'Build slackware package'
+  task :slackpkg => package('.tar.gz') do
+    slackpkg()
+  end
+
   desc 'Build packages'
   task :package => %w[.gem .tar.gz].map {|e| package(e)}
 

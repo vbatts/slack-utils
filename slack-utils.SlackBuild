@@ -25,7 +25,7 @@
 set -e
 
 PKGNAM=slack-utils
-VERSION=$(ls -rt $PKGNAM-*.tar.?z* | tail -1 | rev | cut -f 3- -d . | cut -f 1 -d - | rev)
+VERSION=$(ls -rt pkg/$PKGNAM-*.tar.?z* | tail -1 | rev | cut -f 3- -d . | cut -f 1 -d - | rev)
 BUILD=${BUILD:-1}
 TAG=${TAG:-_vb}
 
@@ -47,7 +47,7 @@ rm -rf $PKG
 mkdir -p $TMP $PKG $OUTPUT
 cd $TMP
 rm -rf $PKGNAM-$VERSION
-tar xvf $CWD/$PKGNAM-$VERSION.tar.gz
+tar xvf $CWD/pkg/$PKGNAM-$VERSION.tar.gz
 cd $PKGNAM-$VERSION
 
 ruby setup.rb config \
