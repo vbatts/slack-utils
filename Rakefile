@@ -117,17 +117,22 @@ if defined?(Gem)
   end
 
   desc 'Do magic release stuffs'
-  task 'release' => ['test', package('.gem')] do
-    if File.read("CHANGES") =~ /= \d\.\d\.\d . not yet released$/i
-      fail 'please update changes first'
+  #task 'release' => ['test', package('.gem')] do
+  task 'release' => package('.gem') do
+    tag_vers = source_version.gsub('.','_')
+    if `git tag`.split.include?(tag_vers)
+      fail "please update Slackware::UTILS_VERSION, #{source_version} is already released"
     end
 
+    #if File.read("CHANGES") =~ /= \d\.\d\.\d . not yet released$/i
+      #fail 'please update changes first'
+    #end
+
+      #gem install #{package('.gem')} --local &&
     sh <<-SH
-      gem install #{package('.gem')} --local &&
       gem push #{package('.gem')}  &&
       git commit --allow-empty -a -m '#{source_version} release'  &&
-      git tag -s v#{source_version} -m '#{source_version} release'  &&
-      git tag -s #{source_version} -m '#{source_version} release'  &&
+      git tag -s #{tag_vers} -m '#{source_version} release'  &&
       git push && (git push slack-utils || true) &&
       git push --tags && (git push slack-utils --tags || true)
     SH
