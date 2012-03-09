@@ -1,0 +1,185 @@
+                                                                                                                                                                                                                                                               
+Delivered-To: vbatts@gmail.com
+Received: by 10.182.208.104 with SMTP id md8cs113312obc;
+        Fri, 10 Feb 2012 10:51:37 -0800 (PST)
+Received: by 10.68.190.101 with SMTP id gp5mr18775734pbc.31.1328899893895;
+        Fri, 10 Feb 2012 10:51:33 -0800 (PST)
+Return-Path: <owner-slackware-security@slackware.com>
+Received: from bob.slackware.com (slackware.com. [64.57.102.34])
+        by mx.google.com with ESMTPS id y4si3642307pbb.58.2012.02.10.10.51.23
+        (version=TLSv1/SSLv3 cipher=OTHER);
+        Fri, 10 Feb 2012 10:51:33 -0800 (PST)
+Received-SPF: pass (google.com: best guess record for domain of owner-slackware-security@slackware.com designates 64.57.102.34 as permitted sender) client-ip=64.57.102.34;
+Authentication-Results: mx.google.com; spf=pass (google.com: best guess record for domain of owner-slackware-security@slackware.com designates 64.57.102.34 as permitted sender) smtp.mail=owner-slackware-security@slackware.com
+Received: from bob.slackware.com (IDENT:2@localhost [127.0.0.1])
+	by bob.slackware.com (8.13.7/8.13.7) with ESMTP id q1AIpJDr014549;
+	Fri, 10 Feb 2012 10:51:19 -0800
+Received: from localhost (daemon@localhost)
+	by bob.slackware.com (8.13.7/8.12.9/Submit) with SMTP id q1AIpI5W014541;
+	Fri, 10 Feb 2012 10:51:18 -0800
+Received: by bob.slackware.com (bulk_mailer v1.13); Fri, 10 Feb 2012 09:45:37 -0800
+Received: from bob.slackware.com (IDENT:2@localhost [127.0.0.1])
+	by bob.slackware.com (8.13.7/8.13.7) with ESMTP id q1AHja9E006440;
+	Fri, 10 Feb 2012 09:45:36 -0800
+Received: (from daemon@localhost)
+	by bob.slackware.com (8.13.7/8.12.9/Submit) id q1AHjajG006439;
+	Fri, 10 Feb 2012 09:45:36 -0800
+Received: from bob.slackware.com (IDENT:25@localhost [127.0.0.1])
+	by bob.slackware.com (8.13.7/8.13.7) with ESMTP id q1AHjamH006435
+	for <slackware-security@slackware.com>; Fri, 10 Feb 2012 09:45:36 -0800
+Received: (from root@localhost)
+	by bob.slackware.com (8.13.7/8.12.9/Submit) id q1AHjaec006434
+	for slackware-security@slackware.com; Fri, 10 Feb 2012 09:45:36 -0800
+Received: from bob.slackware.com (IDENT:3334@localhost [127.0.0.1])
+	by bob.slackware.com (8.13.7/8.13.7) with ESMTP id q1AHiFi9006334
+	for <slackware-security@slackware.com>; Fri, 10 Feb 2012 09:44:15 -0800
+Received: from localhost (security@localhost)
+	by bob.slackware.com (8.13.7/8.12.9/Submit) with ESMTP id q1AHiFfk006330
+	for <slackware-security@slackware.com>; Fri, 10 Feb 2012 09:44:15 -0800
+X-Authentication-Warning: bob.slackware.com: security owned process doing -bs
+Date: Fri, 10 Feb 2012 09:44:15 -0800 (PST)
+From: Slackware Security Team <security@slackware.com>
+To: slackware-security@slackware.com
+Subject: [slackware-security]  php (SSA:2012-041-02)
+Message-ID: <alpine.LNX.1.10.1202100943580.6300@bob.slackware.com>
+User-Agent: Alpine 1.10 (LNX 962 2008-03-14)
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Sender: owner-slackware-security@slackware.com
+Reply-To: Slackware Security Team <security@slackware.com>
+
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
+
+[slackware-security]  php (SSA:2012-041-02)
+
+New php packages are available for Slackware 12.0, 12.1, 12.2, 13.0, 13.1,
+13.37, and -current to fix security issues.
+
+
+Here are the details from the Slackware 13.37 ChangeLog:
++--------------------------+
+patches/packages/php-5.3.10-i486-1_slack13.37.txz:  Upgraded.
+  Fixed arbitrary remote code execution vulnerability reported by Stefan
+  Esser, CVE-2012-0830. (Stas, Dmitry)
+  For more information, see:
+    http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2012-0830
+  (* Security fix *)
++--------------------------+
+
+
+Where to find the new packages:
++-----------------------------+
+
+Thanks to the friendly folks at the OSU Open Source Lab
+(http://osuosl.org) for donating FTP and rsync hosting
+to the Slackware project!  :-)
+
+Also see the "Get Slack" section on http://slackware.com for
+additional mirror sites near you.
+
+Updated package for Slackware 12.0:
+ftp://ftp.slackware.com/pub/slackware/slackware-12.0/patches/packages/php-5.3.10-i486-1_slack12.0.tgz
+
+Updated package for Slackware 12.1:
+ftp://ftp.slackware.com/pub/slackware/slackware-12.1/patches/packages/php-5.3.10-i486-1_slack12.1.tgz
+
+Updated package for Slackware 12.2:
+ftp://ftp.slackware.com/pub/slackware/slackware-12.2/patches/packages/php-5.3.10-i486-1_slack12.2.tgz
+
+Updated package for Slackware 13.0:
+ftp://ftp.slackware.com/pub/slackware/slackware-13.0/patches/packages/php-5.3.10-i486-1_slack13.0.txz
+
+Updated package for Slackware x86_64 13.0:
+ftp://ftp.slackware.com/pub/slackware/slackware64-13.0/patches/packages/php-5.3.10-x86_64-1_slack13.0.txz
+
+Updated package for Slackware 13.1:
+ftp://ftp.slackware.com/pub/slackware/slackware-13.1/patches/packages/php-5.3.10-i486-1_slack13.1.txz
+
+Updated package for Slackware x86_64 13.1:
+ftp://ftp.slackware.com/pub/slackware/slackware64-13.1/patches/packages/php-5.3.10-x86_64-1_slack13.1.txz
+
+Updated package for Slackware 13.37:
+ftp://ftp.slackware.com/pub/slackware/slackware-13.37/patches/packages/php-5.3.10-i486-1_slack13.37.txz
+
+Updated package for Slackware x86_64 13.37:
+ftp://ftp.slackware.com/pub/slackware/slackware64-13.37/patches/packages/php-5.3.10-x86_64-1_slack13.37.txz
+
+Updated package for Slackware -current:
+ftp://ftp.slackware.com/pub/slackware/slackware-current/slackware/n/php-5.3.10-i486-1.txz
+
+Updated package for Slackware x86_64 -current:
+ftp://ftp.slackware.com/pub/slackware/slackware64-current/slackware64/n/php-5.3.10-x86_64-1.txz
+
+
+MD5 signatures:
++-------------+
+
+Slackware 12.0 package:
+bf5512a57e0e7ba3c9d836636f056036  php-5.3.10-i486-1_slack12.0.tgz
+
+Slackware 12.1 package:
+474400e31f8701a07aa97aeee956226e  php-5.3.10-i486-1_slack12.1.tgz
+
+Slackware 12.2 package:
+f359c739e8db9130806c3cb256990804  php-5.3.10-i486-1_slack12.2.tgz
+
+Slackware 13.0 package:
+5b38767541b0367dd64539537ca3cfc5  php-5.3.10-i486-1_slack13.0.txz
+
+Slackware x86_64 13.0 package:
+bcccb9fdde0e548d999447b352f4b322  php-5.3.10-x86_64-1_slack13.0.txz
+
+Slackware 13.1 package:
+7bdee84117e3cd1ac8e6087d9c936355  php-5.3.10-i486-1_slack13.1.txz
+
+Slackware x86_64 13.1 package:
+2d05770a236fdc52754e1ba9d657d6d7  php-5.3.10-x86_64-1_slack13.1.txz
+
+Slackware 13.37 package:
+7555e89aa4dc5a6b68c2fcfd1b8a6dc3  php-5.3.10-i486-1_slack13.37.txz
+
+Slackware x86_64 13.37 package:
+cf6a47e0046b13b2adba13466b3b5e7e  php-5.3.10-x86_64-1_slack13.37.txz
+
+Slackware -current package:
+1191d7d49f21f0dba3c4f35cc19e6b88  n/php-5.3.10-i486-1.txz
+
+Slackware x86_64 -current package:
+25a12f2407be6f03ff1dc50ad1b3c80b  n/php-5.3.10-x86_64-1.txz
+
+
+Installation instructions:
++------------------------+
+
+Upgrade the package as root:
+# upgradepkg php-5.3.10-i486-1_slack13.37.txz
+
+Then, restart the httpd daemon.
+
+
++-----+
+
+Slackware Linux Security Team
+http://slackware.com/gpg-key
+security@slackware.com
+
++------------------------------------------------------------------------+
+| To leave the slackware-security mailing list:                          |
++------------------------------------------------------------------------+
+| Send an email to majordomo@slackware.com with this text in the body of |
+| the email message:                                                     |
+|                                                                        |
+|   unsubscribe slackware-security                                       |
+|                                                                        |
+| You will get a confirmation message back containing instructions to    |
+| complete the process.  Please do not reply to this email address.      |
++------------------------------------------------------------------------+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
+
+iEYEARECAAYFAk81VdsACgkQakRjwEAQIjOXUwCfezXUNa574h+RebDKgoGHoWoF
+ofoAniEEEENlY4sa2T1+N8KKJPS23J4D
+=gwHE
+-----END PGP SIGNATURE-----
