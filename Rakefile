@@ -29,10 +29,10 @@ Rake::TestTask.new do |t|
 end
 
 # DOCS ============================================================
-desc 'Generate RDoc under doc/api'
+desc 'Generate RDoc under doc/'
 task 'doc'     => ['doc:api']
-task('doc:api') { sh "rdoc -o doc/api" }
-CLEAN.include 'doc/api'
+task('doc:api') { sh "rdoc -o doc/" }
+CLEAN.include 'doc/'
 
 # PACKAGING ============================================================
 
