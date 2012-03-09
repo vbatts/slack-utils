@@ -27,29 +27,22 @@ module Slackware
   class ChangeLog
     # or maybe "http://connie.slackware.com/~msimons/slackware/grfx/shared/dobbslack1.jpg"
     IMAGE_URL = "http://connie.slackware.com/~msimons/slackware/grfx/shared/bluepiSW.jpg"
+    # +opts+ can include
+    #  * :arch      - basically '64' or '32'
+    #  * :version   - 13.1, 13.2, current, etc.
+    #  * :url       - the URL web link to the ChangeLog.txt
+    #  * :image_url - the URL for the loge used in the RSS feed
     def to_rss(opts = {})
-      # this way we can use the opts from super,
-      # or override for this methods
-      opts = @opts.merge(opts)
-
       version = "2.0" # ["0.9", "1.0", "2.0"]
       content = RSS::Maker.make(version) do |m|
         if (opts[:title])
           m.channel.title = opts[:title]
         else
-          added_title = ""
-          if opts[:arch]
-            added_title = added_title + "slackware#{opts[:arch]}"
-          end
+          added_title = "slackware#{opts[:arch]}"
           if opts[:version]
-            added_title = added_title + "-#{opts[:version]}"
+            added_title += "-#{opts[:version]}"
           end
-  
-          if added_title.empty?
-            m.channel.title = "Slackware ChangeLog.txt"
-          else
-            m.channel.title = "#{added_title} ChangeLog.txt"
-          end
+          m.channel.title = "#{added_title} ChangeLog.txt"
         end
 
         if (opts[:url])
@@ -89,8 +82,8 @@ module Slackware
           i = m.items.new_item
           # Add a plug to the title of the update, if it includes a security fix
           # set this here, so we don't have to .map again down below
-          security = update.entries.map {|e| 1 if e.security }.compact.count
-          if (security > 0)
+          security_count = update.security.length
+          if (security_count > 0)
             i.title = "%s (* Security fix *)" % [update.date.utc.to_s]
           else
             i.title = update.date.utc.to_s
@@ -104,8 +97,8 @@ module Slackware
 
           i.description = ""
           if (update.entries.count > 0)
-            if (security > 0)
-              i.description = i.description + "%d new update(s), %d security update(s)\n\n" % [update.entries.count, security]
+            if (security_count > 0)
+              i.description = i.description + "%d new update(s), %d security update(s)\n\n" % [update.entries.count, security_count]
             else
               i.description = i.description + "%d new update(s)\n\n" % [update.entries.count]
             end

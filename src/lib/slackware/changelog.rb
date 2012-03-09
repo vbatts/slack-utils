@@ -23,6 +23,7 @@
 require 'slackware/package'
 require 'date'
 require 'time'
+require 'stringio'
 
 module Slackware
   # The class for parsing a Slackware standard ChangeLog.txt
@@ -64,14 +65,20 @@ module Slackware
     # regarding the updates
     class Update
       # FIXME this class needs more proper value setting
-      def initialize(date = nil, notes = "", entries = Array.new)
+      def initialize(date = nil,
+                     notes = "",
+                     entries = Array.new,
+                     changelog = nil )
         @date = date
         @notes = notes
         @entries = entries
+        @changelog = changelog
       end
       def date; @date; end
       def notes; @notes; end
       def entries; @entries; end
+      def security; @entries.select {|e| e if e.security }; end
+      def security?; @entries.select {|e| e.security }.first; end
 
       def date=(timestamp)
         if (timestamp.is_a?(Time))
@@ -83,16 +90,23 @@ module Slackware
         end
       end
       def notes=(text); @notes = text; end
+      def changelog=(changelog); @changelog = changelog if changelog.is_a?(Slackware::ChangeLog); end
     end
 
     # The class for each item in a change set
     class Entry
-      def initialize(package = nil, section = nil, action = nil, notes = "", security = false)
+      def initialize(package = nil,
+                     section = nil,
+                     action = nil,
+                     notes = "",
+                     security = false,
+                     update = nil)
         @package  = package
         @section  = section
         @action   = action
-        notes.is_a?(String) ? @notes = notes : @notes = ""
-        security == true ? @security = security : @security = false
+        @notes = notes.is_a?(String) ? notes : ""
+        @security = security == true
+        @update = update
       end
 
       def package; @package; end
@@ -100,57 +114,78 @@ module Slackware
       def action; @action; end
       def notes; @notes; end
       def security; @security; end
+      def date; @update ? @update.date: nil;end
 
       def package=(package_name); @package = package_name ; end
       def section=(section_name); @section = section_name ; end
       def action=(action_name); @action = action_name ; end
+      def update=(update); @update = update if update.is_a?(Slackware::ChangeLog::Update) ; end
       def notes=(notes_txt)
-        notes_txt.is_a?(String) ? @notes = notes_txt : @notes = ""
+        @notes = notes_txt.is_a?(String) ? notes_txt : ""
       end
       def security=(bool)
-        bool == true ? @security = bool : @security = false
+        @security = bool == true
       end
     end
 
-    # +file+ can be a path to a file, or a +File+ object
-    # +opts+ can include
-    #  * :arch      - basically '64' or '32'
-    #  * :version   - 13.1, 13.2, current, etc.
-    #  * :url       - the URL web link to the ChangeLog.txt
-    #  * :image_url - the URL for the loge used in the RSS feed
-    def initialize(file = nil, opts = {})
+    def initialize(file = nil)
       @file     = file
-      @opts     = opts
+      @strio    = StringIO.new
       @updates  = Array.new
     end
 
     def file; @file; end
-    def opts; @opts; end
     def updates; @updates; end
-    def entries
-      @updates.map {|update| update.entries.map {|entry| {:date => update.date, :entry => entry } } }.flatten
+
+    # Returns the latest update in the set
+    def latest 
+      sort().last
     end
-    def security
-      @updates.map {|u| u.entries.map {|e| {:date => u.date, :entry => e } if e.security } }.flatten.compact
-    end
-    def pkgs_removed
-      @updates.map {|u| u.entries.map {|e| {:date => u.date, :entry => e } if e.action == "Removed" } }.flatten.compact
-    end
-    def pkgs_added
-      @updates.map {|u| u.entries.map {|e| {:date => u.date, :entry => e } if e.action == "Added" } }.flatten.compact
-    end
-    def pkgs_upgraded
-      @updates.map {|u| u.entries.map {|e| {:date => u.date, :entry => e } if e.action == "Upgraded" } }.flatten.compact
-    end
-    def pkgs_rebuilt
-      @updates.map {|u| u.entries.map {|e| {:date => u.date, :entry => e } if e.action == "Rebuilt" } }.flatten.compact
-    end
-    def opts=(hash)
-      if hash.is_a?(Hash)
-        @opts = hash
-      end
+    def sort 
+      @updates.sort {|x,y| x.date <=> y.date }
     end
 
+    # All entries in this Slackware::ChangeLog
+    #
+    # Returns an Array of Slackware::ChangeLog::Entry
+    def entries
+      @updates.map {|u| u.entries.map {|e| e } }.flatten
+    end
+
+    # All security in this Slackware::ChangeLog
+    #
+    # Returns an Array of Slackware::ChangeLog::Entry
+    def security
+      @updates.map {|u| u.entries.select {|e| e if e.security } }.flatten
+    end
+
+    # All packages removed in this Slackware::ChangeLog
+    #
+    # Returns an Array of Slackware::ChangeLog::Entry
+    def pkgs_removed
+      @updates.map {|u| u.entries.select {|e| e  if e.action == "Removed" } }.flatten
+    end
+
+    # All packages added in this Slackware::ChangeLog
+    #
+    # Returns an Array of Slackware::ChangeLog::Entry
+    def pkgs_added
+      @updates.map {|u| u.entries.select {|e| e if e.action == "Added" } }.flatten
+    end
+
+    # All packages upgraded in this Slackware::ChangeLog
+    #
+    # Returns an Array of Slackware::ChangeLog::Entry
+    def pkgs_upgraded
+      @updates.map {|u| u.entries.select {|e| e if e.action == "Upgraded" } }.flatten
+    end
+
+    # All packages rebuilt in this Slackware::ChangeLog
+    #
+    # Returns an Array of Slackware::ChangeLog::Entry
+    def pkgs_rebuilt
+      @updates.map {|u| u.entries.select {|e| e if e.action == "Rebuilt" } }.flatten
+    end
     def parse(opts = {:file => nil, :data => nil})
       if not(opts[:file].nil?)
         @updates = parse_this_file(opts[:file]).updates
@@ -200,7 +235,10 @@ module Slackware
       changelog = ChangeLog.new(f_handle)
       f_handle.each do |line|
         if (line =~ RE_DATE)
-          u = Update.new(Time.parse($1))
+          update = Update.new(Time.parse($1))
+
+          # Tying this Slackware::ChangeLog::Update to it's Slackware::ChangeLog parent
+          update.changelog = changelog
           while true
             if (f_handle.eof?)
               break
@@ -213,11 +251,15 @@ module Slackware
             end
 
             # the intimate iteration
-            # +Match+ is more expensive than =~,
+            # Match is more expensive than =~,
             # but ruby-1.8.x is lossing the matched values down below
             # so this works on both ...
             if (match = RE_PACKAGE_ENTRY.match(u_line))
               u_entry = Entry.new()
+
+              # tying this entry to it's Slackware::ChangeLog::Update parent
+              u_entry.update = update
+
               # This silly iteration catches the different cases of 
               # which package line, matches which Regexp. WIN
               if match[1].nil?
@@ -245,24 +287,24 @@ module Slackware
               u_entry.action = match[3] unless match[3].nil?
 
               # Add this entry to the stack
-              u.entries << u_entry
+              update.entries << u_entry
             else
-              # if u.entries is empty, then this text is notes 
+              # if update.entries is empty, then this text is notes 
               # for the upate, else it is notes, for the entry
-              if (u.entries.empty?)
-                u.notes = u.notes + u_line
+              if (update.entries.empty?)
+                update.notes = update.notes + u_line
               else
                 # if this line of the entry security fix, toggle the bool
                 if (u_line =~ RE_SECURITY_FIX)
-                  u.entries[-1].security = true
+                  update.entries[-1].security = true
                 end
-                u.entries[-1].notes = u.entries[-1].notes + u_line
+                update.entries[-1].notes = update.entries[-1].notes + u_line
               end
             end
           end
 
           # Add this update to the stack
-          changelog.updates << u
+          changelog.updates << update
         end
       end
 
