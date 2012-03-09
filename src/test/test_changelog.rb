@@ -65,9 +65,6 @@ class TestChangeLog < Test::Unit::TestCase
   def test_method_file
     assert_respond_to(@changelog, :file)
   end
-  def test_method_opts
-    assert_respond_to(@changelog, :opts)
-  end
   def test_method_updates
     assert_respond_to(@changelog, :updates)
   end
@@ -91,9 +88,6 @@ class TestChangeLog < Test::Unit::TestCase
   end
   def test_method_parse
     assert_respond_to(@changelog, :parse)
-  end
-  def test_method_opts_eq
-    assert_respond_to(@changelog, :opts=)
   end
   def test_method_inspect
     assert_respond_to(@changelog, :inspect)
