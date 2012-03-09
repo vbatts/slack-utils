@@ -4,7 +4,6 @@
 
 require 'rake/clean'
 require 'rake/testtask'
-#require RUBY_VERSION > '1.9.1' ? 'rubygems/package_task' : 'rake/packagetask'
 
 def source_version
   @source_version ||= begin
@@ -13,6 +12,9 @@ def source_version
                         Slackware::UTILS_VERSION
                       end
 end
+
+task :default => :test
+task :spec => :test
 
 task :test do
   ENV['LANG'] = 'C'
@@ -25,6 +27,12 @@ Rake::TestTask.new do |t|
 	t.test_files = FileList['test/test*.rb']
 	t.verbose = true
 end
+
+# DOCS ============================================================
+desc 'Generate RDoc under doc/api'
+task 'doc'     => ['doc:api']
+task('doc:api') { sh "rdoc -o doc/api" }
+CLEAN.include 'doc/api'
 
 # PACKAGING ============================================================
 
