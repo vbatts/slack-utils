@@ -89,9 +89,7 @@ module Slackware
 
     # Accessor for the PACKAGE DESCRIPTION from the package file
     def package_description
-      if not(@package_description.nil?)
-        return @package_description
-      end
+      return @package_description unless @package_description.nil?
 
       f = File.open(self.path + '/' + self.fullname)
       while true
@@ -113,9 +111,7 @@ module Slackware
 
     # Accessor for the PACKAGE LOCATION from the package file
     def package_location
-      if not(@package_location.nil?)
-        return @package_location
-      end
+      return @package_location unless @package_location.nil?
 
       f = File.open(self.path + '/' + self.fullname)
       while true
@@ -132,9 +128,7 @@ module Slackware
 
     # Accessor for the UNCOMPRESSED PACKAGE SIZE from the package file
     def uncompressed_size
-      if not(@uncompressed_size.nil?)
-        return @uncompressed_size
-      end
+      return @uncompressed_size unless @uncompressed_size.nil?
 
       f = File.open(self.path + '/' + self.fullname)
       while true
@@ -151,9 +145,7 @@ module Slackware
 
     # Accessor for the COMPRESSED PACKAGE SIZE from the package file
     def compressed_size
-      if not(@compressed_size.nil?)
-        return @compressed_size
-      end
+      return @compressed_size unless @compressed_size.nil?
 
       f = File.open(self.path + '/' + self.fullname)
       while true
