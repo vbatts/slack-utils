@@ -37,7 +37,8 @@ module Slackware
 
     FMT_UPGRADE_TIME = "%F %H:%M:%S"
 
-    attr_accessor :time, :path, :file, :name, :version, :arch, :build, :tag, :tag_sep, :upgrade_time, :owned_files
+    attr_accessor :path, :file, :name, :version, :arch, :build, :tag, :tag_sep, :upgrade_time
+    #attr_accessor :time, :owned_files
     def initialize(name = nil)
       self.name = name
     end
@@ -91,15 +92,15 @@ module Slackware
     def package_description
       return @package_description unless @package_description.nil?
 
-      f = File.open(self.path + '/' + self.fullname)
-      while true
+      f = File.open(path() + '/' + self.fullname)
+      loop do
         if (f.readline =~ RE_PACKAGE_DESCRIPTION)
-          desc = f.take_while {|l|
-                                                not(l =~ RE_FILE_LIST)
-                                        }.map {|l|
-                                                l.sub(/^#{self.name}:\s?/, '').chomp
-                                        }
-          return desc
+          @package_description = f.take_while {|l|
+            not(l =~ RE_FILE_LIST)
+          }.map {|l|
+            l.sub(/^#{self.name}:\s?/, '').chomp
+          }
+          return @package_description
         end
       end
     end
@@ -114,9 +115,9 @@ module Slackware
       return @package_location unless @package_location.nil?
 
       f = File.open(self.path + '/' + self.fullname)
-      while true
+      loop do
         if (f.readline =~ RE_PACKAGE_LOCATION)
-          return $1
+          return @package_location = $1
         end
       end
     end
@@ -131,9 +132,9 @@ module Slackware
       return @uncompressed_size unless @uncompressed_size.nil?
 
       f = File.open(self.path + '/' + self.fullname)
-      while true
+      loop do
         if (f.readline =~ RE_UNCOMPRESSED_PACKAGE_SIZE)
-          return $1
+          return @uncompressed_size = $1
         end
       end
     end
@@ -148,9 +149,9 @@ module Slackware
       return @compressed_size unless @compressed_size.nil?
 
       f = File.open(self.path + '/' + self.fullname)
-      while true
+      loop do
         if (f.readline =~ RE_COMPRESSED_PACKAGE_SIZE)
-          return $1
+          return @compressed_size = $1
         end
       end
     end
@@ -160,70 +161,75 @@ module Slackware
       @compressed_size = size
     end
 
-    # Accessor for the FILE LIST from the package file
-    # unless the :owned_files symbol is populated
-    def get_owned_files
-      unless self.owned_files.nil?
-        return self.owned_files
-      else
-        files = []
-        File.open(self.path + '/' + self.fullname) do |f|
-          while true
-            break if f.eof?
-            line = f.readline()
-            begin
-              if line.force_encoding("US-ASCII") =~ RE_FILE_LIST
-                f.seek(2, IO::SEEK_CUR)
-                break
-              end
-            rescue ArgumentError
-              # ArgumentError: invalid byte sequence in US-ASCII
-              # so dumb, i wish i could determine a better solution for this
-              true
-            end
-          end
-          begin
-            files = f.readlines().map {|line| line.rstrip.force_encoding("US-ASCII") }
-          rescue ArgumentError
-            Log.instance.debug("Slackware::Package") {
-	      "encoding in : " + self.path + '/' + self.fullname
-	    }
-          end
-        end
-        return files
-      end
+    # Set the file list in the package object in memory
+    def owned_files
+      @owned_files ||= _owned_files()
     end
 
-    # Set the file list in the package object in memory
-    def set_owned_files
-      if self.owned_files.nil?
-        self.owned_files = get_owned_files()
-        return true
-      else
-        return false
+    # Accessor for the FILE LIST from the package file
+    # unless the :owned_files symbol is populated
+    def _owned_files
+      files = []
+      File.open(self.path + '/' + self.fullname) do |f|
+        loop do
+          break if f.eof?
+          line = f.readline()
+        begin
+            if line.force_encoding("US-ASCII") =~ RE_FILE_LIST
+              f.seek(2, IO::SEEK_CUR)
+              break
+            end
+          rescue ArgumentError
+            # ArgumentError: invalid byte sequence in US-ASCII
+            # so dumb, i wish i could determine a better solution for this
+            true
+          end
+        end
+        begin
+          files = f.readlines().map {|line| line.rstrip.force_encoding("US-ASCII") }
+        rescue ArgumentError
+          Log.instance.debug("Slackware::Package") {
+            "encoding in : " + self.path + '/' + self.fullname
+          }
+        end
       end
+      return files
     end
 
     # populates and returns self.time
-    def get_time
-      if (self.time.nil? && self.path)
+    def time
+      if (@time.nil? && self.path)
         if (File.exist?(self.path + "/" + self.fullname))
-          self.time = File.mtime(self.path + "/" + self.fullname)
+          @time = File.mtime(self.path + "/" + self.fullname)
         end
-      elsif (not(self.path) && (self.time.nil?))
+      elsif (not(self.path) && (@time.nil?))
         if (File.exist?(Paths::installed_packages() + "/" + self.fullname))
-          self.time = File.mtime(Paths::installed_packages() + "/" + self.fullname)
+          @time = File.mtime(Paths::installed_packages() + "/" + self.fullname)
         end
       end
-      return self.time
+      return @time
     end
 
     # Fill in the path information
-    def get_path
-      if (self.path.nil? && File.exist?(Paths::installed_packages() + "/" + self.name))
-        self.path = Paths::installed_packages()
-        return Paths::installed_packages()
-      end
+    def path
+      @path ||= Paths::installed_packages()
+    end
+
+    def to_h
+      {
+        "name" => @name,
+        "version" => @version,
+        "arch" => @arch,
+        "build" => @build,
+        "tag" => @tag,
+        "tag_sep" => @tag_sep,
+        "upgrade_time" => @upgrade_time,
+        "compressed_size" => compressed_size(),
+        "uncompressed_size" => uncompressed_size(),
+        "path" => path(),
+        "time" => time(),
+        "owned_files" => owned_files(),
+      }
     end
 
     def inspect
@@ -239,6 +245,7 @@ module Slackware
     end
 
   end
+
 
   class Script < Package
     attr_accessor :script
