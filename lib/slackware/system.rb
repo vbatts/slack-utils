@@ -174,7 +174,7 @@ module Slackware
       debug('owns_file(): pkgs.count => %d' % pkgs.count)
       found_files = []
       file = file.sub(/^\//, "") # clean off the leading '/'
-      re = /#{file}/
+      re = /#{Regexp.escape(file)}/
       debug('owns_file(): file Regexp => %s' % re.inspect)
       pkgs.each {|pkg|
         pkg.get_owned_files().select {|f|
