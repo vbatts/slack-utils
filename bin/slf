@@ -55,7 +55,7 @@ elsif (ARGV.count == 0)
 end
 
 begin
-  print_package_searched_files(build_packages(options, []), ARGV)
+  print_package_searched_files(ARGV)
 rescue Interrupt
   exit 0
 rescue Exception => e

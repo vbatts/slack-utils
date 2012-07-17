@@ -217,7 +217,7 @@ end
 
 # search Array of Slackware::Package's for files
 # and print the items found
-def print_package_searched_files(pkgs, files)
+def print_package_searched_files(files)
   found_files = []
   files.each {|file|
     found_files += Slackware::System.owns_file(file)
