@@ -28,7 +28,7 @@ module Slackware
                       rescue
                         nil
                       end
-  UTILS_VERSION = "0.7.3"
+  UTILS_VERSION = "0.7.5"
 end
 
 # vim : set sw=2 sts=2 et :

@@ -38,7 +38,7 @@ def build_packages(opts = {}, args = [])
   
   # separated this little thing out, since it adds a little more time
   if (opts[:time])
-    pkgs = pkgs.each {|p| p.get_time }
+    pkgs = pkgs.each {|p| p.time }
   end
 
   if (opts[:all])
@@ -206,12 +206,12 @@ end
 def print_package_file_list(pkgs)
   if (pkgs.count > 1)
     pkgs.each {|pkg|
-      pkg.get_owned_files.each {|line|
+      pkg.owned_files.each {|line|
         puts pkg.name + ": " + line
       }
     }
   else
-    pkgs.each {|pkg| puts pkg.get_owned_files }
+    pkgs.each {|pkg| puts pkg.owned_files }
   end
 end
 
@@ -235,7 +235,7 @@ end
 def find_orphaned_config_files
   # build a list of config files currently installed
   installed_config_files = Slackware::System.installed_packages.map {|pkg|
-    pkg.get_owned_files.map {|file|
+    pkg.owned_files.map {|file|
       if not(file =~ /\/$/)
         if (file =~ /^etc\//)
           file
@@ -248,7 +248,7 @@ def find_orphaned_config_files
   pkgs = Array.new
   Slackware::System.removed_packages.each {|r_pkg|
     # find config files for this removed package
-    config = r_pkg.get_owned_files.grep(/^etc\/.*[\w|\d]$/)
+    config = r_pkg.owned_files.grep(/^etc\/.*[\w|\d]$/)
     # continue if there are none
     if (config.count > 0)
       # remove config files that are owned by a currently installed package

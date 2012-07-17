@@ -111,7 +111,7 @@ module Slackware
       Dir.new(Paths::installed_packages()).each {|p|
         if (File.mtime(Paths::installed_packages(p)) >= time)
           pkg = Package.parse(p)
-          pkg.get_time
+          pkg.time
           arr << pkg
         end
       }
@@ -125,7 +125,7 @@ module Slackware
       Dir.new(Paths::installed_packages()).each {|p|
         if (File.mtime(Paths::installed_packages(p)) <= time)
           pkg = Package.parse(p)
-          pkg.get_time
+          pkg.time
           arr << pkg
         end
       }
@@ -177,7 +177,7 @@ module Slackware
       re = /#{Regexp.escape(file)}/
       debug('owns_file(): file Regexp => %s' % re.inspect)
       pkgs.each {|pkg|
-        pkg.get_owned_files().select {|f|
+        pkg.owned_files().select {|f|
           begin
             f =~ re
           rescue ArgumentError => ex
