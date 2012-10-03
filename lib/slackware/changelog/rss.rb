@@ -35,6 +35,7 @@ module Slackware
     def to_rss(opts = {})
       version = "2.0" # ["0.9", "1.0", "2.0"]
       content = RSS::Maker.make(version) do |m|
+        m.encoding = "iso-8859-1"
         if (opts[:title])
           m.channel.title = opts[:title]
         else
