@@ -53,7 +53,7 @@ if ((ARGV.count == 0) &&
     (options[:arch].nil?) && 
     (options[:build].nil?) && 
     (options[:tag].nil?) && 
-    not(options[:force]) )
+    ! options[:force] )
   $stderr.write("WARNING: If you really want to see *ALL* files, use the --force flag\n")
   exit(2)
 end

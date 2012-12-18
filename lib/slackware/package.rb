@@ -166,6 +166,15 @@ module Slackware
       @owned_files ||= _owned_files()
     end
 
+    # helper for encoding handler in pre-ruby19
+    def _e(str, enc = "US-ASCII")
+      if RUBY_VERSION > "1.9"
+        str.force_encoding(enc)
+      else
+        str
+      end
+    end
+
     # Accessor for the FILE LIST from the package file
     # unless the :owned_files symbol is populated
     def _owned_files
@@ -175,7 +184,7 @@ module Slackware
           break if f.eof?
           line = f.readline()
         begin
-            if line.force_encoding("US-ASCII") =~ RE_FILE_LIST
+            if _e(line) =~ RE_FILE_LIST
               f.seek(2, IO::SEEK_CUR)
               break
             end
@@ -186,7 +195,7 @@ module Slackware
           end
         end
         begin
-          files = f.readlines().map {|line| line.rstrip.force_encoding("US-ASCII") }
+          files = f.readlines().map {|line| _e(line.rstrip) }
         rescue ArgumentError
           Log.instance.debug("Slackware::Package") {
             "encoding in : " + self.path + '/' + self.fullname
